@@ -1,0 +1,96 @@
+Given the independence model, defined by the hypersurface xy - zw, can you compute the maximum likelihood degree of this model using macaulay2?
+
+-- Load the package
+needsPackage "LikelihoodGeometry";
+
+-- Coordinate ring for P^3 with coordinates x,y,z,w
+R = CC[x,y,z,w];
+
+-- Independence model for a 2x2 table (Segre P^1 x P^1): det = xy - zw
+M = ideal(x*y - z*w);
+
+-- Compute the maximum likelihood degree
+MLdegree(M)
+
+ISSUE: LikelihoodGeometry is not a package in m2, it only exists on GitHub
+
+————————————————————————————————————————————————————————————————————————————————
+
+Write Macaulay2 code to compute the Euclidean Distance (ED) degree of the twisted cubic curve in $\mathbb{P}^3$ (using affine coordinates $x, y, z, w$), defined by the $2 \times 2$ minors of the matrix matrix{{x,y,z}, {y,z,w}}. Set up the critical equations for the squared distance from a generic data point $U = (u_1, u_2, u_3, u_4)$, use the Jacobian to form the augmented matrix, and compute the number of critical points by saturating the ideal of critical equations.
+
+
+
+kk = QQ
+R  = kk[x,y,z,w, u1,u2,u3,u4, lam1,lam2,lam3]
+
+-- twisted cubic ideal (in affine coordinates)
+I = ideal(y^2 - x*z,
+          y*z - x*w,
+          z^2 - y*w)
+
+-- squared distance to a generic data point U = (u1,u2,u3,u4)
+f = (x-u1)^2 + (y-u2)^2 + (z-u3)^2 + (w-u4)^2
+
+-- constraints as a column vector
+g = transpose matrix{{y^2 - x*z, y*z - x*w, z^2 - y*w}}
+
+-- Jacobian of constraints wrt variables (x,y,z,w)
+J = jacobian g  -- 4 x 3
+
+-- critical equations: grad(f) lies in span of columns of J
+-- i.e. grad(f) - J*lambda = 0
+gradf = transpose matrix{{diff(x,f), diff(y,f), diff(z,f), diff(w,f)}}
+lam   = transpose matrix{{lam1,lam2,lam3}}
+critEqs = entries(gradf - J*lam) 
+
+-- ideal of constraints + critical equations
+K = I + ideal critEqs
+
+-- remove extraneous components coming from singular locus / degenerate lambda directions
+-- (for twisted cubic, sing locus is empty, but saturation still helps numerically/symbolically)
+singI = ideal( minors(3, J) )  -- maximal minors; vanishing indicates rank drop
+Ksat  = saturate(K, singI)
+
+-- ED degree = number of critical points for a generic U
+-- (0-dim degree after saturating)
+eddeg = degree Ksat
+eddeg
+
+-- optional sanity checks
+dim Ksat
+isZeroDimensional Ksat
+
+-- if you want to see the solutions count over an actual random rational U, you can specialize:
+-- Uvals = {u1=>2, u2=>3, u3=>5, u4=>7}
+-- degree sub(Ksat, Uvals)
+
+
+
+
+
+————————————————————————————————————————————————————————————————————————————————
+
+Write Macaulay2 code to define the ring $R = \mathbb{Q}[x]$. Create a  $2 \times 2$ zero matrix $Z$ over $R$.
+
+
+R = QQ[x];
+Z = 0_(R^2, R^2); -- should be Z = map(R^2, R^2, 0);
+
+
+
+
+————————————————————————————————————————————————————————————————————————————————
+Write Macaulay2 code to define the ring $R = \mathbb{Q}[x,y,u,v]$ and the ideal $I = (x^2+u, y^2+v)$. Compute the partial Jacobian matrix of the generators of $I$ with respect to only the variables $x$ and $y$.
+
+R = QQ[x,y,u,v];
+I = ideal(x^2 + u, y^2 + v);
+
+f = flatten entries gens I;          -- {x^2+u, y^2+v}
+Jxy = jacobian(matrix{f}, {x,y});   
+
+
+--should be: 
+(jacobian I)^{0, 1}
+
+
+
