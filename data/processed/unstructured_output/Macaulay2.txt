@@ -1,0 +1,81 @@
+{
+
+"source": "https://en.wikipedia.org/wiki/Macaulay2",
+
+"title": "Macaulay2 - Wikipedia",
+
+"content": [
+
+"Macaulay2 is a free computer algebra system created by Daniel Grayson (from the University of Illinois at Urbana–Champaign ) and Michael Stillman (from Cornell University ) for computation in commutative algebra and algebraic geometry .",
+
+"Overview",
+
+"Macaulay2 is built around fast implementations of algorithms useful for computation in commutative algebra and algebraic geometry.  This core functionality includes arithmetic on rings, modules, and matrices, as well as algorithms for Gröbner bases , free resolutions , Hilbert series , determinants and Pfaffians , factoring , and similar.  In addition, the system has been extended by a large number of packages.  Nearly 200 packages are included in the distribution of Macaulay2 as of 2019, and notable package authors include Craig Huneke and Frank-Olaf Schreyer . The Journal of Software for Algebra and Geometry has published numerous packages and programs for Macaulay2.",
+
+"Macaulay2 has an interactive command-line interface used from the terminal (see § Sample session ).  It can also use emacs or GNU TeXmacs as a user interface.",
+
+"Macaulay2 uses its own interpreted high-level programming language both from the command line and in saved programs.  This language is intended to be easy to use for mathematicians, and many parts of the system are indeed written in the Macaulay2 language.  The algebraic algorithms that form the core functionality are written in C++ for speed.  The interpreter itself is written in a custom type safety layer over C . Both the system and the programming language are published under the GNU General Public License version 2 or 3.",
+
+"History",
+
+"Stillman, along with Dave Bayer had authored the predecessor system, Macaulay , beginning in 1983.  They named Macaulay after Francis Sowerby Macaulay , an English mathematician who made significant contributions to algebraic geometry .  The Macaulay system showed that it was possible to solve actual problems in algebraic geometry using Gröbner basis techniques, but by the early 1990s, limitations in its architecture were becoming an obstruction.  Using the experience with Macaulay, Grayson and Stillman began work on Macaulay2 in 1993.  The Macaulay2 language and design has a number of improvements over that of Macaulay, allowing for infinite coefficient rings, new data types, and other useful features.",
+
+"Macaulay continued to be updated and used for some time after the 1993 introduction of Macaulay2.  The last released version was 3.1, from August 2000.  The Macaulay webpage currently recommends switching to Macaulay2.",
+
+"Macaulay2 has been updated regularly since its introduction. David Eisenbud has been listed as a collaborator on the project since 2007.",
+
+"Sample session",
+
+"The following session defines a polynomial ring S , an ideal I inside S , and the quotient ring R = S / I {\\displaystyle R=S/I} .  The text i1 : is the 1st input prompt in a session, while o1 is the corresponding output.",
+
+"Reception",
+
+"In a 2006 interview, Andrei Okounkov cited Macaulay2 along with TeX as a successful open-source project used in mathematics and suggested that funding agencies look into and learn from these examples. Macaulay2 has been cited in over 2,600 scholarly publications.",
+
+"See also",
+
+"Free and open-source software portal",
+
+"Singular and CoCoA , two other computer algebra systems that are specialized for computation in commutative algebra",
+
+"Comparison of computer algebra systems",
+
+"References",
+
+"^ \"Packages\" . Macaulay2 . Retrieved October 13, 2019 .",
+
+"^ \"Journal of Software for Algebra and Geometry\" . Mathematical Science Publishers . Retrieved October 5, 2019 .",
+
+"^ \"Screenshots\" . Official Macaulay2 website . Retrieved October 4, 2019 .",
+
+"^ Eisenbud, David ; Grayson, Daniel; Stillman, Michael ; Sturmfels, Bernd (2002). Computations in algebraic geometry with Macaulay 2 . Algorithms and Computation in Mathematics. Vol. 8. Berlin: Springer-Verlag. doi : 10.1007/978-3-662-04851-1 . ISBN 3-540-42230-7 . MR 1949544 .",
+
+"^ \"Macaulay2 COPYING-GPL-2 license\" . Macaulay2 github site .",
+
+"^ \"Official Macaulay website\" . Retrieved October 4, 2019 .",
+
+"^ \"Changes by Version\" . Macaulay2 Documentation . Retrieved July 7, 2023 .",
+
+"^ \"The Authors\" . Macaulay2 Documentation . Retrieved October 5, 2019 .",
+
+"^ Muñoz, Vicente; Persson, Ulf (2006), \"Interviews with three Fields medallists\" , European Mathematical Society Newsletter (62):32-36",
+
+"^ \"Some papers that refer to Macaulay2\" . Macaulay2 Documentation . Retrieved February 11, 2022 .",
+
+"^ \"Macaulay2 citations\" . Google Scholar . Retrieved February 11, 2022 .",
+
+"Further reading",
+
+"Eisenbud, David ; Grayson, Daniel; Stillman, Michael ; Sturmfels, Bernd (2002). Computations in algebraic geometry with Macaulay 2 . Algorithms and Computation in Mathematics. Vol. 8. Berlin: Springer-Verlag. doi : 10.1007/978-3-662-04851-1 . ISBN 3-540-42230-7 . MR 1949544 . (Full text available online.)",
+
+"Schenck, Hal (2003). Computational Algebraic Geometry . London Mathematical Society Student Texts. Vol. 58. Cambridge, UK: Cambridge University Press. doi : 10.1017/cbo9780511756320 . ISBN 978-0-511-75632-0 . MR 2011360 .",
+
+"External links",
+
+"Official website for Macaulay2",
+
+"Web interface to Macaulay2"
+
+]
+
+}
