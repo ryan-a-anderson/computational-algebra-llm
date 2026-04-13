@@ -1,0 +1,26 @@
+[
+  {
+  "problem_ID": "RA_1",
+  "category":"Basic M2 Calcs",
+  "prompt":"Give me code in Macaulay2 to find the product of two generic 4x4 matrices over the integers mod 101 where my variables are v_1 through v_16 and w_1 through w_16. The output should be flattened. Return the output wrapped in a toString call.",
+  "correct_answer":[
+    "S = ZZ/101[v_1 .. v_16, w_1 .. w_16]",
+    "m = genericMatrix(S, v_1, 4, 4)",
+    "n = genericMatrix(S, w_1, 4, 4)",
+    "flatten(m*n)"
+  ],
+  "correct_output":" matrix {{v_1*w_1+v_5*w_2+v_9*w_3+v_13*w_4, v_2*w_1+v_6*w_2+v_10*w_3+v_14*w_4,v_3*w_1+v_7*w_2+v_11*w_3+v_15*w_4, v_4*w_1+v_8*w_2+v_12*w_3+v_16*w_4,v_1*w_5+v_5*w_6+v_9*w_7+v_13*w_8, v_2*w_5+v_6*w_6+v_10*w_7+v_14*w_8,v_3*w_5+v_7*w_6+v_11*w_7+v_15*w_8, v_4*w_5+v_8*w_6+v_12*w_7+v_16*w_8,v_1*w_9+v_5*w_10+v_9*w_11+v_13*w_12, v_2*w_9+v_6*w_10+v_10*w_11+v_14*w_12,v_3*w_9+v_7*w_10+v_11*w_11+v_15*w_12, v_4*w_9+v_8*w_10+v_12*w_11+v_16*w_12,v_1*w_13+v_5*w_14+v_9*w_15+v_13*w_16, v_2*w_13+v_6*w_14+v_10*w_15+v_14*w_16,v_3*w_13+v_7*w_14+v_11*w_15+v_15*w_16, v_4*w_13+v_8*w_14+v_12*w_15+v_16*w_16}}"
+  },
+  {
+    "problem_ID": "RA_2",
+    "category":"Basic M2 Calcs",
+    "prompt":"Use Macaulay2 to find the Groebner basis of the ideal (x^2y, xy^2 + x^3) in the integers mod 32003 in four variables x, y, z, w, using lexicographic order. Return the output wrapped in a toString call.",
+    "correct_answer":[
+      "KK = ZZ/32003",
+      "R = KK[x, y, z, w, MonomialOrder => Lex]",
+      "I = ideal(x^2*y, x*y^2+x^3)",
+      "gens gb I"
+    ],
+    "correct_output":"matrix {{x*y^3, x^2*y, x^3+x*y^2}}"
+  }
+]
