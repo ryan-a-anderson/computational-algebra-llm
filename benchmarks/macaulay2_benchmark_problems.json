@@ -31,8 +31,26 @@
       "A = random(RR^5, RR^3)",
       "(Q, R) = QRDecomposition A",
       "(transpose Q) * Q",
-      "toString(clean(1e-10,oo))"
+      "clean(1e-10,oo)"
     ],
     "correct_output":"matrix {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}"
+  },
+  {
+    "problem_ID": "RA_4",
+    "category":"Basic M2 Calcs",
+    "prompt":"Find the GCD of the two polynomials x^36 - 1, x^24 - 1 over the rationals. Return the output wrapped in a toString call.",
+    "correct_answer":[
+      "gcd(x^36-1,x^24-1)",
+    ],
+    "correct_output":"x^12-1"
+  },
+  {
+    "problem_ID": "RA_5",
+    "category":"Basic M2 Calcs",
+    "prompt":"Find the GCD of the two polynomials x^36 - 1, x^24 - 1 over the rationals. Return the output wrapped in a toString call.",
+    "correct_answer":[
+      "gcd(x^36-1,x^24-1)",
+    ],
+    "correct_output":"x^12-1"
   }
 ]
