@@ -22,5 +22,17 @@
       "gens gb I"
     ],
     "correct_output":"matrix {{x*y^3, x^2*y, x^3+x*y^2}}"
+  },
+  {
+    "problem_ID": "RA_3",
+    "category":"Basic M2 Calcs",
+    "prompt":"Verify that the output of the QR decomposition of a random 5 x 3 matrix with real entries has a matrix Q which is orthogonal. Return the output wrapped in a toString call.",
+    "correct_answer":[
+      "A = random(RR^5, RR^3)",
+      "(Q, R) = QRDecomposition A",
+      "(transpose Q) * Q",
+      "toString(clean(1e-10,oo))"
+    ],
+    "correct_output":"matrix {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}"
   }
 ]
