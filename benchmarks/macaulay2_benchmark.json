@@ -51,7 +51,7 @@
     "id": "sf_7",
     "category": "Basic M2 I/O",
     "brief_description": "create a 3 variable polynomial ring over integers, then create a free modulke homomorphism from R3-> R1, and find its kernel",
-    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free modulke homomorphism from R3-> R1, and find its kernel. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel. Use toString() to display any outputs.",
     "correct_answer": "R = ZZ[x,y,z]\nf = matrix {{x,y,z}}\nkernel f\n",
     "correct_output": "R\n( x y z )\nimage matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
   },
