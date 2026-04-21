@@ -1,0 +1,82 @@
+[
+  {
+    "id": "sf_1",
+    "category": "Basic M2 I/O",
+    "brief_description": "generating a polynomial quotient ring",
+    "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with variables x, y, z. Then use describe function. Use toString() to display any outputs.",
+    "correct_answer": "R = ZZ/5[x,y,z]\ndescribe R",
+    "correct_output": "Z/5 [x..z,Degrees ⇒ {3:1},Heft ⇒ {1}]"
+  },
+  {
+    "id": "sf_2",
+    "category": "Debugging",
+    "brief_description": "generate a rational polynomial ring of 4 variables and debug Macalay2 by reviewing raw internal structure",
+    "prompt": "In Macaulay2, generate a 4 variable polynomial over rationals and debug Macalay2 by reviewing raw internal structure. Use toString() to display any outputs.",
+    "correct_answer": "debug Core\nR = QQ[a..d];\nraw R",
+    "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing"
+  },
+  {
+    "id": "sf_3",
+    "category": "Package Imports",
+    "brief_description": "loading a package called FirstPackage",
+    "prompt": "In Macaulay2, load a package called FirstPackage. Use toString() to display any outputs.",
+    "correct_answer": "needsPackage \"FirstPackage\"",
+    "correct_output": "FirstPackage\nPackage"
+  },
+  {
+    "id": "sf_4",
+    "category": "Basic M2 Calcs",
+    "brief_description": "create a function x+5 and evaluate at x = 6",
+    "prompt": "In Macaulay2, create a function x+5 and evaluate at x = 6. Use toString() to display any outputs.",
+    "correct_answer": "f = i -> i + 5\nf 6\n",
+    "correct_output": "11"
+  },
+  {
+    "id": "sf_5",
+    "category": "Basic M2 Calcs",
+    "brief_description": "create a two variable function",
+    "prompt": "In Macaulay2, create a function that multiplies x and y and evaluate x=2, y=3. Use toString() to display any outputs.",
+    "correct_answer": "f = (x,y) -> x * y\nf(2,3)",
+    "correct_output": "6"
+  },
+  {
+    "id": "sf_6",
+    "category": "Basic M2 I/O",
+    "brief_description": "create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element. Use toString() to display any outputs.",
+    "correct_answer": "R = ZZ[x,y,z]\nF = R^3\nF_0",
+    "correct_output": "R\nPolynomialRing\nR^3\nR-module, free \n3x1 vector [1,0,0]\n​\n  \n​\n  "
+  },
+  {
+    "id": "sf_7",
+    "category": "Basic M2 I/O",
+    "brief_description": "create a 3 variable polynomial ring over integers, then create a free modulke homomorphism from R3-> R1, and find its kernel",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free modulke homomorphism from R3-> R1, and find its kernel. Use toString() to display any outputs.",
+    "correct_answer": "R = ZZ[x,y,z]\nf = matrix {{x,y,z}}\nkernel f\n",
+    "correct_output": "R\n( x y z )\nimage matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
+  },
+  {
+    "id": "sf_8",
+    "category": "Debugging",
+    "brief_description": "debugging faulty generator code",
+    "prompt": "In Macaulay2, what error did I do wrong: i1 : R = ZZ/5[x,y,z];\ni2 : f = matrix {{x,y,z}}\ni3 : generators oo\nstdio:22:10:(3): error: no method found for applying generators to argument(s):\n( x y z) of class Matrix. Use toString() to display any outputs.",
+    "correct_answer": "R = ZZ/5[x,y,z];\nf = matrix {{x,y,z}}\nkernel f\ngenerators oo",
+    "correct_output": "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
+  },
+  {
+    "id": "sf_9",
+    "category": "Basic M2 Calcs",
+    "brief_description": "create two lists and add them",
+    "prompt": "In Macaulay2, create two lists {1,0} and {0,1} and add them. Use toString() to display any outputs.",
+    "correct_answer": "L1 = {1,0}\nL2 = {0,1}\nL1+L2\n",
+    "correct_output": "{1,1}"
+  },
+  {
+    "id": "sf_10",
+    "category": "Basic M2 Calcs",
+    "brief_description": "use the apply function",
+    "prompt": "In Macaulay2, create a list {1,2,3,4} and the function x^2, and apply this function to your created list. Use toString() to display any outputs.",
+    "correct_answer": "L = {1,2,3,4}\nf = i -> i^2\napply(L,f)\n",
+    "correct_output": "{1,4,9,16}"
+  }
+]
