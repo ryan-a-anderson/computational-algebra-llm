@@ -3,7 +3,7 @@
     "id": "sf_1",
     "category": "Basic M2 I/O",
     "brief_description": "generating a polynomial quotient ring",
-    "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with variables x, y, z. Then use describe function. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with 3 variables. Then use describe function. Use toString() to display any outputs.",
     "correct_answer": "R = ZZ/5[x,y,z]\ndescribe R",
     "correct_output": "Z/5 [x..z,Degrees ⇒ {3:1},Heft ⇒ {1}]"
   },
