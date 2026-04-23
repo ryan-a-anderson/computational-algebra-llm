@@ -11,7 +11,7 @@
     "id": "sf_2",
     "category": "Debugging",
     "brief_description": "generate a rational polynomial ring of 4 variables and debug Macalay2 by reviewing raw internal structure",
-    "prompt": "In Macaulay2, generate a 4 variable polynomial over rationals and debug Macalay2 by reviewing raw internal structure. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, generate a 4 variable polynomial ring over rationals and debug Macalay2 by reviewing raw internal structure. Use toString() to display any outputs.",
     "correct_answer": "debug Core\nR = QQ[a..d];\nraw R",
     "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing"
   },
