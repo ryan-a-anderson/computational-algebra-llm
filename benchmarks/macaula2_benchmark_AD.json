@@ -1,0 +1,56 @@
+[
+ {
+   "id": "ad_1",
+   "category": "Polynomial Ring Creation",
+   "brief_description": "This problem tests if M2 can define a simple quotient ring through proper syntax.",
+   "Difficulty": 1,
+   "prompt": "With Macaulay2, Define a quotient ring of polynomial ring R over the rationals.",
+   "correct_answer": "R = QQ[x,y,z]/(x^3-y^3-z^3)",
+   "correct_output": "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)\no1 = R\no1 : QuotientRing"
+ },
+ {
+   "id": "ad_2",
+   "category": "Multiple Commands at Once",
+   "brief_description": "This problem tests if an LLM can handle multiple commands at once in M2",
+   "Difficulty": 5,
+   "prompt": "With Macaulay2, Define a polynomial ring over the rationals, compute in the ring, then make matrices over the ring, make modules over the ring, then projective varities and last, make the coherent sheaves and compute their cohomology.",
+   "correct_answer": "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)\no1 = R\no1 : QuotientRing\ni2 : (x+y+z)^3\n o2 = 3x^2y + 3xy^2 + 2y^3 + 3x^2z + 6xyz + 3y^2z + 3xz^2 + 3yz^2 + 2z^3\no2 : R\ni3 : b = vars R\no3 = | x y z |\no3 : Matrix R^1 <--- R^3\ni4 : c = matrix{{x^2, y^2, z^2}}\n o4 = | x2 y2 z2 |\n o4 : Matrix R^1 <--- R^3\ni5 : M = coker b\no5 = cokernal | x y z |\no5 : R-module, quotient of R^1\ni6 : N = ker C\no6 = image {2} | x 0 -y2 -z2 |\n {2} | -y -z2 x2 0 |\n | -z y2 0 x2 |\no6 : R-module, submodule of R^3\ni7 : X = Proj R\no7 = X\no7 : ProjectiveVariety\ni8 : HH^1 cotangentSheaf X\no8 = QQ^1\no8 : QQ-module, free",
+   "correct_output": "QQ-module, free"
+ },
+ {
+   "id": "ad_3",
+   "category": "If-Then-Else Conditionals",
+   "brief_description": "This problem tests if a simle if-then-else conditional can be made with M2",
+   "Difficulty": 2,
+   "prompt": "Write a conditional with Maculay2 that prints xeg 4 times followed by a xer and xos 4 times.",
+   "correct_answer": "i1 : (-4 .. 4) /\n(i -> if i < 0 then 'xeg'\nelse if i == 0 then 'xer'\n else 'pos')\no1 = (xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)\no1 : Sequence",
+   "correct_output": "Sequence"
+ },
+ {
+   "id": "ad_4",
+   "category": "If-Then-Else Conditionals",
+   "brief_description": "This problem tests if M2 can write more complex conditionals with less information",
+   "Difficulty": 2,
+   "prompt": "Write a conditional with Macaulay 2 that prints xeg if i < 0 and xer if i = 0 where if and else if are valid and else cannot be used in your program.",
+   "correct_answer": "i2 : (-4 .. 4) / \n (i -> if i < 0 then 'neg'\nelse if i == 0 then 'xer')\no2 = (xeg, xeg, xeg, xeg, xer, , , , )\no2 : Sequence",
+   "correct_output": ""
+ },
+ {
+   "id": "ad_5",
+   "category": "Hash-Table Data Structure",
+   "brief_description": "This problem tests if Macaulay2 Hash Tables can be written",
+   "Difficulty": 2,
+   "prompt": "In Macaulay2, implement an arbitrary data structure that stores three course names and course numbers. Title this data-structure as course and use the course names, 'Math', 'Physics' and 'Statistics' with numbers '100', '101' and '102' respectively. ",
+   "correct_answer": "i1 : book = new HashTable from {\n'Math' => '100',\n'Physics' => '101',\n'Statistics' => '102'}\no1 = HashTable{'Math' => 100}\n'Physics' => 101\n'Statistics' => 102\no1 : HashTable",
+   "correct_output": "HashTable"
+ },
+ {
+   "id": "ad_6",
+   "category": "Hash-Table Data Structure",
+   "brief_description": "This problem tests if an LLM can use the operator # to obtain a value from a prior implemented Hash Table.",
+   "Difficulty": 1,
+   "prompt": "In Macaulay2, assume that a Hash Table titled course exists with one such entry named Statistics that stores the value 102, write how to extract the value from this data structure.",
+   "correct_answer": "i1 : book#'Statistics'\no2 = 102",
+   "correct_output": ""
+ }
+]
