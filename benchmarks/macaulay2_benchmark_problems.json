@@ -51,10 +51,22 @@
     "correct_answer":[
       "Qu = new Type of List",
       "Qu * Qu := (x,y) -> new Qu from { x#0*y#0 - x#1*y#1 - x#2*y#2 - x#3*y#3, x#0*y#1 + x#1*y#0 + x#2*y#3 - x#3*y#2, x#0*y#2 + x#2*y#0 + x#3*y#1 - x#1*y#3, x#0*y#3 + x#3*y#0 + x#1*y#2 - x#2*y#1}",
-      "w = new Qu from {2, 1, 2, 2}"
-      "rot = new Qu from 
+      "w = new Qu from {2, 1, 2, 2}",
+      "rot = new Qu from { 0.3826834, 0, 0, 0.9238795 }",
       "rot * w"
     ],
-    "correct_output":""
+    "correct_output":"Qu{-1.08239, -1.46508, 1.68925, 2.61313}"
+  },
+  {
+    "problem_ID": "RA_6",
+    "category":"Basic M2 Calcs",
+    "prompt":"Calculate the Hessian of the quadratic form f(x,y) = 3*x^2 + 5*x*y + 11*y^2 as a polynomial over the rationals. Return the output wrapped in a toString call.",
+    "correct_answer": [
+      "R = QQ[x, y]",
+      "f = 3*x^2 + 5*x*y + 11*y^2",
+      "v = matrix {{x, y}}",
+      "diff(v ** transpose v, f)"
+    ],
+    "correct_output":"matrix {{6, 5}, {5, 22}}"
   }
 ]
