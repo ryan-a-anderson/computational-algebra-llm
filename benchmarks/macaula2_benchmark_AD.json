@@ -50,7 +50,7 @@
    "brief_description": "This problem tests if an LLM can use the operator # to obtain a value from a prior implemented Hash Table.",
    "Difficulty": 1,
    "prompt": "In Macaulay2, assume that a Hash Table titled course exists with one such entry named Statistics that stores the value 102, write how to extract the value from this data structure.",
-   "correct_answer": "i1 : book#'Statistics'\no2 = 102",
+   "correct_answer": "i1 : course#'Statistics'\no2 = 102",
    "correct_output": ""
  }
 ]
