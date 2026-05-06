@@ -68,5 +68,16 @@
       "diff(v ** transpose v, f)"
     ],
     "correct_output":"matrix {{6, 5}, {5, 22}}"
+  },
+  {
+    "problem_ID": "RA_7",
+    "category":"Basic M2 Calcs",
+    "prompt":"In Macaulay2, using the Probability package, calculate the probability that X < 35 for a random variable X, normally distributed with mean 30 and standard deviation 5. Return the output wrapped in a toString call.",
+    "correct_answer": [
+      "needsPackage('Probability')",
+      "X = normalDistribution(30, 5)",
+      "density_X 25"
+    ],
+    "correct_output":".0483941"
   }
 ]
