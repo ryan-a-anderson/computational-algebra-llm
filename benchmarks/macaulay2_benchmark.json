@@ -3,15 +3,15 @@
     "id": "sf_1",
     "category": "Basic M2 I/O",
     "brief_description": "generating a polynomial quotient ring",
-    "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with 3 variables. Then use describe function. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with 3 variables. Then use describe function.",
     "correct_answer": "R = ZZ/5[x,y,z]\ndescribe R",
-    "correct_output": "Z/5 [x..z,Degrees ⇒ {3:1},Heft ⇒ {1}]"
+    "correct_output": "--[x..z, Degrees => {3:1}, Heft => {1}]\n5"
   },
   {
     "id": "sf_2",
     "category": "Debugging",
     "brief_description": "generate a rational polynomial ring of 4 variables and debug Macalay2 by reviewing raw internal structure",
-    "prompt": "In Macaulay2, generate a 4 variable polynomial ring over rationals and debug Macalay2 by reviewing raw internal structure. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, generate a 4 variable polynomial ring over rationals and debug Macalay2 by reviewing raw internal structure.",
     "correct_answer": "debug Core\nR = QQ[a..d];\nraw R",
     "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing"
   },
@@ -19,15 +19,15 @@
     "id": "sf_3",
     "category": "Package Imports",
     "brief_description": "loading a package called FirstPackage",
-    "prompt": "In Macaulay2, load a package called FirstPackage. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, load a package called FirstPackage.",
     "correct_answer": "needsPackage \"FirstPackage\"",
-    "correct_output": "FirstPackage\nPackage"
+    "correct_output": "FirstPackage"
   },
   {
     "id": "sf_4",
     "category": "Basic M2 Calcs",
     "brief_description": "create a function x+5 and evaluate at x = 6",
-    "prompt": "In Macaulay2, create a function x+5 and evaluate at x = 6. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create a function x+5 and evaluate at x = 6.",
     "correct_answer": "f = i -> i + 5\nf 6\n",
     "correct_output": "11"
   },
@@ -35,7 +35,7 @@
     "id": "sf_5",
     "category": "Basic M2 Calcs",
     "brief_description": "create a two variable function",
-    "prompt": "In Macaulay2, create a function that multiplies x and y and evaluate x=2, y=3. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create a function that multiplies x and y and evaluate x=2, y=3.",
     "correct_answer": "f = (x,y) -> x * y\nf(2,3)",
     "correct_output": "6"
   },
@@ -43,23 +43,23 @@
     "id": "sf_6",
     "category": "Basic M2 I/O",
     "brief_description": "create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element",
-    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element.",
     "correct_answer": "R = ZZ[x,y,z]\nF = R^3\nF_0",
-    "correct_output": "R\nPolynomialRing\nR^3\nR-module, free \n3x1 vector [1,0,0]\n​\n  \n​\n  "
+    "correct_output": "| 1 |\n| 0 |\n| 0 |\n\n      3\nR"
   },
   {
     "id": "sf_7",
     "category": "Basic M2 I/O",
     "brief_description": "create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel",
-    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel.",
     "correct_answer": "R = ZZ[x,y,z]\nf = matrix {{x,y,z}}\nkernel f\n",
-    "correct_output": "R\n( x y z )\nimage matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
+    "correct_output": "image matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
   },
   {
     "id": "sf_8",
     "category": "Debugging",
     "brief_description": "debugging faulty generator code",
-    "prompt": "In Macaulay2, what error did I do wrong: i1 : R = ZZ/5[x,y,z];\ni2 : f = matrix {{x,y,z}}\ni3 : generators oo\nstdio:22:10:(3): error: no method found for applying generators to argument(s):\n( x y z) of class Matrix. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, what error did I do wrong: i1 : R = ZZ/5[x,y,z];\ni2 : f = matrix {{x,y,z}}\ni3 : generators oo\nstdio:22:10:(3): error: no method found for applying generators to argument(s):\n( x y z) of class Matrix.",
     "correct_answer": "R = ZZ/5[x,y,z];\nf = matrix {{x,y,z}}\nkernel f\ngenerators oo",
     "correct_output": "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
   },
@@ -67,7 +67,7 @@
     "id": "sf_9",
     "category": "Basic M2 Calcs",
     "brief_description": "create two lists and add them",
-    "prompt": "In Macaulay2, create two lists {1,0} and {0,1} and add them. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create two lists {1,0} and {0,1} and add them.",
     "correct_answer": "L1 = {1,0}\nL2 = {0,1}\nL1+L2\n",
     "correct_output": "{1,1}"
   },
@@ -75,7 +75,7 @@
     "id": "sf_10",
     "category": "Basic M2 Calcs",
     "brief_description": "use the apply function",
-    "prompt": "In Macaulay2, create a list {1,2,3,4} and the function x^2, and apply this function to your created list. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create a list {1,2,3,4} and the function x^2, and apply this function to your created list.",
     "correct_answer": "L = {1,2,3,4}\nf = i -> i^2\napply(L,f)\n",
     "correct_output": "{1,4,9,16}"
   },
@@ -83,7 +83,7 @@
     "id": "sf_11",
     "category": "Basic M2 Calcs",
     "brief_description": "basic for loop",
-    "prompt": "In Macaulay2, for a list of integers 1 to 5, return list of integers squared less than 15. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, for a list of integers 1 to 5, return list of integers squared less than 15.",
     "correct_answer": "for i from 1 to 5 when i^2 < 15 list i^2",
     "correct_output": "{1,4,9}"
   },
@@ -91,7 +91,7 @@
     "id": "sf_12",
     "category": "Basic M2 Calcs",
     "brief_description": "complicated for loop",
-    "prompt": "In Macaulay2, for even integers less than 10, return list of integers squared. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, for even integers less than 10, return list of integers squared.",
     "correct_answer": "for i from 0 when i < 10 list (if odd i then continue; i^2)",
     "correct_output": "{0,4,16,36,64}"
   },
@@ -99,7 +99,7 @@
     "id": "sf_13",
     "category": "Basic M2 Calcs",
     "brief_description": "complicated while loop",
-    "prompt": "In Macaulay2, while integers less than 10, return i^2 if i+1 is even, return 1234 else. Return output as a list. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, while integers less than 10, return i^2 if i+1 is even, return 1234 else. Return output as a list.",
     "correct_answer": "i = 0 ; while i < 10 list (i = i+1; if odd i then continue 1234; i^2)",
     "correct_output": "{1234,4,1234,16,1234,36,1234,64,1234,100}"
   },
@@ -107,7 +107,7 @@
     "id": "sf_14",
     "category": "Debugging",
     "brief_description": "while loop with break debugging",
-    "prompt": "In Macaulay2, fix this input so it returns a list: i = 0 ; while i < 10 list (i = i+1; if i == 5 then break i; i^2). Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, fix this input so it returns a list: i = 0 ; while i < 10 list (i = i+1; if i == 5 then break i; i^2).",
     "correct_answer": "i = 0 ; while i < 10 list (i = i+1; if i == 5 then break; i^2)",
     "correct_output": "{1,4,9,16}"
   },
@@ -115,8 +115,48 @@
     "id": "sf_15",
     "category": "Basic M2 I/O",
     "brief_description": "creating a class",
-    "prompt": "In Macaulay2, create a class for quaternions complete with addition and multiplication. Then generate a quaternion of {1,2,3,4} and multiply it with itself. Use toString() to display any outputs.",
+    "prompt": "In Macaulay2, create a class for quaternions complete with addition and multiplication. Then generate a quaternion of {1,2,3,4} and multiply it with itself.",
     "correct_answer": "Qu = new Type of List\nQu * Qu := (x,y) -> new Qu from { \n               x#0*y#0 - x#1*y#1 - x#2*y#2 - x#3*y#3,\n               x#0*y#1 + x#1*y#0 + x#2*y#3 - x#3*y#2,\n               x#0*y#2 + x#2*y#0 + x#3*y#1 - x#1*y#3,\n               x#0*y#3 + x#3*y#0 + x#1*y#2 - x#2*y#1\n               };\nw = new Qu from {1,2,3,4}\nw*w",
     "correct_output": "Qu\nType\n{1,2,3,4}\nQu\n{−28,4,6,8}\nQu"
+  },
+  {
+    "id": "sf_16",
+    "category": "Package Imports",
+    "brief_description": "checking loaded packages",
+    "prompt": "In Macaulay2, check which packages have been loaded.",
+    "correct_answer": "loadedPackages",
+    "correct_output": "{Varieties,Isomorphism,Truncations,Polyhedra,Saturation,Elimination,OldChainComplexes,TangentCone,SimpleDoc,ReesAlgebra,PrimaryDecomposition,MinimalPrimes,PackageCitations,OnlineLookup,LLLBases,InverseSystems,IntegralClosure,ConwayPolynomials,Classic,Core}"
+  },
+  {
+    "id": "sf_17",
+    "category": "Basic M2 I/O",
+    "brief_description": "creating a map",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers create a map from R^3 to R^2 through the matrix {(x^2, 0, 3)(0, y^2, 5)}.",
+    "correct_answer": "R = ZZ[x,y,z]\np = map(R^2,R^3,{{x^2,0,3},{0,y^2,5}})\n",
+    "correct_output": "| x2 0  3 |\n| 0  y2 5 |\n\n     2      3"
+  },
+  {
+    "id": "sf_18",
+    "category": "Basic M2 I/O",
+    "brief_description": "determinant of a matrix",
+    "prompt": "In Macaulay2, create a 4 variable polynomial ring over integers and find the determinant of the matrix {(a,b),(c,d)}.",
+    "correct_answer": "R = ZZ[a..d];\ndet matrix{{a,b},{c,d}}",
+    "correct_output": "-bc + ad"
+  },
+  {
+    "id": "sf_19",
+    "category": "Basic M2 Calcs",
+    "brief_description": "powermod",
+    "prompt": "In Macaulay2, find 13^2 mod 41.",
+    "correct_answer": "powermod(13,2,41)",
+    "correct_output": "5"
+  },
+  {
+    "id": "sf_20",
+    "category": "Basic M2 I/O",
+    "brief_description": "grassmannians",
+    "prompt": "In Macaulay2, find the Grassmannian of projective 1-dimensional lines in a 3D vector space.",
+    "correct_answer": "Grassmannian(2,3)",
+    "correct_output": "ideal()"
   }
 ]
