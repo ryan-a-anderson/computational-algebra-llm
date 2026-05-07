@@ -20,7 +20,11 @@
     "description": "This problem tests debugging for simple arithmetic in m2, where the user mistakes ^ for **",
     "prompt": "# Macauley2 programming language question\n\nPlease find the error in the following m code.\n\nR = ZZ/101[a,b,c,d]\nI = ideal(a**2-b*c, a**3-b**3, a**4-b*d**3, a**5-c**2*d**3)\ngrb = first entries groebnerBasis I;\nVerticalList grb -- for emulation of ascii style, try netList grb instead\nI == ideal grb",
     "correct_answer": [
-      "R = ZZ/101[a,b,c,d]\nI = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\ngrb = first entries groebnerBasis I;\nVerticalList grb -- for emulation of ascii style, try netList grb instead\nI == ideal grb"
+      "R = ZZ/101[a,b,c,d]",
+      "I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)",
+      "grb = first entries groebnerBasis I;",
+      "VerticalList grb -- for emulation of ascii style, try netList grb instead",
+      "I == ideal grb"
     ],
     "correct_output": "i1 : R = ZZ/101[a,b,c,d]\n\n\no1 =  R \n\no1 :  PolynomialRing \ni2 : I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\n\n\no2 =  ideal(a \n2\n \u2212bc,a \n3\n \u2212b \n3\n ,a \n4\n \u2212bd \n3\n ,a \n5\n \u2212c \n2\n d \n3\n ) \n\no2 :  Ideal of R \ni3 : grb = first entries groebnerBasis I;\n\ni4 : VerticalList grb -- for emulation of ascii style, try netList grb instead\n\n\no4 =   \na \n2\n \u2212bc\nb \n3\n \u2212abc\nb \n2\n c \n2\n \u2212bd \n3\n \nabd \n3\n \u2212c \n2\n d \n3\n \nabc \n3\n \u2212b \n2\n d \n3\n \nb \n2\n cd \n3\n \u2212ac \n2\n d \n3\n \nac \n3\n d \n3\n \u2212bd \n6\n \nc \n5\n d \n3\n \u2212b \n2\n d \n6\n \nbc \n4\n d \n3\n \u2212c \n2\n d \n6\n \n \n\no4 :  VerticalList \ni5 : I == ideal grb\n\n\no5 =  true",
     "source_reference": null
@@ -85,7 +89,8 @@
     "description": "generating a polynomial quotient ring",
     "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with variables x, y, z. Then use describe function. Use toString() to display any outputs.",
     "correct_answer": [
-      "R = ZZ/5[x,y,z]\ndescribe R"
+      "R = ZZ/5[x,y,z]",
+      "describe R"
     ],
     "correct_output": "Z/5 [x..z,Degrees \u21d2 {3:1},Heft \u21d2 {1}]",
     "source_reference": null
@@ -98,7 +103,9 @@
     "description": "generate a rational polynomial ring of 4 variables and debug Macalay2 by reviewing raw internal structure",
     "prompt": "In Macaulay2, generate a 4 variable polynomial over rationals and debug Macalay2 by reviewing raw internal structure. Use toString() to display any outputs.",
     "correct_answer": [
-      "debug Core\nR = QQ[a..d];\nraw R"
+      "debug Core",
+      "R = QQ[a..d];",
+      "raw R"
     ],
     "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing",
     "source_reference": null
@@ -124,7 +131,8 @@
     "description": "create a function x+5 and evaluate at x = 6",
     "prompt": "In Macaulay2, create a function x+5 and evaluate at x = 6. Use toString() to display any outputs.",
     "correct_answer": [
-      "f = i -> i + 5\nf 6\n"
+      "f = i -> i + 5",
+      "f 6"
     ],
     "correct_output": "11",
     "source_reference": null
@@ -137,7 +145,8 @@
     "description": "create a two variable function",
     "prompt": "In Macaulay2, create a function that multiplies x and y and evaluate x=2, y=3. Use toString() to display any outputs.",
     "correct_answer": [
-      "f = (x,y) -> x * y\nf(2,3)"
+      "f = (x,y) -> x * y",
+      "f(2,3)"
     ],
     "correct_output": "6",
     "source_reference": null
@@ -150,7 +159,9 @@
     "description": "create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element",
     "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element. Use toString() to display any outputs.",
     "correct_answer": [
-      "R = ZZ[x,y,z]\nF = R^3\nF_0"
+      "R = ZZ[x,y,z]",
+      "F = R^3",
+      "F_0"
     ],
     "correct_output": "R\nPolynomialRing\nR^3\nR-module, free \n3x1 vector [1,0,0]\n\u200b\n  \n\u200b\n  ",
     "source_reference": null
@@ -163,7 +174,9 @@
     "description": "create a 3 variable polynomial ring over integers, then create a free modulke homomorphism from R3-> R1, and find its kernel",
     "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel. Use toString() to display any outputs.",
     "correct_answer": [
-      "R = ZZ[x,y,z]\nf = matrix {{x,y,z}}\nkernel f\n"
+      "R = ZZ[x,y,z]",
+      "f = matrix {{x,y,z}}",
+      "kernel f"
     ],
     "correct_output": "R\n( x y z )\nimage matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
     "source_reference": null
@@ -176,7 +189,10 @@
     "description": "debugging faulty generator code",
     "prompt": "In Macaulay2, what error did I do wrong: i1 : R = ZZ/5[x,y,z];\ni2 : f = matrix {{x,y,z}}\ni3 : generators oo\nstdio:22:10:(3): error: no method found for applying generators to argument(s):\n( x y z) of class Matrix. Use toString() to display any outputs.",
     "correct_answer": [
-      "R = ZZ/5[x,y,z];\nf = matrix {{x,y,z}}\nkernel f\ngenerators oo"
+      "R = ZZ/5[x,y,z];",
+      "f = matrix {{x,y,z}}",
+      "kernel f",
+      "generators oo"
     ],
     "correct_output": "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
     "source_reference": null
@@ -189,7 +205,9 @@
     "description": "create two lists and add them",
     "prompt": "In Macaulay2, create two lists {1,0} and {0,1} and add them. Use toString() to display any outputs.",
     "correct_answer": [
-      "L1 = {1,0}\nL2 = {0,1}\nL1+L2\n"
+      "L1 = {1,0}",
+      "L2 = {0,1}",
+      "L1+L2"
     ],
     "correct_output": "{1,1}",
     "source_reference": null
@@ -202,7 +220,9 @@
     "description": "use the apply function",
     "prompt": "In Macaulay2, create a list {1,2,3,4} and the function x^2, and apply this function to your created list. Use toString() to display any outputs.",
     "correct_answer": [
-      "L = {1,2,3,4}\nf = i -> i^2\napply(L,f)\n"
+      "L = {1,2,3,4}",
+      "f = i -> i^2",
+      "apply(L,f)"
     ],
     "correct_output": "{1,4,9,16}",
     "source_reference": null
@@ -383,7 +403,32 @@
     "description": "This problem tests if an LLM can handle multiple commands at once in M2",
     "prompt": "With Macaulay2, Define a polynomial ring over the rationals, compute in the ring, then make matrices over the ring, make modules over the ring, then projective varities and last, make the coherent sheaves and compute their cohomology.",
     "correct_answer": [
-      "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)\no1 = R\no1 : QuotientRing\ni2 : (x+y+z)^3\n o2 = 3x^2y + 3xy^2 + 2y^3 + 3x^2z + 6xyz + 3y^2z + 3xz^2 + 3yz^2 + 2z^3\no2 : R\ni3 : b = vars R\no3 = | x y z |\no3 : Matrix R^1 <--- R^3\ni4 : c = matrix{{x^2, y^2, z^2}}\n o4 = | x2 y2 z2 |\n o4 : Matrix R^1 <--- R^3\ni5 : M = coker b\no5 = cokernal | x y z |\no5 : R-module, quotient of R^1\ni6 : N = ker C\no6 = image {2} | x 0 -y2 -z2 |\n {2} | -y -z2 x2 0 |\n | -z y2 0 x2 |\no6 : R-module, submodule of R^3\ni7 : X = Proj R\no7 = X\no7 : ProjectiveVariety\ni8 : HH^1 cotangentSheaf X\no8 = QQ^1\no8 : QQ-module, free"
+      "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)",
+      "o1 = R",
+      "o1 : QuotientRing",
+      "i2 : (x+y+z)^3",
+      "o2 = 3x^2y + 3xy^2 + 2y^3 + 3x^2z + 6xyz + 3y^2z + 3xz^2 + 3yz^2 + 2z^3",
+      "o2 : R",
+      "i3 : b = vars R",
+      "o3 = | x y z |",
+      "o3 : Matrix R^1 <--- R^3",
+      "i4 : c = matrix{{x^2, y^2, z^2}}",
+      "o4 = | x2 y2 z2 |",
+      "o4 : Matrix R^1 <--- R^3",
+      "i5 : M = coker b",
+      "o5 = cokernal | x y z |",
+      "o5 : R-module, quotient of R^1",
+      "i6 : N = ker C",
+      "o6 = image {2} | x 0 -y2 -z2 |",
+      "{2} | -y -z2 x2 0 |",
+      "| -z y2 0 x2 |",
+      "o6 : R-module, submodule of R^3",
+      "i7 : X = Proj R",
+      "o7 = X",
+      "o7 : ProjectiveVariety",
+      "i8 : HH^1 cotangentSheaf X",
+      "o8 = QQ^1",
+      "o8 : QQ-module, free"
     ],
     "correct_output": "QQ-module, free",
     "source_reference": null
@@ -396,7 +441,12 @@
     "description": "This problem tests if a simle if-then-else conditional can be made with M2",
     "prompt": "Write a conditional with Maculay2 that prints xeg 4 times followed by a xer and xos 4 times.",
     "correct_answer": [
-      "i1 : (-4 .. 4) /\n(i -> if i < 0 then 'xeg'\nelse if i == 0 then 'xer'\n else 'pos')\no1 = (xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)\no1 : Sequence"
+      "i1 : (-4 .. 4) /",
+      "(i -> if i < 0 then 'xeg'",
+      "else if i == 0 then 'xer'",
+      "else 'pos')",
+      "o1 = (xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)",
+      "o1 : Sequence"
     ],
     "correct_output": "Sequence",
     "source_reference": null
@@ -409,7 +459,11 @@
     "description": "This problem tests if M2 can write more complex conditionals with less information",
     "prompt": "Write a conditional with Macaulay 2 that prints xeg if i < 0 and xer if i = 0 where if and else if are valid and else cannot be used in your program.",
     "correct_answer": [
-      "i2 : (-4 .. 4) / \n (i -> if i < 0 then 'neg'\nelse if i == 0 then 'xer')\no2 = (xeg, xeg, xeg, xeg, xer, , , , )\no2 : Sequence"
+      "i2 : (-4 .. 4) /",
+      "(i -> if i < 0 then 'neg'",
+      "else if i == 0 then 'xer')",
+      "o2 = (xeg, xeg, xeg, xeg, xer, , , , )",
+      "o2 : Sequence"
     ],
     "correct_output": "",
     "source_reference": null
@@ -422,7 +476,14 @@
     "description": "This problem tests if Macaulay2 Hash Tables can be written",
     "prompt": "In Macaulay2, implement an arbitrary data structure that stores three course names and course numbers. Title this data-structure as course and use the course names, 'Math', 'Physics' and 'Statistics' with numbers '100', '101' and '102' respectively.",
     "correct_answer": [
-      "i1 : book = new HashTable from {\n'Math' => '100',\n'Physics' => '101',\n'Statistics' => '102'}\no1 = HashTable{'Math' => 100}\n'Physics' => 101\n'Statistics' => 102\no1 : HashTable"
+      "i1 : book = new HashTable from {",
+      "'Math' => '100',",
+      "'Physics' => '101',",
+      "'Statistics' => '102'}",
+      "o1 = HashTable{'Math' => 100}",
+      "'Physics' => 101",
+      "'Statistics' => 102",
+      "o1 : HashTable"
     ],
     "correct_output": "HashTable",
     "source_reference": null
@@ -435,7 +496,8 @@
     "description": "This problem tests if an LLM can use the operator # to obtain a value from a prior implemented Hash Table.",
     "prompt": "In Macaulay2, assume that a Hash Table titled course exists with one such entry named Statistics that stores the value 102, write how to extract the value from this data structure.",
     "correct_answer": [
-      "i1 : course#'Statistics'\no2 = 102"
+      "i1 : course#'Statistics'",
+      "o2 = 102"
     ],
     "correct_output": "",
     "source_reference": null
@@ -496,7 +558,8 @@
     "description": "generating a polynomial quotient ring",
     "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with 3 variables. Then use describe function.",
     "correct_answer": [
-      "R = ZZ/5[x,y,z]\ndescribe R"
+      "R = ZZ/5[x,y,z]",
+      "describe R"
     ],
     "correct_output": "--[x..z, Degrees => {3:1}, Heft => {1}]\n5",
     "source_reference": null
@@ -509,7 +572,9 @@
     "description": "generate a rational polynomial ring of 4 variables and debug Macalay2 by reviewing raw internal structure",
     "prompt": "In Macaulay2, generate a 4 variable polynomial ring over rationals and debug Macalay2 by reviewing raw internal structure.",
     "correct_answer": [
-      "debug Core\nR = QQ[a..d];\nraw R"
+      "debug Core",
+      "R = QQ[a..d];",
+      "raw R"
     ],
     "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing",
     "source_reference": null
@@ -535,7 +600,8 @@
     "description": "create a function x+5 and evaluate at x = 6",
     "prompt": "In Macaulay2, create a function x+5 and evaluate at x = 6.",
     "correct_answer": [
-      "f = i -> i + 5\nf 6\n"
+      "f = i -> i + 5",
+      "f 6"
     ],
     "correct_output": "11",
     "source_reference": null
@@ -548,7 +614,8 @@
     "description": "create a two variable function",
     "prompt": "In Macaulay2, create a function that multiplies x and y and evaluate x=2, y=3.",
     "correct_answer": [
-      "f = (x,y) -> x * y\nf(2,3)"
+      "f = (x,y) -> x * y",
+      "f(2,3)"
     ],
     "correct_output": "6",
     "source_reference": null
@@ -561,7 +628,9 @@
     "description": "create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element",
     "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element.",
     "correct_answer": [
-      "R = ZZ[x,y,z]\nF = R^3\nF_0"
+      "R = ZZ[x,y,z]",
+      "F = R^3",
+      "F_0"
     ],
     "correct_output": "| 1 |\n| 0 |\n| 0 |\n\n      3\nR",
     "source_reference": null
@@ -574,7 +643,9 @@
     "description": "create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel",
     "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel.",
     "correct_answer": [
-      "R = ZZ[x,y,z]\nf = matrix {{x,y,z}}\nkernel f\n"
+      "R = ZZ[x,y,z]",
+      "f = matrix {{x,y,z}}",
+      "kernel f"
     ],
     "correct_output": "image matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
     "source_reference": null
@@ -587,7 +658,10 @@
     "description": "debugging faulty generator code",
     "prompt": "In Macaulay2, what error did I do wrong: i1 : R = ZZ/5[x,y,z];\ni2 : f = matrix {{x,y,z}}\ni3 : generators oo\nstdio:22:10:(3): error: no method found for applying generators to argument(s):\n( x y z) of class Matrix.",
     "correct_answer": [
-      "R = ZZ/5[x,y,z];\nf = matrix {{x,y,z}}\nkernel f\ngenerators oo"
+      "R = ZZ/5[x,y,z];",
+      "f = matrix {{x,y,z}}",
+      "kernel f",
+      "generators oo"
     ],
     "correct_output": "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
     "source_reference": null
@@ -600,7 +674,9 @@
     "description": "create two lists and add them",
     "prompt": "In Macaulay2, create two lists {1,0} and {0,1} and add them.",
     "correct_answer": [
-      "L1 = {1,0}\nL2 = {0,1}\nL1+L2\n"
+      "L1 = {1,0}",
+      "L2 = {0,1}",
+      "L1+L2"
     ],
     "correct_output": "{1,1}",
     "source_reference": null
@@ -613,7 +689,9 @@
     "description": "use the apply function",
     "prompt": "In Macaulay2, create a list {1,2,3,4} and the function x^2, and apply this function to your created list.",
     "correct_answer": [
-      "L = {1,2,3,4}\nf = i -> i^2\napply(L,f)\n"
+      "L = {1,2,3,4}",
+      "f = i -> i^2",
+      "apply(L,f)"
     ],
     "correct_output": "{1,4,9,16}",
     "source_reference": null
@@ -678,7 +756,15 @@
     "description": "creating a class",
     "prompt": "In Macaulay2, create a class for quaternions complete with addition and multiplication. Then generate a quaternion of {1,2,3,4} and multiply it with itself.",
     "correct_answer": [
-      "Qu = new Type of List\nQu * Qu := (x,y) -> new Qu from { \n               x#0*y#0 - x#1*y#1 - x#2*y#2 - x#3*y#3,\n               x#0*y#1 + x#1*y#0 + x#2*y#3 - x#3*y#2,\n               x#0*y#2 + x#2*y#0 + x#3*y#1 - x#1*y#3,\n               x#0*y#3 + x#3*y#0 + x#1*y#2 - x#2*y#1\n               };\nw = new Qu from {1,2,3,4}\nw*w"
+      "Qu = new Type of List",
+      "Qu * Qu := (x,y) -> new Qu from {",
+      "x#0*y#0 - x#1*y#1 - x#2*y#2 - x#3*y#3,",
+      "x#0*y#1 + x#1*y#0 + x#2*y#3 - x#3*y#2,",
+      "x#0*y#2 + x#2*y#0 + x#3*y#1 - x#1*y#3,",
+      "x#0*y#3 + x#3*y#0 + x#1*y#2 - x#2*y#1",
+      "};",
+      "w = new Qu from {1,2,3,4}",
+      "w*w"
     ],
     "correct_output": "Qu\nType\n{1,2,3,4}\nQu\n{\u221228,4,6,8}\nQu",
     "source_reference": null
@@ -704,7 +790,8 @@
     "description": "creating a map",
     "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers create a map from R^3 to R^2 through the matrix {(x^2, 0, 3)(0, y^2, 5)}.",
     "correct_answer": [
-      "R = ZZ[x,y,z]\np = map(R^2,R^3,{{x^2,0,3},{0,y^2,5}})\n"
+      "R = ZZ[x,y,z]",
+      "p = map(R^2,R^3,{{x^2,0,3},{0,y^2,5}})"
     ],
     "correct_output": "| x2 0  3 |\n| 0  y2 5 |\n\n     2      3",
     "source_reference": null
@@ -717,7 +804,8 @@
     "description": "determinant of a matrix",
     "prompt": "In Macaulay2, create a 4 variable polynomial ring over integers and find the determinant of the matrix {(a,b),(c,d)}.",
     "correct_answer": [
-      "R = ZZ[a..d];\ndet matrix{{a,b},{c,d}}"
+      "R = ZZ[a..d];",
+      "det matrix{{a,b},{c,d}}"
     ],
     "correct_output": "-bc + ad",
     "source_reference": null
@@ -758,7 +846,7 @@
     "correct_answer": [
       "{2,3,5,7,11}_-1"
     ],
-    "correct_output": 11,
+    "correct_output": "11",
     "source_reference": null
   },
   {
@@ -769,7 +857,20 @@
     "description": "This question is on an example code block at \nhttps://www.unimelb-macaulay2.cloud.edu.au/#tutorial-math-4 .\n\nIt tests",
     "prompt": "Consider the twisted cubic curve in P^3 defined by the 2\u00d72 minors of a 2\u00d73 Hankel matrix. \nConstruct the polynomial ring R = k[x_0..x_3], define the matrix M and ideal I = minors(2, M). \nLet the projection center be the point (1,0,0,\u22121) with ideal pideal = ideal(x_0 + x_3, x_1, x_2). \n\nForm Rbar = R/I, substitute pideal into Rbar, and define a ring S = k[u,v,w]. Compute the kernel J of the map from S to Rbar induced by the generators of pideal. Then determine the singular locus K = ideal singularLocus(J), compute its saturation, and interpret the result. Finally, compute both a saturation of an ideal with respect to another and an ideal quotient, and explain their meanings. Wrap final answer in toString function",
     "correct_answer": [
-      "x = symbol x\nkk = ZZ/32003\nR = kk[x_0..x_3]\n\nM = map(R^2, 3, (i,j)->x_(i+j))\nI = minors(2,M)\n\npideal = ideal(x_0+x_3, x_1, x_2)\nRbar = R/I\n\npideal = substitute(pideal, Rbar)\n\nS = kk[u,v,w]\nJ = kernel map (Rbar, S, gens pideal)\n\nK = ideal singularLocus(J)\n\nsaturate K\nsaturate (ideal\"u3w,uv\", ideal\"u\")\ntoString(ideal\"u3w,uv\":ideal\"u\")"
+      "x = symbol x",
+      "kk = ZZ/32003",
+      "R = kk[x_0..x_3]",
+      "M = map(R^2, 3, (i,j)->x_(i+j))",
+      "I = minors(2,M)",
+      "pideal = ideal(x_0+x_3, x_1, x_2)",
+      "Rbar = R/I",
+      "pideal = substitute(pideal, Rbar)",
+      "S = kk[u,v,w]",
+      "J = kernel map (Rbar, S, gens pideal)",
+      "K = ideal singularLocus(J)",
+      "saturate K",
+      "saturate (ideal\"u3w,uv\", ideal\"u\")",
+      "toString(ideal\"u3w,uv\":ideal\"u\")"
     ],
     "correct_output": "toString(ideal\"u3w,uv\":ideal\"u\")",
     "source_reference": null
@@ -782,7 +883,10 @@
     "description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation",
     "prompt": "# Macauley 2 progamming language question.\n\nLoad the EdgeIdeals package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
     "correct_answer": [
-      "needsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)"
+      "needsPackage \"EdgeIdeals\"",
+      "R = kk[vars(0..10)]",
+      "G=randomGraph (R,20)",
+      "toString(edgeIdeal G)"
     ],
     "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)",
     "source_reference": null
@@ -795,7 +899,10 @@
     "description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation. The difference between this and the previous question is the llm needs to identify which package to use independently.",
     "prompt": "# Macauley 2 progamming language question.\n\nLoad a package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
     "correct_answer": [
-      "needsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)"
+      "needsPackage \"EdgeIdeals\"",
+      "R = kk[vars(0..10)]",
+      "G=randomGraph (R,20)",
+      "toString(edgeIdeal G)"
     ],
     "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)",
     "source_reference": null
@@ -808,7 +915,8 @@
     "description": "Tests list indexing and function building",
     "prompt": "# Macauley 2 progamming language question.\n\nPlease write a function that index through a list of integers, and squares them, wrapping output in toString(). Test it on the list of the first 5 integers.",
     "correct_answer": [
-      "f = L -> toString(apply(L,i -> i^2))\n\nf {2,3,5,7,11}"
+      "f = L -> toString(apply(L,i -> i^2))",
+      "f {2,3,5,7,11}"
     ],
     "correct_output": "{4, 9, 25, 49, 121}",
     "source_reference": null
@@ -834,7 +942,12 @@
     "description": "This tests passing multiple values into a function",
     "prompt": "# Macauley 2 progamming language question.\n\nCreate a function that takes two variable inputs and outputs the maximum and outputs using toString. Test is on the following numbers pairs {3,2}, {-3,0}, {1,1}",
     "correct_answer": [
-      "f = (a,b) -> (\n    toString(max(a,b))\n    )\nf (3,2)\nf (-3,0)\nf (1,1)"
+      "f = (a,b) -> (",
+      "toString(max(a,b))",
+      ")",
+      "f (3,2)",
+      "f (-3,0)",
+      "f (1,1)"
     ],
     "correct_output": "3\n0\n1",
     "source_reference": null
@@ -860,7 +973,8 @@
     "description": "Tests matrix creation then indexing",
     "prompt": "# Macauley 2 progamming language question.\n\nCreate a matrix that has rows of first 9 numbers, i.e. first row is one, two, three, second row 4,5, etc. Then index the last two columns of it, and wrap that index in toString to output it.",
     "correct_answer": [
-      "M = matrix {{1, 2, 3},{4,5,6},{7, 8, 9}};\ntoString(M_{1,2})"
+      "M = matrix {{1, 2, 3},{4,5,6},{7, 8, 9}};",
+      "toString(M_{1,2})"
     ],
     "correct_output": "matrix {{2, 3}, {5, 6}, {8, 9}}",
     "source_reference": null
@@ -873,7 +987,10 @@
     "description": "Tests creating an integer polynomial ring of three variables quotient 5, then defining a matrix of the three ring variables, finally taking direct sum of image and kernel of this matrix",
     "prompt": "# Macauley 2 programming language question.\n\nCreate an integer polynomial ring of three variables quotient 5, then define a matrix of the three ring variables, finally take direct sum of image and kernel of this matrix and wrap that last output line in toString()",
     "correct_answer": [
-      "R = ZZ/5[x,y,z]\nf = matrix {{x,y,x}}\nN = kernel f ++ image f\ntoString(N)"
+      "R = ZZ/5[x,y,z]",
+      "f = matrix {{x,y,x}}",
+      "N = kernel f ++ image f",
+      "toString(N)"
     ],
     "correct_output": "image matrix {{-1, -y, 0, 0, 0}, {0, x, 0, 0, 0}, {1, 0, 0, 0, 0}, {0, 0, x, y, x}}",
     "source_reference": null
@@ -912,7 +1029,8 @@
     "description": "Create a free modulo R^3",
     "prompt": "# Macauley 2 programming language question.\n\nCreate the free modulo R^3. Wrap output in toString()",
     "correct_answer": [
-      "F = R^2\ntoString(F)"
+      "F = R^2",
+      "toString(F)"
     ],
     "correct_output": "R^3",
     "source_reference": null
@@ -1060,10 +1178,7 @@
       "Ideal is of class Type, meaning it is the type itself and not a constructor.",
       "You can verify this by running class ideal and class Ideal without needing to define a ring."
     ],
-    "correct_output": [
-      "They are not the same",
-      "MethodFunctionSingle\nType"
-    ],
+    "correct_output": "They are not the same\nMethodFunctionSingle\nType",
     "source_reference": null
   },
   {
