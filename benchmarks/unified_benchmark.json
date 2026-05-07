@@ -1,6 +1,6 @@
 [
   {
-    "id": "cb_1",
+    "id": "m2_001",
     "source_file": "m2_benchmark_questions.json",
     "category": "Basic m2 input and output",
     "difficulty": null,
@@ -13,7 +13,7 @@
     "source_reference": null
   },
   {
-    "id": "cb_2",
+    "id": "m2_002",
     "source_file": "m2_benchmark_questions.json",
     "category": "Debugging",
     "difficulty": null,
@@ -26,7 +26,7 @@
     "source_reference": null
   },
   {
-    "id": "cb_4",
+    "id": "m2_003",
     "source_file": "m2_benchmark_questions.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -39,7 +39,7 @@
     "source_reference": null
   },
   {
-    "id": "cb_5",
+    "id": "m2_004",
     "source_file": "m2_benchmark_questions.json",
     "category": "Basic m2 input and output",
     "difficulty": null,
@@ -52,7 +52,7 @@
     "source_reference": null
   },
   {
-    "id": "cb_6",
+    "id": "m2_005",
     "source_file": "m2_benchmark_questions.json",
     "category": "Basic m2 input and output",
     "difficulty": null,
@@ -65,7 +65,7 @@
     "source_reference": null
   },
   {
-    "id": "cb_7",
+    "id": "m2_006",
     "source_file": "m2_benchmark_questions.json",
     "category": "Basic m2 input and output",
     "difficulty": null,
@@ -78,7 +78,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_1",
+    "id": "m2_007",
     "source_file": "macaulay2_benchmark.json",
     "category": "Basic M2 I/O",
     "difficulty": null,
@@ -91,7 +91,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_2",
+    "id": "m2_008",
     "source_file": "macaulay2_benchmark.json",
     "category": "Debugging",
     "difficulty": null,
@@ -104,7 +104,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_3",
+    "id": "m2_009",
     "source_file": "macaulay2_benchmark.json",
     "category": "Package Imports",
     "difficulty": null,
@@ -117,7 +117,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_4",
+    "id": "m2_010",
     "source_file": "macaulay2_benchmark.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -130,7 +130,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_5",
+    "id": "m2_011",
     "source_file": "macaulay2_benchmark.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -143,7 +143,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_6",
+    "id": "m2_012",
     "source_file": "macaulay2_benchmark.json",
     "category": "Basic M2 I/O",
     "difficulty": null,
@@ -156,7 +156,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_7",
+    "id": "m2_013",
     "source_file": "macaulay2_benchmark.json",
     "category": "Basic M2 I/O",
     "difficulty": null,
@@ -169,7 +169,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_8",
+    "id": "m2_014",
     "source_file": "macaulay2_benchmark.json",
     "category": "Debugging",
     "difficulty": null,
@@ -182,7 +182,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_9",
+    "id": "m2_015",
     "source_file": "macaulay2_benchmark.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -195,7 +195,7 @@
     "source_reference": null
   },
   {
-    "id": "sf_10",
+    "id": "m2_016",
     "source_file": "macaulay2_benchmark.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -208,7 +208,7 @@
     "source_reference": null
   },
   {
-    "id": "SL-1",
+    "id": "m2_017",
     "source_file": "SLmacaulay2_benchmark.json",
     "category": "Basic",
     "difficulty": "easy",
@@ -225,7 +225,7 @@
     }
   },
   {
-    "id": "SL-2",
+    "id": "m2_018",
     "source_file": "SLmacaulay2_benchmark.json",
     "category": "Basic",
     "difficulty": "easy",
@@ -243,7 +243,7 @@
     }
   },
   {
-    "id": "SL-3",
+    "id": "m2_019",
     "source_file": "SLmacaulay2_benchmark.json",
     "category": "Package Importing",
     "difficulty": "medium",
@@ -263,7 +263,7 @@
     }
   },
   {
-    "id": "SL-4",
+    "id": "m2_020",
     "source_file": "SLmacaulay2_benchmark.json",
     "category": "Basic",
     "difficulty": "medium",
@@ -282,7 +282,7 @@
     }
   },
   {
-    "id": "SL-5",
+    "id": "m2_021",
     "source_file": "SLmacaulay2_benchmark.json",
     "category": "Flow Control",
     "difficulty": "medium",
@@ -302,7 +302,7 @@
     }
   },
   {
-    "id": "RA_1",
+    "id": "m2_022",
     "source_file": "macaulay2_benchmark_problems.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -318,7 +318,7 @@
     "source_reference": null
   },
   {
-    "id": "RA_2",
+    "id": "m2_023",
     "source_file": "macaulay2_benchmark_problems.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -334,7 +334,7 @@
     "source_reference": null
   },
   {
-    "id": "RA_3",
+    "id": "m2_024",
     "source_file": "macaulay2_benchmark_problems.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -350,7 +350,7 @@
     "source_reference": null
   },
   {
-    "id": "RA_4",
+    "id": "m2_025",
     "source_file": "macaulay2_benchmark_problems.json",
     "category": "Basic M2 Calcs",
     "difficulty": null,
@@ -360,6 +360,723 @@
       "gcd(x^36-1,x^24-1)"
     ],
     "correct_output": "x^12-1",
+    "source_reference": null
+  },
+  {
+    "id": "m2_026",
+    "source_file": "macaula2_benchmark_AD.json",
+    "category": "Polynomial Ring Creation",
+    "difficulty": "1",
+    "description": "This problem tests if M2 can define a simple quotient ring through proper syntax.",
+    "prompt": "With Macaulay2, Define a quotient ring of polynomial ring R over the rationals.",
+    "correct_answer": [
+      "R = QQ[x,y,z]/(x^3-y^3-z^3)"
+    ],
+    "correct_output": "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)\no1 = R\no1 : QuotientRing",
+    "source_reference": null
+  },
+  {
+    "id": "m2_027",
+    "source_file": "macaula2_benchmark_AD.json",
+    "category": "Multiple Commands at Once",
+    "difficulty": "5",
+    "description": "This problem tests if an LLM can handle multiple commands at once in M2",
+    "prompt": "With Macaulay2, Define a polynomial ring over the rationals, compute in the ring, then make matrices over the ring, make modules over the ring, then projective varities and last, make the coherent sheaves and compute their cohomology.",
+    "correct_answer": [
+      "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)\no1 = R\no1 : QuotientRing\ni2 : (x+y+z)^3\n o2 = 3x^2y + 3xy^2 + 2y^3 + 3x^2z + 6xyz + 3y^2z + 3xz^2 + 3yz^2 + 2z^3\no2 : R\ni3 : b = vars R\no3 = | x y z |\no3 : Matrix R^1 <--- R^3\ni4 : c = matrix{{x^2, y^2, z^2}}\n o4 = | x2 y2 z2 |\n o4 : Matrix R^1 <--- R^3\ni5 : M = coker b\no5 = cokernal | x y z |\no5 : R-module, quotient of R^1\ni6 : N = ker C\no6 = image {2} | x 0 -y2 -z2 |\n {2} | -y -z2 x2 0 |\n | -z y2 0 x2 |\no6 : R-module, submodule of R^3\ni7 : X = Proj R\no7 = X\no7 : ProjectiveVariety\ni8 : HH^1 cotangentSheaf X\no8 = QQ^1\no8 : QQ-module, free"
+    ],
+    "correct_output": "QQ-module, free",
+    "source_reference": null
+  },
+  {
+    "id": "m2_028",
+    "source_file": "macaula2_benchmark_AD.json",
+    "category": "If-Then-Else Conditionals",
+    "difficulty": "2",
+    "description": "This problem tests if a simle if-then-else conditional can be made with M2",
+    "prompt": "Write a conditional with Maculay2 that prints xeg 4 times followed by a xer and xos 4 times.",
+    "correct_answer": [
+      "i1 : (-4 .. 4) /\n(i -> if i < 0 then 'xeg'\nelse if i == 0 then 'xer'\n else 'pos')\no1 = (xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)\no1 : Sequence"
+    ],
+    "correct_output": "Sequence",
+    "source_reference": null
+  },
+  {
+    "id": "m2_029",
+    "source_file": "macaula2_benchmark_AD.json",
+    "category": "If-Then-Else Conditionals",
+    "difficulty": "2",
+    "description": "This problem tests if M2 can write more complex conditionals with less information",
+    "prompt": "Write a conditional with Macaulay 2 that prints xeg if i < 0 and xer if i = 0 where if and else if are valid and else cannot be used in your program.",
+    "correct_answer": [
+      "i2 : (-4 .. 4) / \n (i -> if i < 0 then 'neg'\nelse if i == 0 then 'xer')\no2 = (xeg, xeg, xeg, xeg, xer, , , , )\no2 : Sequence"
+    ],
+    "correct_output": "",
+    "source_reference": null
+  },
+  {
+    "id": "m2_030",
+    "source_file": "macaula2_benchmark_AD.json",
+    "category": "Hash-Table Data Structure",
+    "difficulty": "2",
+    "description": "This problem tests if Macaulay2 Hash Tables can be written",
+    "prompt": "In Macaulay2, implement an arbitrary data structure that stores three course names and course numbers. Title this data-structure as course and use the course names, 'Math', 'Physics' and 'Statistics' with numbers '100', '101' and '102' respectively.",
+    "correct_answer": [
+      "i1 : book = new HashTable from {\n'Math' => '100',\n'Physics' => '101',\n'Statistics' => '102'}\no1 = HashTable{'Math' => 100}\n'Physics' => 101\n'Statistics' => 102\no1 : HashTable"
+    ],
+    "correct_output": "HashTable",
+    "source_reference": null
+  },
+  {
+    "id": "m2_031",
+    "source_file": "macaula2_benchmark_AD.json",
+    "category": "Hash-Table Data Structure",
+    "difficulty": "1",
+    "description": "This problem tests if an LLM can use the operator # to obtain a value from a prior implemented Hash Table.",
+    "prompt": "In Macaulay2, assume that a Hash Table titled course exists with one such entry named Statistics that stores the value 102, write how to extract the value from this data structure.",
+    "correct_answer": [
+      "i1 : course#'Statistics'\no2 = 102"
+    ],
+    "correct_output": "",
+    "source_reference": null
+  },
+  {
+    "id": "m2_032",
+    "source_file": "macaulay2_benchmark_problems.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": null,
+    "prompt": "Create a class Qu to handle quaternions, including implementing quaternionic addition and multiplication. Return the quaternion w = (2, 1, 2, 2) rotated by 45 degrees around the x-axis.",
+    "correct_answer": [
+      "Qu = new Type of List",
+      "Qu * Qu := (x,y) -> new Qu from { x#0*y#0 - x#1*y#1 - x#2*y#2 - x#3*y#3, x#0*y#1 + x#1*y#0 + x#2*y#3 - x#3*y#2, x#0*y#2 + x#2*y#0 + x#3*y#1 - x#1*y#3, x#0*y#3 + x#3*y#0 + x#1*y#2 - x#2*y#1}",
+      "w = new Qu from {2, 1, 2, 2}",
+      "rot = new Qu from { 0.3826834, 0, 0, 0.9238795 }",
+      "rot * w"
+    ],
+    "correct_output": "Qu{-1.08239, -1.46508, 1.68925, 2.61313}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_033",
+    "source_file": "macaulay2_benchmark_problems.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": null,
+    "prompt": "Calculate the Hessian of the quadratic form f(x,y) = 3*x^2 + 5*x*y + 11*y^2 as a polynomial over the rationals. Return the output wrapped in a toString call.",
+    "correct_answer": [
+      "R = QQ[x, y]",
+      "f = 3*x^2 + 5*x*y + 11*y^2",
+      "v = matrix {{x, y}}",
+      "diff(v ** transpose v, f)"
+    ],
+    "correct_output": "matrix {{6, 5}, {5, 22}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_034",
+    "source_file": "macaulay2_benchmark_problems.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": null,
+    "prompt": "In Macaulay2, using the Probability package, calculate the probability that X < 35 for a random variable X, normally distributed with mean 30 and standard deviation 5. Return the output wrapped in a toString call.",
+    "correct_answer": [
+      "needsPackage('Probability')",
+      "X = normalDistribution(30, 5)",
+      "density_X 25"
+    ],
+    "correct_output": ".0483941",
+    "source_reference": null
+  },
+  {
+    "id": "m2_035",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 I/O",
+    "difficulty": null,
+    "description": "generating a polynomial quotient ring",
+    "prompt": "In Macaulay2, genereate a polynomial quotient ring over integers mod 5 with 3 variables. Then use describe function.",
+    "correct_answer": [
+      "R = ZZ/5[x,y,z]\ndescribe R"
+    ],
+    "correct_output": "--[x..z, Degrees => {3:1}, Heft => {1}]\n5",
+    "source_reference": null
+  },
+  {
+    "id": "m2_036",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Debugging",
+    "difficulty": null,
+    "description": "generate a rational polynomial ring of 4 variables and debug Macalay2 by reviewing raw internal structure",
+    "prompt": "In Macaulay2, generate a 4 variable polynomial ring over rationals and debug Macalay2 by reviewing raw internal structure.",
+    "correct_answer": [
+      "debug Core\nR = QQ[a..d];\nraw R"
+    ],
+    "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing",
+    "source_reference": null
+  },
+  {
+    "id": "m2_037",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Package Imports",
+    "difficulty": null,
+    "description": "loading a package called FirstPackage",
+    "prompt": "In Macaulay2, load a package called FirstPackage.",
+    "correct_answer": [
+      "needsPackage \"FirstPackage\""
+    ],
+    "correct_output": "FirstPackage",
+    "source_reference": null
+  },
+  {
+    "id": "m2_038",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "create a function x+5 and evaluate at x = 6",
+    "prompt": "In Macaulay2, create a function x+5 and evaluate at x = 6.",
+    "correct_answer": [
+      "f = i -> i + 5\nf 6\n"
+    ],
+    "correct_output": "11",
+    "source_reference": null
+  },
+  {
+    "id": "m2_039",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "create a two variable function",
+    "prompt": "In Macaulay2, create a function that multiplies x and y and evaluate x=2, y=3.",
+    "correct_answer": [
+      "f = (x,y) -> x * y\nf(2,3)"
+    ],
+    "correct_output": "6",
+    "source_reference": null
+  },
+  {
+    "id": "m2_040",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 I/O",
+    "difficulty": null,
+    "description": "create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module and generate its 0th basis element.",
+    "correct_answer": [
+      "R = ZZ[x,y,z]\nF = R^3\nF_0"
+    ],
+    "correct_output": "| 1 |\n| 0 |\n| 0 |\n\n      3\nR",
+    "source_reference": null
+  },
+  {
+    "id": "m2_041",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 I/O",
+    "difficulty": null,
+    "description": "create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers, then create a free module homomorphism from R3-> R1, and find its kernel.",
+    "correct_answer": [
+      "R = ZZ[x,y,z]\nf = matrix {{x,y,z}}\nkernel f\n"
+    ],
+    "correct_output": "image matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_042",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Debugging",
+    "difficulty": null,
+    "description": "debugging faulty generator code",
+    "prompt": "In Macaulay2, what error did I do wrong: i1 : R = ZZ/5[x,y,z];\ni2 : f = matrix {{x,y,z}}\ni3 : generators oo\nstdio:22:10:(3): error: no method found for applying generators to argument(s):\n( x y z) of class Matrix.",
+    "correct_answer": [
+      "R = ZZ/5[x,y,z];\nf = matrix {{x,y,z}}\nkernel f\ngenerators oo"
+    ],
+    "correct_output": "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_043",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "create two lists and add them",
+    "prompt": "In Macaulay2, create two lists {1,0} and {0,1} and add them.",
+    "correct_answer": [
+      "L1 = {1,0}\nL2 = {0,1}\nL1+L2\n"
+    ],
+    "correct_output": "{1,1}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_044",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "use the apply function",
+    "prompt": "In Macaulay2, create a list {1,2,3,4} and the function x^2, and apply this function to your created list.",
+    "correct_answer": [
+      "L = {1,2,3,4}\nf = i -> i^2\napply(L,f)\n"
+    ],
+    "correct_output": "{1,4,9,16}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_045",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "basic for loop",
+    "prompt": "In Macaulay2, for a list of integers 1 to 5, return list of integers squared less than 15.",
+    "correct_answer": [
+      "for i from 1 to 5 when i^2 < 15 list i^2"
+    ],
+    "correct_output": "{1,4,9}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_046",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "complicated for loop",
+    "prompt": "In Macaulay2, for even integers less than 10, return list of integers squared.",
+    "correct_answer": [
+      "for i from 0 when i < 10 list (if odd i then continue; i^2)"
+    ],
+    "correct_output": "{0,4,16,36,64}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_047",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "complicated while loop",
+    "prompt": "In Macaulay2, while integers less than 10, return i^2 if i+1 is even, return 1234 else. Return output as a list.",
+    "correct_answer": [
+      "i = 0 ; while i < 10 list (i = i+1; if odd i then continue 1234; i^2)"
+    ],
+    "correct_output": "{1234,4,1234,16,1234,36,1234,64,1234,100}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_048",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Debugging",
+    "difficulty": null,
+    "description": "while loop with break debugging",
+    "prompt": "In Macaulay2, fix this input so it returns a list: i = 0 ; while i < 10 list (i = i+1; if i == 5 then break i; i^2).",
+    "correct_answer": [
+      "i = 0 ; while i < 10 list (i = i+1; if i == 5 then break; i^2)"
+    ],
+    "correct_output": "{1,4,9,16}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_049",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 I/O",
+    "difficulty": null,
+    "description": "creating a class",
+    "prompt": "In Macaulay2, create a class for quaternions complete with addition and multiplication. Then generate a quaternion of {1,2,3,4} and multiply it with itself.",
+    "correct_answer": [
+      "Qu = new Type of List\nQu * Qu := (x,y) -> new Qu from { \n               x#0*y#0 - x#1*y#1 - x#2*y#2 - x#3*y#3,\n               x#0*y#1 + x#1*y#0 + x#2*y#3 - x#3*y#2,\n               x#0*y#2 + x#2*y#0 + x#3*y#1 - x#1*y#3,\n               x#0*y#3 + x#3*y#0 + x#1*y#2 - x#2*y#1\n               };\nw = new Qu from {1,2,3,4}\nw*w"
+    ],
+    "correct_output": "Qu\nType\n{1,2,3,4}\nQu\n{\u221228,4,6,8}\nQu",
+    "source_reference": null
+  },
+  {
+    "id": "m2_050",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Package Imports",
+    "difficulty": null,
+    "description": "checking loaded packages",
+    "prompt": "In Macaulay2, check which packages have been loaded.",
+    "correct_answer": [
+      "loadedPackages"
+    ],
+    "correct_output": "{Varieties,Isomorphism,Truncations,Polyhedra,Saturation,Elimination,OldChainComplexes,TangentCone,SimpleDoc,ReesAlgebra,PrimaryDecomposition,MinimalPrimes,PackageCitations,OnlineLookup,LLLBases,InverseSystems,IntegralClosure,ConwayPolynomials,Classic,Core}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_051",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 I/O",
+    "difficulty": null,
+    "description": "creating a map",
+    "prompt": "In Macaulay2, create a 3 variable polynomial ring over integers create a map from R^3 to R^2 through the matrix {(x^2, 0, 3)(0, y^2, 5)}.",
+    "correct_answer": [
+      "R = ZZ[x,y,z]\np = map(R^2,R^3,{{x^2,0,3},{0,y^2,5}})\n"
+    ],
+    "correct_output": "| x2 0  3 |\n| 0  y2 5 |\n\n     2      3",
+    "source_reference": null
+  },
+  {
+    "id": "m2_052",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 I/O",
+    "difficulty": null,
+    "description": "determinant of a matrix",
+    "prompt": "In Macaulay2, create a 4 variable polynomial ring over integers and find the determinant of the matrix {(a,b),(c,d)}.",
+    "correct_answer": [
+      "R = ZZ[a..d];\ndet matrix{{a,b},{c,d}}"
+    ],
+    "correct_output": "-bc + ad",
+    "source_reference": null
+  },
+  {
+    "id": "m2_053",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": null,
+    "description": "powermod",
+    "prompt": "In Macaulay2, find 13^2 mod 41.",
+    "correct_answer": [
+      "powermod(13,2,41)"
+    ],
+    "correct_output": "5",
+    "source_reference": null
+  },
+  {
+    "id": "m2_054",
+    "source_file": "macaulay2_benchmark.json",
+    "category": "Basic M2 I/O",
+    "difficulty": null,
+    "description": "grassmannians",
+    "prompt": "In Macaulay2, find the Grassmannian of projective 1-dimensional lines in a 3D vector space.",
+    "correct_answer": [
+      "Grassmannian(2,3)"
+    ],
+    "correct_output": "ideal()",
+    "source_reference": null
+  },
+  {
+    "id": "m2_055",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic M2 Calcs",
+    "difficulty": "2",
+    "description": "This problem tests indexing the last element of a list",
+    "prompt": "# Macauley2 programming language question\n\nwrite m2 code to create this list {2,3,5,7,11} and index the last element of it.",
+    "correct_answer": [
+      "{2,3,5,7,11}_-1"
+    ],
+    "correct_output": 11,
+    "source_reference": null
+  },
+  {
+    "id": "m2_056",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "4",
+    "description": "This question is on an example code block at \nhttps://www.unimelb-macaulay2.cloud.edu.au/#tutorial-math-4 .\n\nIt tests",
+    "prompt": "Consider the twisted cubic curve in P^3 defined by the 2\u00d72 minors of a 2\u00d73 Hankel matrix. \nConstruct the polynomial ring R = k[x_0..x_3], define the matrix M and ideal I = minors(2, M). \nLet the projection center be the point (1,0,0,\u22121) with ideal pideal = ideal(x_0 + x_3, x_1, x_2). \n\nForm Rbar = R/I, substitute pideal into Rbar, and define a ring S = k[u,v,w]. Compute the kernel J of the map from S to Rbar induced by the generators of pideal. Then determine the singular locus K = ideal singularLocus(J), compute its saturation, and interpret the result. Finally, compute both a saturation of an ideal with respect to another and an ideal quotient, and explain their meanings. Wrap final answer in toString function",
+    "correct_answer": [
+      "x = symbol x\nkk = ZZ/32003\nR = kk[x_0..x_3]\n\nM = map(R^2, 3, (i,j)->x_(i+j))\nI = minors(2,M)\n\npideal = ideal(x_0+x_3, x_1, x_2)\nRbar = R/I\n\npideal = substitute(pideal, Rbar)\n\nS = kk[u,v,w]\nJ = kernel map (Rbar, S, gens pideal)\n\nK = ideal singularLocus(J)\n\nsaturate K\nsaturate (ideal\"u3w,uv\", ideal\"u\")\ntoString(ideal\"u3w,uv\":ideal\"u\")"
+    ],
+    "correct_output": "toString(ideal\"u3w,uv\":ideal\"u\")",
+    "source_reference": null
+  },
+  {
+    "id": "m2_057",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Package Imports",
+    "difficulty": "3",
+    "description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation",
+    "prompt": "# Macauley 2 progamming language question.\n\nLoad the EdgeIdeals package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
+    "correct_answer": [
+      "needsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)"
+    ],
+    "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)",
+    "source_reference": null
+  },
+  {
+    "id": "m2_058",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Package Imports",
+    "difficulty": "4",
+    "description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation. The difference between this and the previous question is the llm needs to identify which package to use independently.",
+    "prompt": "# Macauley 2 progamming language question.\n\nLoad a package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
+    "correct_answer": [
+      "needsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)"
+    ],
+    "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)",
+    "source_reference": null
+  },
+  {
+    "id": "m2_059",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "3",
+    "description": "Tests list indexing and function building",
+    "prompt": "# Macauley 2 progamming language question.\n\nPlease write a function that index through a list of integers, and squares them, wrapping output in toString(). Test it on the list of the first 5 integers.",
+    "correct_answer": [
+      "f = L -> toString(apply(L,i -> i^2))\n\nf {2,3,5,7,11}"
+    ],
+    "correct_output": "{4, 9, 25, 49, 121}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_060",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "2",
+    "description": "Tests list indexing",
+    "prompt": "# Macauley 2 progamming language question.\n\nIndex the first element through third element of the list of the first 5 primes. wrap answer in to string function.",
+    "correct_answer": [
+      "toString({2, 3, 5, 7, 11}_{1..3})"
+    ],
+    "correct_output": "{3, 5, 7}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_061",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "2",
+    "description": "This tests passing multiple values into a function",
+    "prompt": "# Macauley 2 progamming language question.\n\nCreate a function that takes two variable inputs and outputs the maximum and outputs using toString. Test is on the following numbers pairs {3,2}, {-3,0}, {1,1}",
+    "correct_answer": [
+      "f = (a,b) -> (\n    toString(max(a,b))\n    )\nf (3,2)\nf (-3,0)\nf (1,1)"
+    ],
+    "correct_output": "3\n0\n1",
+    "source_reference": null
+  },
+  {
+    "id": "m2_062",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "1",
+    "description": "Tests matrix creation",
+    "prompt": "# Macauley 2 progamming language question.\n\nCreate a matrix that has rows of first 9 numbers, i.e. first row is one, two, three, second row 4,5, etc. Wrap it in toString to output it.",
+    "correct_answer": [
+      "toString(matrix {{1, 2, 3},{4,5,6},{7, 8, 9}})"
+    ],
+    "correct_output": "matrix {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_063",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "3",
+    "description": "Tests matrix creation then indexing",
+    "prompt": "# Macauley 2 progamming language question.\n\nCreate a matrix that has rows of first 9 numbers, i.e. first row is one, two, three, second row 4,5, etc. Then index the last two columns of it, and wrap that index in toString to output it.",
+    "correct_answer": [
+      "M = matrix {{1, 2, 3},{4,5,6},{7, 8, 9}};\ntoString(M_{1,2})"
+    ],
+    "correct_output": "matrix {{2, 3}, {5, 6}, {8, 9}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_064",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "3",
+    "description": "Tests creating an integer polynomial ring of three variables quotient 5, then defining a matrix of the three ring variables, finally taking direct sum of image and kernel of this matrix",
+    "prompt": "# Macauley 2 programming language question.\n\nCreate an integer polynomial ring of three variables quotient 5, then define a matrix of the three ring variables, finally take direct sum of image and kernel of this matrix and wrap that last output line in toString()",
+    "correct_answer": [
+      "R = ZZ/5[x,y,z]\nf = matrix {{x,y,x}}\nN = kernel f ++ image f\ntoString(N)"
+    ],
+    "correct_output": "image matrix {{-1, -y, 0, 0, 0}, {0, x, 0, 0, 0}, {1, 0, 0, 0, 0}, {0, 0, x, y, x}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_065",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "2",
+    "description": "Create matrix using lists",
+    "prompt": "# Macauley 2 programming language question.\n\ncreate 3x3 matrix of 1,2,3 being repeated each row. Wrap answer in toString()",
+    "correct_answer": [
+      "toString(matrix({{1,2,3},{1,2,3},{1,2,3}}))"
+    ],
+    "correct_output": "matrix {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_066",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "3",
+    "description": "How to take find image of a matrix.",
+    "prompt": "# Macauley 2 programming language question.\n\ncreate 3x3 matrix of 1,2,3 being repeated each row, then find the kernel of this matrix",
+    "correct_answer": [
+      "toString(kernel matrix({{1,2,3},{1,2,3},{1,2,3}}))"
+    ],
+    "correct_output": "image matrix {{2, 3}, {-1, 0}, {0, -1}}",
+    "source_reference": null
+  },
+  {
+    "id": "m2_067",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Basic m2 Calcs",
+    "difficulty": "1",
+    "description": "Create a free modulo R^3",
+    "prompt": "# Macauley 2 programming language question.\n\nCreate the free modulo R^3. Wrap output in toString()",
+    "correct_answer": [
+      "F = R^2\ntoString(F)"
+    ],
+    "correct_output": "R^3",
+    "source_reference": null
+  },
+  {
+    "id": "m2_068",
+    "source_file": "Macauley2_benchamrk_cb.json",
+    "category": "Debugging",
+    "difficulty": "2",
+    "description": "Modulo Basis element indexing. The idea is that repeated indexing of a single element is ALLOWED",
+    "prompt": "# Macauley 2 programming language question.\n\nGiven the free modulo R^3, is there an error in this code indexing the basis elements? Output \"True\" if there is an error, or \"False\" if there is not through a print statement.\n\n## Code\n\nF = R^3\ntoString(F_{1,1,2})",
+    "correct_answer": [
+      "print(\"False\")"
+    ],
+    "correct_output": "FALSE",
+    "source_reference": null
+  },
+  {
+    "id": "m2_069",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Operation",
+    "difficulty": "easy",
+    "description": "Describes the different ways to re-execute or navigate past inputs in Macaulay2 in the Web Browser",
+    "prompt": "In Macaulay2, how do you execute past output through the Web Browser?",
+    "correct_answer": [
+      "You can click on it, possibly edit it further.",
+      "You can select the bar on the left of its cell (possibly select multiple cells using Shift or Ctrl-clicking).",
+      "You can use the Up and Down arrow keys to go through the list of previous inputs.",
+      "You can type the beginning of the line, then press the Right arrow key for auto-completion."
+    ],
+    "correct_output": null,
+    "source_reference": null
+  },
+  {
+    "id": "m2_070",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Operation",
+    "difficulty": "easy",
+    "description": "Describes how to access the Macaulay2 documentation from within an active session.",
+    "prompt": "How do you open the Macaulay2 documentation from inside a session?",
+    "correct_answer": [
+      "Type viewHelp at the prompt to open the local HTML documentation in your default web browser.",
+      "Type help to see a list of useful commands directly in the terminal."
+    ],
+    "correct_output": null,
+    "source_reference": null
+  },
+  {
+    "id": "m2_071",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Syntax",
+    "difficulty": "medium",
+    "description": "Tests understanding of the difference between := (first declaration) and = (reassignment) in Macaulay2.",
+    "prompt": "What does the following code return?\n\nx := 5;\nx = x + 1;\nx := x + 1;",
+    "correct_answer": [
+      "The code throws an error on the third line.",
+      ":= cannot be used to reassign a variable that already exists in the same scope.",
+      ":= is only for first declaration; = must be used for reassignment."
+    ],
+    "correct_output": "stdio:50:0:(3): warning: local declaration of x shields variable with same name\nstdio:50:7:(3): error: no method for binary operator + applied to objects:\n            null (of class Nothing)\n      +     1 (of class ZZ)",
+    "source_reference": null
+  },
+  {
+    "id": "m2_072",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Operation",
+    "difficulty": "easy",
+    "description": "Tests knowledge of the numgens command.",
+    "prompt": "What is the output of the following code?\n\nR = QQ[x,y,z];\nnumgens R",
+    "correct_answer": [
+      "2"
+    ],
+    "correct_output": "2",
+    "source_reference": null
+  },
+  {
+    "id": "m2_073",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Data Structures",
+    "difficulty": "medium",
+    "description": "Tests knowledge of Betti table row indexing conventions in Macaulay2",
+    "prompt": "What is the output of the following code?\n\nR = QQ[x,y,z];\nI = ideal(x^2, y^2, z^2);\nbetti res I",
+    "correct_answer": [
+      "This code produces an error, not a Betti table.",
+      "The error occurs because x, y, z are treated as type Symbol rather than ring variables.",
+      "The ring assignment R = QQ[x,y,z] does not automatically bring x, y, z into scope as usable variables in all session contexts.",
+      "As a result, the ^ operator fails with 'no method for binary operator ^ applied to objects: null (of class Nothing)'.",
+      "I then remains a Symbol rather than an ideal, causing the resolution step to also fail."
+    ],
+    "correct_output": "stdio error: no method for binary operator ^ applied to objects:\n            null (of class Nothing)\n      ^     2 (of class ZZ)\nerror: no method found for applying resolution to:\n     argument : I (of class Symbol)",
+    "source_reference": null
+  },
+  {
+    "id": "m2_074",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Package Management",
+    "difficulty": "easy",
+    "description": "Tests whether the user knows how to inspect the type of a loaded package object in Macaulay2 using the class function.",
+    "prompt": "After loading the NumericalAlgebraicGeometry package, how would you find the type of the package object?",
+    "correct_answer": [
+      "class NumericalAlgebraicGeometry"
+    ],
+    "correct_output": "Package",
+    "source_reference": null
+  },
+  {
+    "id": "m2_075",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Operation",
+    "difficulty": "easy",
+    "description": "Tests whether the user knows that res and resolution are identical in Macaulay2.",
+    "prompt": "What is the difference betweem res and resolution",
+    "correct_answer": [
+      "res and resolution are exactly the same function in Macaulay2.",
+      "res is simply a shorthand alias for resolution with no functional difference.",
+      "res === resolution"
+    ],
+    "correct_output": "true",
+    "source_reference": null
+  },
+  {
+    "id": "m2_076",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Operation",
+    "difficulty": "easy",
+    "description": "Tests whether the user knows that diff and differntiate are different in Macaulay2",
+    "prompt": "Are diff and differentiate the same in Macaulay2",
+    "correct_answer": [
+      "No, diff applies a derivation to expressions in a polynomial ring. Differentiate is the standard partial derivative operator.",
+      "diff === differentiate"
+    ],
+    "correct_output": "False",
+    "source_reference": null
+  },
+  {
+    "id": "m2_077",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Operation",
+    "difficulty": "easy",
+    "description": "Tests whether the user knows that ideal and Ideal are different in Macaulay2.",
+    "prompt": "A student writes Ideal(x^2, y^2) instead of ideal(x^2, y^2). Are these the same? Verify this without constructing a ring.",
+    "correct_answer": [
+      "ideal and Ideal are not the same in Macaulay2.",
+      "ideal is of class MethodFunctionSingle, meaning it is a callable method function used to construct ideals.",
+      "Ideal is of class Type, meaning it is the type itself and not a constructor.",
+      "You can verify this by running class ideal and class Ideal without needing to define a ring."
+    ],
+    "correct_output": [
+      "They are not the same",
+      "MethodFunctionSingle\nType"
+    ],
+    "source_reference": null
+  },
+  {
+    "id": "m2_078",
+    "source_file": "SLmacaulay2_benchmark 6-15.json",
+    "category": "Operation",
+    "difficulty": "medium",
+    "description": "Tests whether the user knows how to use the apropos function.",
+    "prompt": "What is the output of the following code?\n\napropos \"dimension\"",
+    "correct_answer": [
+      "apropos helps find functions that an user might be searching for but forgot parts of the name. The ouput will be a list with all functions that included the searched part included in their name."
+    ],
+    "correct_output": "{AllCodimensions, CodimensionLimit}",
     "source_reference": null
   }
 ]
