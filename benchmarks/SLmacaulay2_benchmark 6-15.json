@@ -1,0 +1,128 @@
+[
+  {
+    "problem_ID": "SL-6",
+    "category": "Operation",
+    "difficulty": "easy",
+    "basic_description": "Describes the different ways to re-execute or navigate past inputs in Macaulay2 in the Web Browser",
+    "prompt": "In Macaulay2, how do you execute past output through the Web Browser?",
+    "correct_answer": [
+      "You can click on it, possibly edit it further.",
+      "You can select the bar on the left of its cell (possibly select multiple cells using Shift or Ctrl-clicking).",
+      "You can use the Up and Down arrow keys to go through the list of previous inputs.",
+      "You can type the beginning of the line, then press the Right arrow key for auto-completion."
+    ],
+    "correct_output": null
+  },
+  {
+    "problem_ID": "SL-7",
+    "category": "Operation",
+    "difficulty": "easy",
+    "basic_description": "Describes how to access the Macaulay2 documentation from within an active session.",
+    "prompt": "How do you open the Macaulay2 documentation from inside a session?",
+    "correct_answer": [
+      "Type viewHelp at the prompt to open the local HTML documentation in your default web browser.",
+      "Type help to see a list of useful commands directly in the terminal."
+    ],
+    "correct_output": null
+  },
+  {
+    "problem_ID": "SL-8",
+    "category": "Syntax",
+    "difficulty": "medium",
+    "basic_description": "Tests understanding of the difference between := (first declaration) and = (reassignment) in Macaulay2.",
+    "prompt": "What does the following code return?\n\nx := 5;\nx = x + 1;\nx := x + 1;",
+    "correct_answer": [
+      "The code throws an error on the third line.",
+      ":= cannot be used to reassign a variable that already exists in the same scope.",
+      ":= is only for first declaration; = must be used for reassignment."
+    ],
+    "correct_output": "stdio:50:0:(3): warning: local declaration of x shields variable with same name\nstdio:50:7:(3): error: no method for binary operator + applied to objects:\n            null (of class Nothing)\n      +     1 (of class ZZ)"
+  },
+  {
+    "problem_ID": "SL-9",
+    "category": "Operation",
+    "difficulty": "easy",
+    "basic_description": "Tests knowledge of the numgens command.",
+    "prompt": "What is the output of the following code?\n\nR = QQ[x,y,z];\nnumgens R",
+    "correct_answer": [
+      "2"
+  ],
+  "correct_output": "2"
+  },
+  {
+    "problem_ID": "SL-10",
+    "category": "Data Structures",
+    "difficulty": "medium",
+    "basic_description": "Tests knowledge of Betti table row indexing conventions in Macaulay2",
+    "prompt": "What is the output of the following code?\n\nR = QQ[x,y,z];\nI = ideal(x^2, y^2, z^2);\nbetti res I",
+    "correct_answer": [
+      "This code produces an error, not a Betti table.",
+      "The error occurs because x, y, z are treated as type Symbol rather than ring variables.",
+      "The ring assignment R = QQ[x,y,z] does not automatically bring x, y, z into scope as usable variables in all session contexts.",
+      "As a result, the ^ operator fails with 'no method for binary operator ^ applied to objects: null (of class Nothing)'.",
+      "I then remains a Symbol rather than an ideal, causing the resolution step to also fail."
+    ],
+    "correct_output": "stdio error: no method for binary operator ^ applied to objects:\n            null (of class Nothing)\n      ^     2 (of class ZZ)\nerror: no method found for applying resolution to:\n     argument : I (of class Symbol)"
+  },
+  {
+    "problem_ID": "SL-11",
+    "category": "Package Management",
+    "difficulty": "easy",
+    "basic_description": "Tests whether the user knows how to inspect the type of a loaded package object in Macaulay2 using the class function.",
+    "prompt": "After loading the NumericalAlgebraicGeometry package, how would you find the type of the package object?",
+    "correct_answer": [
+      "class NumericalAlgebraicGeometry"
+  ],
+  "correct_output": "Package"
+  },
+  {
+    "problem_ID": "SL-12",
+    "category": "Operation",
+    "difficulty": "easy",
+    "basic_description": "Tests whether the user knows that res and resolution are identical in Macaulay2.",
+    "prompt": "What is the difference betweem res and resolution",
+    "correct_answer": [
+      "res and resolution are exactly the same function in Macaulay2.",
+      "res is simply a shorthand alias for resolution with no functional difference.",
+      "res === resolution"
+    ],
+    "correct_output": "true"
+  },
+  {
+    "problem_ID": "SL-13",
+    "category": "Operation",
+    "difficulty": "Easy",
+    "basic_description": "Tests whether the user knows that diff and differntiate are different in Macaulay2",
+    "prompt": "Are diff and differentiate the same in Macaulay2",
+    "correct_answer": [
+      "No, diff applies a derivation to expressions in a polynomial ring. Differentiate is the standard partial derivative operator.",
+      "diff === differentiate"
+    ],
+    "correct_output": "False"
+  },
+  {
+    "problem_ID": "SL-14",
+    "category": "Operation",
+    "difficulty": "easy",
+    "basic_description": "Tests whether the user knows that ideal and Ideal are different in Macaulay2.",
+    "prompt": "A student writes Ideal(x^2, y^2) instead of ideal(x^2, y^2). Are these the same? Verify this without constructing a ring.",
+    "correct_answer": [
+      "ideal and Ideal are not the same in Macaulay2.",
+      "ideal is of class MethodFunctionSingle, meaning it is a callable method function used to construct ideals.",
+      "Ideal is of class Type, meaning it is the type itself and not a constructor.",
+      "You can verify this by running class ideal and class Ideal without needing to define a ring."
+  ],
+    "correct_output": ["They are not the same", "MethodFunctionSingle\nType"]
+  },
+  {
+    "problem_ID": "SL-15",
+    "category": "Operation",
+    "difficulty": "medium",
+    "basic_description": "Tests whether the user knows how to use the apropos function.",
+    "prompt": "What is the output of the following code?\n\napropos \"dimension\"",
+    "correct_answer": [
+      "apropos helps find functions that an user might be searching for but forgot parts of the name. The ouput will be a list with all functions that included the searched part included in their name."
+  ],
+  "correct_output": "{AllCodimensions, CodimensionLimit}"
+  }
+]
