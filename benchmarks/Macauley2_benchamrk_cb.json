@@ -1,137 +1,182 @@
 [
- {
-   "id": "cb_1",
-   "category": "Basic m2 input and output",
-   "brief_description": "This problem tests the restart command in m2. ",
-   "Difficulty": 1,
-   "prompt": "# Macauley2 programming language question\n\nHow do i refresh the macauley 2 environment.",
-   "correct_answer": "restart",
-   "correct_output": "Macaulay2, version 1.25.11-1572-g6198e3f03b-dirty (vanilla) Type help to see useful commands"
- },
- {
-   "id": "cb_2",
-   "category": "Debugging",
-   "brief_description": "This problem tests debugging for simple arithmetic in m2, where the user mistakes ^ for **",
-   "Difficulty": 2,
-   "prompt": "# Macauley2 programming language question\n\nPlease find the error in the following m code.\n\nR = ZZ/101[a,b,c,d]\nI = ideal(a**2-b*c, a**3-b**3, a**4-b*d**3, a**5-c**2*d**3)\ngrb = first entries groebnerBasis I;\nVerticalList grb -- for emulation of ascii style, try netList grb instead\nI == ideal grb",
-   "correct_answer": "R = ZZ/101[a,b,c,d]\nI = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\ngrb = first entries groebnerBasis I;\nVerticalList grb -- for emulation of ascii style, try netList grb instead\nI == ideal grb",
-   "correct_output": "i1 : R = ZZ/101[a,b,c,d]\n\n\no1 =  R \n\no1 :  PolynomialRing \ni2 : I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\n\n\no2 =  ideal(a \n2\n −bc,a \n3\n −b \n3\n ,a \n4\n −bd \n3\n ,a \n5\n −c \n2\n d \n3\n ) \n\no2 :  Ideal of R \ni3 : grb = first entries groebnerBasis I;\n\ni4 : VerticalList grb -- for emulation of ascii style, try netList grb instead\n\n\no4 =   \na \n2\n −bc\nb \n3\n −abc\nb \n2\n c \n2\n −bd \n3\n \nabd \n3\n −c \n2\n d \n3\n \nabc \n3\n −b \n2\n d \n3\n \nb \n2\n cd \n3\n −ac \n2\n d \n3\n \nac \n3\n d \n3\n −bd \n6\n \nc \n5\n d \n3\n −b \n2\n d \n6\n \nbc \n4\n d \n3\n −c \n2\n d \n6\n \n \n\no4 :  VerticalList \ni5 : I == ideal grb\n\n\no5 =  true"
- },
- {
-   "id": "cb_3",
-   "category": "Basic M2 Calcs",
-   "brief_description": "This problem tests indexing the last element of a list",
-   "Difficulty": 2,
-   "prompt": "# Macauley2 programming language question\n\nwrite m2 code to create this list {2,3,5,7,11} and index the last element of it.",
-   "correct_answer": "{2,3,5,7,11}_-1",
-   "correct_output": "11"
- },
- {
-   "id": "cb_4",
-   "category": "Basic M2 Calcs",
-   "brief_description": "This problem tests using m2 operations factorials, exponentiation, and multiplication.",
-   "Difficulty": 1,
-   "prompt": "# Macauley2 programming language question\n\nCalculate three times 2. Then multiply that answer with 3 factorial squared all in one line. ",
-   "correct_answer": "3 * 2 * (3!)^2",
-   "correct_output": "216"
- },
- {
-   "id": "cb_5",
-   "category": "Basic m2 input and output",
-   "brief_description": "This problem tests opening macauley 2 documentation for the determinant.",
-   "Difficulty": 1,
-   "prompt": "# Macauley2 programming language question\n\nIn macauley 2, what command can I run to open the help menu to learn about the determinant documentation",
-   "correct_answer": "viewHelp \"determinant\"",
-   "correct_output": "Opening file:///usr/share/doc/Macaulay2/Macaulay2Doc/html/_determinant.html"
- },
- {
-   "id": "cb_6",
-   "category": "Basic m2 input and output",
-   "brief_description": "This problem tests horizontal concatenation of strings in m2",
-   "Difficulty": 2,
-   "prompt": "# Macauley2 programming language question\n\nHow do I horizontally concatenate the following two strings horizontally in m2:\n\n- \"hello\"\n- \"world\"",
-   "correct_answer": "\"hello\" | \"world\"",
-   "correct_output": "helloworld"
- },
- {
-   "id": "cb_7",
-   "category": "Basic m2 input and output",
-   "brief_description": "This problem tests vertical concatenation of strings in m2",
-   "Difficulty": 2,
-   "prompt": "# Macauley2 programming language question\n\nHow do I vertically concatenate the following two strings horizontally in m2:\n\n- \"hello\"\n- \"world\"",
-   "correct_answer": "\"hello\" || \"world\"",
-   "correct_output": "hello\nworld"
- },
- {
-   "id": "cb_9",
-   "category": "Basic m2 Calcs",
-   "brief_description": "This question is on an example code block at \nhttps://www.unimelb-macaulay2.cloud.edu.au/#tutorial-math-4 .\n\nIt tests\n\n",
-   "Difficulty": 4,
-   "prompt": "Consider the twisted cubic curve in P^3 defined by the 2×2 minors of a 2×3 Hankel matrix. \nConstruct the polynomial ring R = k[x_0..x_3], define the matrix M and ideal I = minors(2, M). \nLet the projection center be the point (1,0,0,−1) with ideal pideal = ideal(x_0 + x_3, x_1, x_2). \n\nForm Rbar = R/I, substitute pideal into Rbar, and define a ring S = k[u,v,w]. Compute the kernel J of the map from S to Rbar induced by the generators of pideal. Then determine the singular locus K = ideal singularLocus(J), compute its saturation, and interpret the result. Finally, compute both a saturation of an ideal with respect to another and an ideal quotient, and explain their meanings. Wrap final answer in toString function",
-   "correct_answer": "x = symbol x\nkk = ZZ/32003\nR = kk[x_0..x_3]\n\nM = map(R^2, 3, (i,j)->x_(i+j))\nI = minors(2,M)\n\npideal = ideal(x_0+x_3, x_1, x_2)\nRbar = R/I\n\npideal = substitute(pideal, Rbar)\n\nS = kk[u,v,w]\nJ = kernel map (Rbar, S, gens pideal)\n\nK = ideal singularLocus(J)\n\nsaturate K\nsaturate (ideal\"u3w,uv\", ideal\"u\")\ntoString(ideal\"u3w,uv\":ideal\"u\")\n",
-   "correct_output": "toString(ideal\"u3w,uv\":ideal\"u\")"
- },
- {
-   "id": "cb_10",
-   "category": "Package Imports",
-   "brief_description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation",
-   "Difficulty": 3,
-   "prompt": "# Macauley 2 progamming language question.\n\nLoad the EdgeIdeals package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
-   "correct_answer": "\nneedsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)",
-   "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k) \n"
- },
- {
-   "id": "cb_11",
-   "category": "Package Imports",
-   "brief_description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation. The difference between this and the previous question is the llm needs to identify which package to use independently.",
-   "Difficulty": 4,
-   "prompt": "# Macauley 2 progamming language question.\n\nLoad a package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
-   "correct_answer": "\nneedsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)",
-   "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k) \n"
- },
- {
-   "id": "cb_12",
-   "category": "Basic m2 Calcs",
-   "brief_description": "Tests list indexing and function building",
-   "Difficulty": 3,
-   "prompt": "# Macauley 2 progamming language question.\n\nPlease write a function that index through a list of integers, and squares them, wrapping output in toString(). Test it on the list of the first 5 integers. ",
-   "correct_answer": "f = L -> toString(apply(L,i -> i^2))\n\nf {2,3,5,7,11}",
-   "correct_output": "{4, 9, 25, 49, 121}"
- },
- {
-   "id": "cb_13",
-   "category": "Basic m2 Calcs",
-   "brief_description": "Tests list indexing",
-   "Difficulty": 2,
-   "prompt": "# Macauley 2 progamming language question.\n\nIndex the first element through third element of the list of the first 5 primes. wrap answer in to string function. ",
-   "correct_answer": "toString({2, 3, 5, 7, 11}_{1..3})",
-   "correct_output": "{3, 5, 7}"
- },
- {
-   "id": "cb_13",
-   "category": "Basic m2 Calcs",
-   "brief_description": "This tests passing multiple values into a function",
-   "Difficulty": 2,
-   "prompt": "# Macauley 2 progamming language question.\n\nCreate a function that takes two variable inputs and outputs the maximum and outputs using toString. Test is on the following numbers pairs {3,2}, {-3,0}, {1,1}",
-   "correct_answer": "\nf = (a,b) -> (\n    toString(max(a,b))\n    )\nf (3,2)\nf (-3,0)\nf (1,1)",
-   "correct_output": "3\n0\n1"
- },
- {
-   "id": "cb_14",
-   "category": "Basic m2 Calcs",
-   "brief_description": "Tests matrix creation",
-   "Difficulty": 1,
-   "prompt": "# Macauley 2 progamming language question.\n\nCreate a matrix that has rows of first 9 numbers, i.e. first row is one, two, three, second row 4,5, etc. Wrap it in toString to output it.",
-   "correct_answer": "toString(matrix {{1, 2, 3},{4,5,6},{7, 8, 9}})",
-   "correct_output": "matrix {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}"
- },
- {
-   "id": "cb_15",
-   "category": "Basic m2 Calcs",
-   "brief_description": "Tests matrix creation then indexing",
-   "Difficulty": 3,
-   "prompt": "# Macauley 2 progamming language question.\n\nCreate a matrix that has rows of first 9 numbers, i.e. first row is one, two, three, second row 4,5, etc. Then index the last two columns of it, and wrap that index in toString to output it.",
-   "correct_answer": "M = matrix {{1, 2, 3},{4,5,6},{7, 8, 9}};\ntoString(M_{1,2})",
-   "correct_output": "matrix {{2, 3}, {5, 6}, {8, 9}}"
- }
+  {
+    "id": "cb_1",
+    "category": "Basic m2 input and output",
+    "brief_description": "This problem tests the restart command in m2.",
+    "Difficulty": 1,
+    "prompt": "# Macauley2 programming language question\n\nHow do i refresh the macauley 2 environment.",
+    "correct_answer": "restart",
+    "correct_output": "Macaulay2, version 1.25.11-1572-g6198e3f03b-dirty (vanilla) Type help to see useful commands"
+  },
+  {
+    "id": "cb_2",
+    "category": "Debugging",
+    "brief_description": "This problem tests debugging for simple arithmetic in m2, where the user mistakes ^ for **",
+    "Difficulty": 2,
+    "prompt": "# Macauley2 programming language question\n\nPlease find the error in the following m code.\n\nR = ZZ/101[a,b,c,d]\nI = ideal(a**2-b*c, a**3-b**3, a**4-b*d**3, a**5-c**2*d**3)\ngrb = first entries groebnerBasis I;\nVerticalList grb -- for emulation of ascii style, try netList grb instead\nI == ideal grb",
+    "correct_answer": "R = ZZ/101[a,b,c,d]\nI = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\ngrb = first entries groebnerBasis I;\nVerticalList grb -- for emulation of ascii style, try netList grb instead\nI == ideal grb",
+    "correct_output": "i1 : R = ZZ/101[a,b,c,d]\n\n\no1 =  R \n\no1 :  PolynomialRing \ni2 : I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\n\n\no2 =  ideal(a \n2\n −bc,a \n3\n −b \n3\n ,a \n4\n −bd \n3\n ,a \n5\n −c \n2\n d \n3\n ) \n\no2 :  Ideal of R \ni3 : grb = first entries groebnerBasis I;\n\ni4 : VerticalList grb -- for emulation of ascii style, try netList grb instead\n\n\no4 =   \na \n2\n −bc\nb \n3\n −abc\nb \n2\n c \n2\n −bd \n3\n \nabd \n3\n −c \n2\n d \n3\n \nabc \n3\n −b \n2\n d \n3\n \nb \n2\n cd \n3\n −ac \n2\n d \n3\n \nac \n3\n d \n3\n −bd \n6\n \nc \n5\n d \n3\n −b \n2\n d \n6\n \nbc \n4\n d \n3\n −c \n2\n d \n6\n \n \n\no4 :  VerticalList \ni5 : I == ideal grb\n\n\no5 =  true"
+  },
+  {
+    "id": "cb_3",
+    "category": "Basic M2 Calcs",
+    "brief_description": "This problem tests indexing the last element of a list",
+    "Difficulty": 2,
+    "prompt": "# Macauley2 programming language question\n\nwrite m2 code to create this list {2,3,5,7,11} and index the last element of it.",
+    "correct_answer": "{2,3,5,7,11}_-1",
+    "correct_output": 11
+  },
+  {
+    "id": "cb_4",
+    "category": "Basic M2 Calcs",
+    "brief_description": "This problem tests using m2 operations factorials, exponentiation, and multiplication.",
+    "Difficulty": 1,
+    "prompt": "# Macauley2 programming language question\n\nCalculate three times 2. Then multiply that answer with 3 factorial squared all in one line.",
+    "correct_answer": "3 * 2 * (3!)^2",
+    "correct_output": 216
+  },
+  {
+    "id": "cb_5",
+    "category": "Basic m2 input and output",
+    "brief_description": "This problem tests opening macauley 2 documentation for the determinant.",
+    "Difficulty": 1,
+    "prompt": "# Macauley2 programming language question\n\nIn macauley 2, what command can I run to open the help menu to learn about the determinant documentation",
+    "correct_answer": "viewHelp \"determinant",
+    "correct_output": "Opening file:///usr/share/doc/Macaulay2/Macaulay2Doc/html/_determinant.html"
+  },
+  {
+    "id": "cb_6",
+    "category": "Basic m2 input and output",
+    "brief_description": "This problem tests horizontal concatenation of strings in m2",
+    "Difficulty": 2,
+    "prompt": "# Macauley2 programming language question\n\nHow do I horizontally concatenate the following two strings horizontally in m2:\n\n- \"hello\"\n- \"world",
+    "correct_answer": "hello\" | \"world",
+    "correct_output": "helloworld"
+  },
+  {
+    "id": "cb_7",
+    "category": "Basic m2 input and output",
+    "brief_description": "This problem tests vertical concatenation of strings in m2",
+    "Difficulty": 2,
+    "prompt": "# Macauley2 programming language question\n\nHow do I vertically concatenate the following two strings horizontally in m2:\n\n- \"hello\"\n- \"world",
+    "correct_answer": "hello\" || \"world",
+    "correct_output": "hello\nworld"
+  },
+  {
+    "id": "cb_9",
+    "category": "Basic m2 Calcs",
+    "brief_description": "This question is on an example code block at \nhttps://www.unimelb-macaulay2.cloud.edu.au/#tutorial-math-4 .\n\nIt tests",
+    "Difficulty": 4,
+    "prompt": "Consider the twisted cubic curve in P^3 defined by the 2×2 minors of a 2×3 Hankel matrix. \nConstruct the polynomial ring R = k[x_0..x_3], define the matrix M and ideal I = minors(2, M). \nLet the projection center be the point (1,0,0,−1) with ideal pideal = ideal(x_0 + x_3, x_1, x_2). \n\nForm Rbar = R/I, substitute pideal into Rbar, and define a ring S = k[u,v,w]. Compute the kernel J of the map from S to Rbar induced by the generators of pideal. Then determine the singular locus K = ideal singularLocus(J), compute its saturation, and interpret the result. Finally, compute both a saturation of an ideal with respect to another and an ideal quotient, and explain their meanings. Wrap final answer in toString function",
+    "correct_answer": "x = symbol x\nkk = ZZ/32003\nR = kk[x_0..x_3]\n\nM = map(R^2, 3, (i,j)->x_(i+j))\nI = minors(2,M)\n\npideal = ideal(x_0+x_3, x_1, x_2)\nRbar = R/I\n\npideal = substitute(pideal, Rbar)\n\nS = kk[u,v,w]\nJ = kernel map (Rbar, S, gens pideal)\n\nK = ideal singularLocus(J)\n\nsaturate K\nsaturate (ideal\"u3w,uv\", ideal\"u\")\ntoString(ideal\"u3w,uv\":ideal\"u\")",
+    "correct_output": "toString(ideal\"u3w,uv\":ideal\"u\")"
+  },
+  {
+    "id": "cb_10",
+    "category": "Package Imports",
+    "brief_description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation",
+    "Difficulty": 3,
+    "prompt": "# Macauley 2 progamming language question.\n\nLoad the EdgeIdeals package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
+    "correct_answer": "needsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)",
+    "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)"
+  },
+  {
+    "id": "cb_11",
+    "category": "Package Imports",
+    "brief_description": "Tests loading the needsPackage \"EdgeIdeals\" and using it for a simple calculation. The difference between this and the previous question is the llm needs to identify which package to use independently.",
+    "Difficulty": 4,
+    "prompt": "# Macauley 2 progamming language question.\n\nLoad a package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
+    "correct_answer": "needsPackage \"EdgeIdeals\"\n\n\nR = kk[vars(0..10)]\nG=randomGraph (R,20)\ntoString(edgeIdeal G)",
+    "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)"
+  },
+  {
+    "id": "cb_12",
+    "category": "Basic m2 Calcs",
+    "brief_description": "Tests list indexing and function building",
+    "Difficulty": 3,
+    "prompt": "# Macauley 2 progamming language question.\n\nPlease write a function that index through a list of integers, and squares them, wrapping output in toString(). Test it on the list of the first 5 integers.",
+    "correct_answer": "f = L -> toString(apply(L,i -> i^2))\n\nf {2,3,5,7,11}",
+    "correct_output": "{4, 9, 25, 49, 121}"
+  },
+  {
+    "id": "cb_13",
+    "category": "Basic m2 Calcs",
+    "brief_description": "Tests list indexing",
+    "Difficulty": 2,
+    "prompt": "# Macauley 2 progamming language question.\n\nIndex the first element through third element of the list of the first 5 primes. wrap answer in to string function.",
+    "correct_answer": "toString({2, 3, 5, 7, 11}_{1..3})",
+    "correct_output": "{3, 5, 7}"
+  },
+  {
+    "id": "cb_13",
+    "category": "Basic m2 Calcs",
+    "brief_description": "This tests passing multiple values into a function",
+    "Difficulty": 2,
+    "prompt": "# Macauley 2 progamming language question.\n\nCreate a function that takes two variable inputs and outputs the maximum and outputs using toString. Test is on the following numbers pairs {3,2}, {-3,0}, {1,1}",
+    "correct_answer": "f = (a,b) -> (\n    toString(max(a,b))\n    )\nf (3,2)\nf (-3,0)\nf (1,1)",
+    "correct_output": "3\n0\n1"
+  },
+  {
+    "id": "cb_14",
+    "category": "Basic m2 Calcs",
+    "brief_description": "Tests matrix creation",
+    "Difficulty": 1,
+    "prompt": "# Macauley 2 progamming language question.\n\nCreate a matrix that has rows of first 9 numbers, i.e. first row is one, two, three, second row 4,5, etc. Wrap it in toString to output it.",
+    "correct_answer": "toString(matrix {{1, 2, 3},{4,5,6},{7, 8, 9}})",
+    "correct_output": "matrix {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}"
+  },
+  {
+    "id": "cb_15",
+    "category": "Basic m2 Calcs",
+    "brief_description": "Tests matrix creation then indexing",
+    "Difficulty": 3,
+    "prompt": "# Macauley 2 progamming language question.\n\nCreate a matrix that has rows of first 9 numbers, i.e. first row is one, two, three, second row 4,5, etc. Then index the last two columns of it, and wrap that index in toString to output it.",
+    "correct_answer": "M = matrix {{1, 2, 3},{4,5,6},{7, 8, 9}};\ntoString(M_{1,2})",
+    "correct_output": "matrix {{2, 3}, {5, 6}, {8, 9}}"
+  },
+  {
+    "id": "cb_16",
+    "category": "Basic m2 Calcs",
+    "brief_description": "Tests creating an integer polynomial ring of three variables quotient 5, then defining a matrix of the three ring variables, finally taking direct sum of image and kernel of this matrix",
+    "Difficulty": 3,
+    "prompt": "# Macauley 2 programming language question.\n\nCreate an integer polynomial ring of three variables quotient 5, then define a matrix of the three ring variables, finally take direct sum of image and kernel of this matrix and wrap that last output line in toString()",
+    "correct_answer": "R = ZZ/5[x,y,z]\nf = matrix {{x,y,x}}\nN = kernel f ++ image f\ntoString(N)",
+    "correct_output": "image matrix {{-1, -y, 0, 0, 0}, {0, x, 0, 0, 0}, {1, 0, 0, 0, 0}, {0, 0, x, y, x}}"
+  },
+  {
+    "id": "cb_17",
+    "category": "Basic m2 Calcs",
+    "brief_description": "Create matrix using lists",
+    "Difficulty": 2,
+    "prompt": "# Macauley 2 programming language question.\n\ncreate 3x3 matrix of 1,2,3 being repeated each row. Wrap answer in toString()",
+    "correct_answer": "toString(matrix({{1,2,3},{1,2,3},{1,2,3}}))",
+    "correct_output": "matrix {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}}"
+  },
+  {
+    "id": "cb_18",
+    "category": "Basic m2 Calcs",
+    "brief_description": "How to take find image of a matrix.",
+    "Difficulty": 3,
+    "prompt": "# Macauley 2 programming language question.\n\ncreate 3x3 matrix of 1,2,3 being repeated each row, then find the kernel of this matrix",
+    "correct_answer": "toString(kernel matrix({{1,2,3},{1,2,3},{1,2,3}}))",
+    "correct_output": "image matrix {{2, 3}, {-1, 0}, {0, -1}}"
+  },
+  {
+    "id": "cb_19",
+    "category": "Basic m2 Calcs",
+    "brief_description": "Create a free modulo R^3",
+    "Difficulty": 1,
+    "prompt": "# Macauley 2 programming language question.\n\nCreate the free modulo R^3. Wrap output in toString()",
+    "correct_answer": "F = R^2\ntoString(F)",
+    "correct_output": "R^3"
+  },
+  {
+    "id": "cb_20",
+    "category": "Debugging",
+    "brief_description": "Modulo Basis element indexing. The idea is that repeated indexing of a single element is ALLOWED",
+    "Difficulty": 2,
+    "prompt": "# Macauley 2 programming language question.\n\nGiven the free modulo R^3, is there an error in this code indexing the basis elements? Output \"True\" if there is an error, or \"False\" if there is not through a print statement.\n\n## Code\n\nF = R^3\ntoString(F_{1,1,2})",
+    "correct_answer": "print(\"False\")",
+    "correct_output": "FALSE"
+  }
 ]
