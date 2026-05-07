@@ -9,7 +9,9 @@
     "correct_answer": [
       "restart"
     ],
-    "correct_output": "Macaulay2, version 1.25.11-1572-g6198e3f03b-dirty (vanilla) Type help to see useful commands",
+    "correct_output": [
+      "Macaulay2, version 1.25.11-1572-g6198e3f03b-dirty (vanilla) Type help to see useful commands"
+    ],
     "source_reference": null
   },
   {
@@ -26,7 +28,90 @@
       "VerticalList grb -- for emulation of ascii style, try netList grb instead",
       "I == ideal grb"
     ],
-    "correct_output": "i1 : R = ZZ/101[a,b,c,d]\n\n\no1 =  R \n\no1 :  PolynomialRing \ni2 : I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\n\n\no2 =  ideal(a \n2\n \u2212bc,a \n3\n \u2212b \n3\n ,a \n4\n \u2212bd \n3\n ,a \n5\n \u2212c \n2\n d \n3\n ) \n\no2 :  Ideal of R \ni3 : grb = first entries groebnerBasis I;\n\ni4 : VerticalList grb -- for emulation of ascii style, try netList grb instead\n\n\no4 =   \na \n2\n \u2212bc\nb \n3\n \u2212abc\nb \n2\n c \n2\n \u2212bd \n3\n \nabd \n3\n \u2212c \n2\n d \n3\n \nabc \n3\n \u2212b \n2\n d \n3\n \nb \n2\n cd \n3\n \u2212ac \n2\n d \n3\n \nac \n3\n d \n3\n \u2212bd \n6\n \nc \n5\n d \n3\n \u2212b \n2\n d \n6\n \nbc \n4\n d \n3\n \u2212c \n2\n d \n6\n \n \n\no4 :  VerticalList \ni5 : I == ideal grb\n\n\no5 =  true",
+    "correct_output": [
+      "i1 : R = ZZ/101[a,b,c,d]",
+      "o1 =  R",
+      "o1 :  PolynomialRing",
+      "i2 : I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)",
+      "o2 =  ideal(a",
+      "2",
+      "\u2212bc,a",
+      "3",
+      "\u2212b",
+      "3",
+      ",a",
+      "4",
+      "\u2212bd",
+      "3",
+      ",a",
+      "5",
+      "\u2212c",
+      "2",
+      "d",
+      "3",
+      ")",
+      "o2 :  Ideal of R",
+      "i3 : grb = first entries groebnerBasis I;",
+      "i4 : VerticalList grb -- for emulation of ascii style, try netList grb instead",
+      "o4 =",
+      "a",
+      "2",
+      "\u2212bc",
+      "b",
+      "3",
+      "\u2212abc",
+      "b",
+      "2",
+      "c",
+      "2",
+      "\u2212bd",
+      "3",
+      "abd",
+      "3",
+      "\u2212c",
+      "2",
+      "d",
+      "3",
+      "abc",
+      "3",
+      "\u2212b",
+      "2",
+      "d",
+      "3",
+      "b",
+      "2",
+      "cd",
+      "3",
+      "\u2212ac",
+      "2",
+      "d",
+      "3",
+      "ac",
+      "3",
+      "d",
+      "3",
+      "\u2212bd",
+      "6",
+      "c",
+      "5",
+      "d",
+      "3",
+      "\u2212b",
+      "2",
+      "d",
+      "6",
+      "bc",
+      "4",
+      "d",
+      "3",
+      "\u2212c",
+      "2",
+      "d",
+      "6",
+      "o4 :  VerticalList",
+      "i5 : I == ideal grb",
+      "o5 =  true"
+    ],
     "source_reference": null
   },
   {
@@ -39,7 +124,9 @@
     "correct_answer": [
       "3 * 2 * (3!)^2"
     ],
-    "correct_output": "216",
+    "correct_output": [
+      "216"
+    ],
     "source_reference": null
   },
   {
@@ -52,7 +139,9 @@
     "correct_answer": [
       "viewHelp \"determinant"
     ],
-    "correct_output": "Opening file:///usr/share/doc/Macaulay2/Macaulay2Doc/html/_determinant.html",
+    "correct_output": [
+      "Opening file:///usr/share/doc/Macaulay2/Macaulay2Doc/html/_determinant.html"
+    ],
     "source_reference": null
   },
   {
@@ -65,7 +154,9 @@
     "correct_answer": [
       "hello\" | \"world"
     ],
-    "correct_output": "helloworld",
+    "correct_output": [
+      "helloworld"
+    ],
     "source_reference": null
   },
   {
@@ -78,7 +169,10 @@
     "correct_answer": [
       "hello\" || \"world"
     ],
-    "correct_output": "hello\nworld",
+    "correct_output": [
+      "hello",
+      "world"
+    ],
     "source_reference": null
   },
   {
@@ -92,7 +186,9 @@
       "R = ZZ/5[x,y,z]",
       "describe R"
     ],
-    "correct_output": "Z/5 [x..z,Degrees \u21d2 {3:1},Heft \u21d2 {1}]",
+    "correct_output": [
+      "Z/5 [x..z,Degrees \u21d2 {3:1},Heft \u21d2 {1}]"
+    ],
     "source_reference": null
   },
   {
@@ -107,7 +203,18 @@
       "R = QQ[a..d];",
       "raw R"
     ],
-    "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing",
+    "correct_output": [
+      "QQGMP[a,b,c,d,",
+      "DegreeLength => 1,",
+      "Degrees => {1, 1, 1, 1},",
+      "Heft => {1},",
+      "MonomialOrder => {",
+      "GRevLex => {1,1,1,1},",
+      "Position => Up",
+      "}",
+      "]",
+      "RawRing"
+    ],
     "source_reference": null
   },
   {
@@ -120,7 +227,10 @@
     "correct_answer": [
       "needsPackage \"FirstPackage\""
     ],
-    "correct_output": "FirstPackage\nPackage",
+    "correct_output": [
+      "FirstPackage",
+      "Package"
+    ],
     "source_reference": null
   },
   {
@@ -134,7 +244,9 @@
       "f = i -> i + 5",
       "f 6"
     ],
-    "correct_output": "11",
+    "correct_output": [
+      "11"
+    ],
     "source_reference": null
   },
   {
@@ -148,7 +260,9 @@
       "f = (x,y) -> x * y",
       "f(2,3)"
     ],
-    "correct_output": "6",
+    "correct_output": [
+      "6"
+    ],
     "source_reference": null
   },
   {
@@ -163,7 +277,15 @@
       "F = R^3",
       "F_0"
     ],
-    "correct_output": "R\nPolynomialRing\nR^3\nR-module, free \n3x1 vector [1,0,0]\n\u200b\n  \n\u200b\n  ",
+    "correct_output": [
+      "R",
+      "PolynomialRing",
+      "R^3",
+      "R-module, free",
+      "3x1 vector [1,0,0]",
+      "\u200b",
+      "\u200b"
+    ],
     "source_reference": null
   },
   {
@@ -178,7 +300,11 @@
       "f = matrix {{x,y,z}}",
       "kernel f"
     ],
-    "correct_output": "R\n( x y z )\nimage matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
+    "correct_output": [
+      "R",
+      "( x y z )",
+      "image matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
+    ],
     "source_reference": null
   },
   {
@@ -194,7 +320,9 @@
       "kernel f",
       "generators oo"
     ],
-    "correct_output": "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
+    "correct_output": [
+      "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
+    ],
     "source_reference": null
   },
   {
@@ -209,7 +337,9 @@
       "L2 = {0,1}",
       "L1+L2"
     ],
-    "correct_output": "{1,1}",
+    "correct_output": [
+      "{1,1}"
+    ],
     "source_reference": null
   },
   {
@@ -224,7 +354,9 @@
       "f = i -> i^2",
       "apply(L,f)"
     ],
-    "correct_output": "{1,4,9,16}",
+    "correct_output": [
+      "{1,4,9,16}"
+    ],
     "source_reference": null
   },
   {
@@ -238,7 +370,9 @@
       "R = QQ[x,y,z]/(x^3 - y^3 - z^3)",
       "(x + y + z)^3"
     ],
-    "correct_output": "3x^2*y+3x*y^2+2y^3+3x^2*z+6x*y*z+3y^2*z+3x*z^2+3y*z^2+2z^3",
+    "correct_output": [
+      "3x^2*y+3x*y^2+2y^3+3x^2*z+6x*y*z+3y^2*z+3x*z^2+3y*z^2+2z^3"
+    ],
     "source_reference": {
       "text": "Eisenbud, Grayson, Stillman, Sturmfels \u2014 Computations in Algebraic Geometry with Macaulay 2 (Springer, 2002), Preface examples pp. vii\u2013ix",
       "url": "https://macaulay2.com/Book/ComputationsBook/book/book.pdf"
@@ -256,7 +390,11 @@
       "c = matrix {{x^2, y^2, z^2}}",
       "print ker c"
     ],
-    "correct_output": "image {2} | x  0   -y2 -z2 |\n      {2} | -y -z2 x2  0  |\n      {2} | -z y2  0   x2 |",
+    "correct_output": [
+      "image {2} | x  0   -y2 -z2 |",
+      "{2} | -y -z2 x2  0  |",
+      "{2} | -z y2  0   x2 |"
+    ],
     "source_reference": {
       "text": "Eisenbud, Grayson, Stillman, Sturmfels \u2014 Computations in Algebraic Geometry with Macaulay 2 (Springer, 2002), Preface pp. viii\u2013ix",
       "url": "https://macaulay2.com/Book/ComputationsBook/book/book.pdf"
@@ -276,7 +414,10 @@
       "print(I == intersect C)",
       "print(#C)"
     ],
-    "correct_output": "true\n16",
+    "correct_output": [
+      "true",
+      "16"
+    ],
     "source_reference": {
       "text": "Official Macaulay2 Documentation \u2014 PrimaryDecomposition package, primaryDecomposition function reference page",
       "url": "https://macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/PrimaryDecomposition/html/_primary__Decomposition.html"
@@ -295,7 +436,9 @@
       "I = ideal(f, diff(x,f), diff(y,f), diff(z,f))",
       "primaryDecomposition I"
     ],
-    "correct_output": "{ideal(z-1,y-1,x-1), ideal(z+1,y+1,x-1), ideal(z+1,y-1,x+1), ideal(z-1,y+1,x+1)}",
+    "correct_output": [
+      "{ideal(z-1,y-1,x-1), ideal(z+1,y+1,x-1), ideal(z+1,y-1,x+1), ideal(z-1,y+1,x+1)}"
+    ],
     "source_reference": {
       "text": "Micha\u0142ek & Sturmfels \u2014 Invitation to Nonlinear Algebra (AMS, 2021), Chapter 1, Section 1.1, Equation (1.1) and surrounding discussion pp. 2\u20133",
       "url": "https://math.berkeley.edu/~bernd/gsm211.pdf"
@@ -315,7 +458,13 @@
       "scan(comps, c -> print c)",
       "print(intersect(comps) == I)"
     ],
-    "correct_output": "ideal(y-1,x-2)\nideal(y-1,x+2)\nideal(y+1,x-2)\nideal(y+1,x+2)\ntrue",
+    "correct_output": [
+      "ideal(y-1,x-2)",
+      "ideal(y-1,x+2)",
+      "ideal(y+1,x-2)",
+      "ideal(y+1,x+2)",
+      "true"
+    ],
     "source_reference": {
       "text": "Schenck \u2014 Computational Algebraic Geometry (Cambridge University Press, 2003), Exercise 1.3.1 (Decomposition I), p. 13",
       "url": "https://sites.math.washington.edu/~billey/classes/applied.algebraic.geometry/references/schenck.pdf"
@@ -334,7 +483,9 @@
       "n = genericMatrix(S, w_1, 4, 4)",
       "flatten(m*n)"
     ],
-    "correct_output": "matrix {{v_1*w_1+v_5*w_2+v_9*w_3+v_13*w_4, ...}}",
+    "correct_output": [
+      "matrix {{v_1*w_1+v_5*w_2+v_9*w_3+v_13*w_4, ...}}"
+    ],
     "source_reference": null
   },
   {
@@ -350,7 +501,9 @@
       "I = ideal(x^2*y, x*y^2+x^3)",
       "gens gb I"
     ],
-    "correct_output": "matrix {{x*y^3, x^2*y, x^3+x*y^2}}",
+    "correct_output": [
+      "matrix {{x*y^3, x^2*y, x^3+x*y^2}}"
+    ],
     "source_reference": null
   },
   {
@@ -366,7 +519,9 @@
       "(transpose Q) * Q",
       "clean(1e-10,oo)"
     ],
-    "correct_output": "matrix {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}",
+    "correct_output": [
+      "matrix {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}"
+    ],
     "source_reference": null
   },
   {
@@ -379,7 +534,9 @@
     "correct_answer": [
       "gcd(x^36-1,x^24-1)"
     ],
-    "correct_output": "x^12-1",
+    "correct_output": [
+      "x^12-1"
+    ],
     "source_reference": null
   },
   {
@@ -392,7 +549,11 @@
     "correct_answer": [
       "R = QQ[x,y,z]/(x^3-y^3-z^3)"
     ],
-    "correct_output": "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)\no1 = R\no1 : QuotientRing",
+    "correct_output": [
+      "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)",
+      "o1 = R",
+      "o1 : QuotientRing"
+    ],
     "source_reference": null
   },
   {
@@ -430,7 +591,9 @@
       "o8 = QQ^1",
       "o8 : QQ-module, free"
     ],
-    "correct_output": "QQ-module, free",
+    "correct_output": [
+      "QQ-module, free"
+    ],
     "source_reference": null
   },
   {
@@ -448,7 +611,9 @@
       "o1 = (xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)",
       "o1 : Sequence"
     ],
-    "correct_output": "Sequence",
+    "correct_output": [
+      "Sequence"
+    ],
     "source_reference": null
   },
   {
@@ -465,7 +630,7 @@
       "o2 = (xeg, xeg, xeg, xeg, xer, , , , )",
       "o2 : Sequence"
     ],
-    "correct_output": "",
+    "correct_output": [],
     "source_reference": null
   },
   {
@@ -485,7 +650,9 @@
       "'Statistics' => 102",
       "o1 : HashTable"
     ],
-    "correct_output": "HashTable",
+    "correct_output": [
+      "HashTable"
+    ],
     "source_reference": null
   },
   {
@@ -499,7 +666,7 @@
       "i1 : course#'Statistics'",
       "o2 = 102"
     ],
-    "correct_output": "",
+    "correct_output": [],
     "source_reference": null
   },
   {
@@ -516,7 +683,9 @@
       "rot = new Qu from { 0.3826834, 0, 0, 0.9238795 }",
       "rot * w"
     ],
-    "correct_output": "Qu{-1.08239, -1.46508, 1.68925, 2.61313}",
+    "correct_output": [
+      "Qu{-1.08239, -1.46508, 1.68925, 2.61313}"
+    ],
     "source_reference": null
   },
   {
@@ -532,7 +701,9 @@
       "v = matrix {{x, y}}",
       "diff(v ** transpose v, f)"
     ],
-    "correct_output": "matrix {{6, 5}, {5, 22}}",
+    "correct_output": [
+      "matrix {{6, 5}, {5, 22}}"
+    ],
     "source_reference": null
   },
   {
@@ -547,7 +718,9 @@
       "X = normalDistribution(30, 5)",
       "density_X 25"
     ],
-    "correct_output": ".0483941",
+    "correct_output": [
+      ".0483941"
+    ],
     "source_reference": null
   },
   {
@@ -561,7 +734,10 @@
       "R = ZZ/5[x,y,z]",
       "describe R"
     ],
-    "correct_output": "--[x..z, Degrees => {3:1}, Heft => {1}]\n5",
+    "correct_output": [
+      "--[x..z, Degrees => {3:1}, Heft => {1}]",
+      "5"
+    ],
     "source_reference": null
   },
   {
@@ -576,7 +752,18 @@
       "R = QQ[a..d];",
       "raw R"
     ],
-    "correct_output": "QQGMP[a,b,c,d,\n      DegreeLength => 1,\n      Degrees => {1, 1, 1, 1},\n      Heft => {1},\n      MonomialOrder => {\n           GRevLex => {1,1,1,1},\n            Position => Up\n            }\n      ]\nRawRing",
+    "correct_output": [
+      "QQGMP[a,b,c,d,",
+      "DegreeLength => 1,",
+      "Degrees => {1, 1, 1, 1},",
+      "Heft => {1},",
+      "MonomialOrder => {",
+      "GRevLex => {1,1,1,1},",
+      "Position => Up",
+      "}",
+      "]",
+      "RawRing"
+    ],
     "source_reference": null
   },
   {
@@ -589,7 +776,9 @@
     "correct_answer": [
       "needsPackage \"FirstPackage\""
     ],
-    "correct_output": "FirstPackage",
+    "correct_output": [
+      "FirstPackage"
+    ],
     "source_reference": null
   },
   {
@@ -603,7 +792,9 @@
       "f = i -> i + 5",
       "f 6"
     ],
-    "correct_output": "11",
+    "correct_output": [
+      "11"
+    ],
     "source_reference": null
   },
   {
@@ -617,7 +808,9 @@
       "f = (x,y) -> x * y",
       "f(2,3)"
     ],
-    "correct_output": "6",
+    "correct_output": [
+      "6"
+    ],
     "source_reference": null
   },
   {
@@ -632,7 +825,13 @@
       "F = R^3",
       "F_0"
     ],
-    "correct_output": "| 1 |\n| 0 |\n| 0 |\n\n      3\nR",
+    "correct_output": [
+      "| 1 |",
+      "| 0 |",
+      "| 0 |",
+      "3",
+      "R"
+    ],
     "source_reference": null
   },
   {
@@ -647,7 +846,9 @@
       "f = matrix {{x,y,z}}",
       "kernel f"
     ],
-    "correct_output": "image matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
+    "correct_output": [
+      "image matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
+    ],
     "source_reference": null
   },
   {
@@ -663,7 +864,9 @@
       "kernel f",
       "generators oo"
     ],
-    "correct_output": "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}",
+    "correct_output": [
+      "matrix {{-y, 0, -z}, {x, -z, 0}, {0, y, x}}"
+    ],
     "source_reference": null
   },
   {
@@ -678,7 +881,9 @@
       "L2 = {0,1}",
       "L1+L2"
     ],
-    "correct_output": "{1,1}",
+    "correct_output": [
+      "{1,1}"
+    ],
     "source_reference": null
   },
   {
@@ -693,7 +898,9 @@
       "f = i -> i^2",
       "apply(L,f)"
     ],
-    "correct_output": "{1,4,9,16}",
+    "correct_output": [
+      "{1,4,9,16}"
+    ],
     "source_reference": null
   },
   {
@@ -706,7 +913,9 @@
     "correct_answer": [
       "for i from 1 to 5 when i^2 < 15 list i^2"
     ],
-    "correct_output": "{1,4,9}",
+    "correct_output": [
+      "{1,4,9}"
+    ],
     "source_reference": null
   },
   {
@@ -719,7 +928,9 @@
     "correct_answer": [
       "for i from 0 when i < 10 list (if odd i then continue; i^2)"
     ],
-    "correct_output": "{0,4,16,36,64}",
+    "correct_output": [
+      "{0,4,16,36,64}"
+    ],
     "source_reference": null
   },
   {
@@ -732,7 +943,9 @@
     "correct_answer": [
       "i = 0 ; while i < 10 list (i = i+1; if odd i then continue 1234; i^2)"
     ],
-    "correct_output": "{1234,4,1234,16,1234,36,1234,64,1234,100}",
+    "correct_output": [
+      "{1234,4,1234,16,1234,36,1234,64,1234,100}"
+    ],
     "source_reference": null
   },
   {
@@ -745,7 +958,9 @@
     "correct_answer": [
       "i = 0 ; while i < 10 list (i = i+1; if i == 5 then break; i^2)"
     ],
-    "correct_output": "{1,4,9,16}",
+    "correct_output": [
+      "{1,4,9,16}"
+    ],
     "source_reference": null
   },
   {
@@ -766,7 +981,14 @@
       "w = new Qu from {1,2,3,4}",
       "w*w"
     ],
-    "correct_output": "Qu\nType\n{1,2,3,4}\nQu\n{\u221228,4,6,8}\nQu",
+    "correct_output": [
+      "Qu",
+      "Type",
+      "{1,2,3,4}",
+      "Qu",
+      "{\u221228,4,6,8}",
+      "Qu"
+    ],
     "source_reference": null
   },
   {
@@ -779,7 +1001,9 @@
     "correct_answer": [
       "loadedPackages"
     ],
-    "correct_output": "{Varieties,Isomorphism,Truncations,Polyhedra,Saturation,Elimination,OldChainComplexes,TangentCone,SimpleDoc,ReesAlgebra,PrimaryDecomposition,MinimalPrimes,PackageCitations,OnlineLookup,LLLBases,InverseSystems,IntegralClosure,ConwayPolynomials,Classic,Core}",
+    "correct_output": [
+      "{Varieties,Isomorphism,Truncations,Polyhedra,Saturation,Elimination,OldChainComplexes,TangentCone,SimpleDoc,ReesAlgebra,PrimaryDecomposition,MinimalPrimes,PackageCitations,OnlineLookup,LLLBases,InverseSystems,IntegralClosure,ConwayPolynomials,Classic,Core}"
+    ],
     "source_reference": null
   },
   {
@@ -793,7 +1017,11 @@
       "R = ZZ[x,y,z]",
       "p = map(R^2,R^3,{{x^2,0,3},{0,y^2,5}})"
     ],
-    "correct_output": "| x2 0  3 |\n| 0  y2 5 |\n\n     2      3",
+    "correct_output": [
+      "| x2 0  3 |",
+      "| 0  y2 5 |",
+      "2      3"
+    ],
     "source_reference": null
   },
   {
@@ -807,7 +1035,9 @@
       "R = ZZ[a..d];",
       "det matrix{{a,b},{c,d}}"
     ],
-    "correct_output": "-bc + ad",
+    "correct_output": [
+      "-bc + ad"
+    ],
     "source_reference": null
   },
   {
@@ -820,7 +1050,9 @@
     "correct_answer": [
       "powermod(13,2,41)"
     ],
-    "correct_output": "5",
+    "correct_output": [
+      "5"
+    ],
     "source_reference": null
   },
   {
@@ -833,7 +1065,9 @@
     "correct_answer": [
       "Grassmannian(2,3)"
     ],
-    "correct_output": "ideal()",
+    "correct_output": [
+      "ideal()"
+    ],
     "source_reference": null
   },
   {
@@ -846,7 +1080,9 @@
     "correct_answer": [
       "{2,3,5,7,11}_-1"
     ],
-    "correct_output": "11",
+    "correct_output": [
+      "11"
+    ],
     "source_reference": null
   },
   {
@@ -872,7 +1108,9 @@
       "saturate (ideal\"u3w,uv\", ideal\"u\")",
       "toString(ideal\"u3w,uv\":ideal\"u\")"
     ],
-    "correct_output": "toString(ideal\"u3w,uv\":ideal\"u\")",
+    "correct_output": [
+      "toString(ideal\"u3w,uv\":ideal\"u\")"
+    ],
     "source_reference": null
   },
   {
@@ -888,7 +1126,9 @@
       "G=randomGraph (R,20)",
       "toString(edgeIdeal G)"
     ],
-    "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)",
+    "correct_output": [
+      "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)"
+    ],
     "source_reference": null
   },
   {
@@ -904,7 +1144,9 @@
       "G=randomGraph (R,20)",
       "toString(edgeIdeal G)"
     ],
-    "correct_output": "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)",
+    "correct_output": [
+      "monomialIdeal(a*b,c*d,a*e,d*f,a*g,c*g,c*h,f*h,g*h,a*i,b*i,c*i,g*i,a*j,b*j,f*j,g*j,h*j,e*k,j*k)"
+    ],
     "source_reference": null
   },
   {
@@ -918,7 +1160,9 @@
       "f = L -> toString(apply(L,i -> i^2))",
       "f {2,3,5,7,11}"
     ],
-    "correct_output": "{4, 9, 25, 49, 121}",
+    "correct_output": [
+      "{4, 9, 25, 49, 121}"
+    ],
     "source_reference": null
   },
   {
@@ -931,7 +1175,9 @@
     "correct_answer": [
       "toString({2, 3, 5, 7, 11}_{1..3})"
     ],
-    "correct_output": "{3, 5, 7}",
+    "correct_output": [
+      "{3, 5, 7}"
+    ],
     "source_reference": null
   },
   {
@@ -949,7 +1195,11 @@
       "f (-3,0)",
       "f (1,1)"
     ],
-    "correct_output": "3\n0\n1",
+    "correct_output": [
+      "3",
+      "0",
+      "1"
+    ],
     "source_reference": null
   },
   {
@@ -962,7 +1212,9 @@
     "correct_answer": [
       "toString(matrix {{1, 2, 3},{4,5,6},{7, 8, 9}})"
     ],
-    "correct_output": "matrix {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}",
+    "correct_output": [
+      "matrix {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}"
+    ],
     "source_reference": null
   },
   {
@@ -976,7 +1228,9 @@
       "M = matrix {{1, 2, 3},{4,5,6},{7, 8, 9}};",
       "toString(M_{1,2})"
     ],
-    "correct_output": "matrix {{2, 3}, {5, 6}, {8, 9}}",
+    "correct_output": [
+      "matrix {{2, 3}, {5, 6}, {8, 9}}"
+    ],
     "source_reference": null
   },
   {
@@ -992,7 +1246,9 @@
       "N = kernel f ++ image f",
       "toString(N)"
     ],
-    "correct_output": "image matrix {{-1, -y, 0, 0, 0}, {0, x, 0, 0, 0}, {1, 0, 0, 0, 0}, {0, 0, x, y, x}}",
+    "correct_output": [
+      "image matrix {{-1, -y, 0, 0, 0}, {0, x, 0, 0, 0}, {1, 0, 0, 0, 0}, {0, 0, x, y, x}}"
+    ],
     "source_reference": null
   },
   {
@@ -1005,7 +1261,9 @@
     "correct_answer": [
       "toString(matrix({{1,2,3},{1,2,3},{1,2,3}}))"
     ],
-    "correct_output": "matrix {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}}",
+    "correct_output": [
+      "matrix {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}}"
+    ],
     "source_reference": null
   },
   {
@@ -1018,7 +1276,9 @@
     "correct_answer": [
       "toString(kernel matrix({{1,2,3},{1,2,3},{1,2,3}}))"
     ],
-    "correct_output": "image matrix {{2, 3}, {-1, 0}, {0, -1}}",
+    "correct_output": [
+      "image matrix {{2, 3}, {-1, 0}, {0, -1}}"
+    ],
     "source_reference": null
   },
   {
@@ -1032,7 +1292,9 @@
       "F = R^2",
       "toString(F)"
     ],
-    "correct_output": "R^3",
+    "correct_output": [
+      "R^3"
+    ],
     "source_reference": null
   },
   {
@@ -1045,7 +1307,9 @@
     "correct_answer": [
       "print(\"False\")"
     ],
-    "correct_output": "FALSE",
+    "correct_output": [
+      "FALSE"
+    ],
     "source_reference": null
   },
   {
@@ -1090,7 +1354,12 @@
       ":= cannot be used to reassign a variable that already exists in the same scope.",
       ":= is only for first declaration; = must be used for reassignment."
     ],
-    "correct_output": "stdio:50:0:(3): warning: local declaration of x shields variable with same name\nstdio:50:7:(3): error: no method for binary operator + applied to objects:\n            null (of class Nothing)\n      +     1 (of class ZZ)",
+    "correct_output": [
+      "stdio:50:0:(3): warning: local declaration of x shields variable with same name",
+      "stdio:50:7:(3): error: no method for binary operator + applied to objects:",
+      "null (of class Nothing)",
+      "+     1 (of class ZZ)"
+    ],
     "source_reference": null
   },
   {
@@ -1103,7 +1372,9 @@
     "correct_answer": [
       "2"
     ],
-    "correct_output": "2",
+    "correct_output": [
+      "2"
+    ],
     "source_reference": null
   },
   {
@@ -1120,7 +1391,13 @@
       "As a result, the ^ operator fails with 'no method for binary operator ^ applied to objects: null (of class Nothing)'.",
       "I then remains a Symbol rather than an ideal, causing the resolution step to also fail."
     ],
-    "correct_output": "stdio error: no method for binary operator ^ applied to objects:\n            null (of class Nothing)\n      ^     2 (of class ZZ)\nerror: no method found for applying resolution to:\n     argument : I (of class Symbol)",
+    "correct_output": [
+      "stdio error: no method for binary operator ^ applied to objects:",
+      "null (of class Nothing)",
+      "^     2 (of class ZZ)",
+      "error: no method found for applying resolution to:",
+      "argument : I (of class Symbol)"
+    ],
     "source_reference": null
   },
   {
@@ -1133,7 +1410,9 @@
     "correct_answer": [
       "class NumericalAlgebraicGeometry"
     ],
-    "correct_output": "Package",
+    "correct_output": [
+      "Package"
+    ],
     "source_reference": null
   },
   {
@@ -1148,7 +1427,9 @@
       "res is simply a shorthand alias for resolution with no functional difference.",
       "res === resolution"
     ],
-    "correct_output": "true",
+    "correct_output": [
+      "true"
+    ],
     "source_reference": null
   },
   {
@@ -1162,7 +1443,9 @@
       "No, diff applies a derivation to expressions in a polynomial ring. Differentiate is the standard partial derivative operator.",
       "diff === differentiate"
     ],
-    "correct_output": "False",
+    "correct_output": [
+      "False"
+    ],
     "source_reference": null
   },
   {
@@ -1178,7 +1461,11 @@
       "Ideal is of class Type, meaning it is the type itself and not a constructor.",
       "You can verify this by running class ideal and class Ideal without needing to define a ring."
     ],
-    "correct_output": "They are not the same\nMethodFunctionSingle\nType",
+    "correct_output": [
+      "They are not the same",
+      "MethodFunctionSingle",
+      "Type"
+    ],
     "source_reference": null
   },
   {
@@ -1191,7 +1478,9 @@
     "correct_answer": [
       "apropos helps find functions that an user might be searching for but forgot parts of the name. The ouput will be a list with all functions that included the searched part included in their name."
     ],
-    "correct_output": "{AllCodimensions, CodimensionLimit}",
+    "correct_output": [
+      "{AllCodimensions, CodimensionLimit}"
+    ],
     "source_reference": null
   }
 ]
