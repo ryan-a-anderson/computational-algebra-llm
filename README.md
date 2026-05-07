@@ -90,6 +90,14 @@ All commands are run from the project root with the venv active. The main script
 | `--models MODEL...` | provider defaults | Override model list (applies to every selected provider) |
 | `--output-dir DIR` | `results/` | Directory for per-model JSON files and `summary.json` |
 | `--execute` | off | Run model code through M2 and score on runtime output |
+| `--num-samples N` | `1` | Number of samples per question/model |
+| `--temperature T` | `0.0` | Generation temperature; use nonzero values for pass@k |
+| `--metrics METRIC...` | `accuracy` | Aggregate metrics to compute: `accuracy`, `pass_at_k` |
+| `--pass-k K...` | `1` | k values for `pass_at_k` |
+| `--oracle-grader` | off | Use a binary LLM oracle on execution-output mismatches |
+| `--grader-provider PROVIDER` | `openai` | Provider for the oracle grader |
+| `--grader-model MODEL` | `gpt-5-2` | Model for the oracle grader |
+| `--grader-criteria CRITERIA` | `default` | Oracle criteria: `default`, `strict` |
 | `--delay SECONDS` | `0.5` | Sleep between API calls to avoid rate limits |
 
 Available providers: `anthropic`, `openai`, `mistral`, `deepseek`, `kimi`, `tinker`
@@ -138,6 +146,24 @@ python eval-pipeline/eval.py \
   --execute \
   --output-dir results/run1 \
   --delay 1.0
+```
+
+#### pass@k with binary oracle grading
+
+```bash
+python eval-pipeline/eval.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --providers tinker \
+  --models Qwen/Qwen3-32B \
+  --execute \
+  --num-samples 10 \
+  --temperature 0.7 \
+  --metrics pass_at_k accuracy \
+  --pass-k 1 5 10 \
+  --oracle-grader \
+  --grader-provider openai \
+  --grader-model gpt-5-2 \
+  --grader-cache-dir results/oracle_cache
 ```
 
 Results are written to `<output-dir>/<provider>_<model>_results.json` and a `summary.json` with leaderboard data is printed at the end.

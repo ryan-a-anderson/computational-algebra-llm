@@ -35,9 +35,25 @@ def _normalize_output(text: str) -> str:
     return result
 
 
+def normalize_reference_code(value: str | list[str] | None) -> str:
+    """Normalize benchmark reference code across older JSON schema variants."""
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return "\n".join(str(part) for part in value)
+    return str(value)
+
+
+def outputs_match(actual_output: str | None, correct_output: str | None) -> bool:
+    """Return whether an executed output matches the benchmark target."""
+    return bool(correct_output) and actual_output is not None and (
+        _normalize_output(actual_output) == _normalize_output(correct_output)
+    )
+
+
 def compute_scores(
     model_code: str,
-    correct_answer: str,
+    correct_answer: str | list[str],
     correct_output: str,
     category: str = "",
     actual_output: str | None = None,
@@ -53,15 +69,13 @@ def compute_scores(
         SequenceMatcher(
             None,
             _normalize_code(model_code),
-            _normalize_code(correct_answer),
+            _normalize_code(normalize_reference_code(correct_answer)),
         ).ratio(),
         4,
     )
 
     # output_match compares actual M2 execution output against the expected output
-    output_match = bool(correct_output) and actual_output is not None and (
-        _normalize_output(actual_output) == _normalize_output(correct_output)
-    )
+    output_match = outputs_match(actual_output, correct_output)
 
     if actual_output is not None:
         is_debugging = category.strip().lower() == "debugging"
@@ -75,7 +89,7 @@ def compute_scores(
 
     # Static mode — no execution, so output_match is always False
     norm_resp = _normalize_code(model_code)
-    norm_ans = _normalize_code(correct_answer)
+    norm_ans = _normalize_code(normalize_reference_code(correct_answer))
     exact = norm_resp == norm_ans
     if exact:
         composite = 1.0

@@ -13,6 +13,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from providers import ALL_PROVIDERS, CALLERS, DEFAULT_MODELS, clean_response
+from metrics import compute_metrics
 from scoring import compute_scores
 
 load_dotenv()
@@ -24,6 +25,10 @@ def _error_scores(execute_mode: bool) -> dict:
     return {"exact_match": False, "output_match": False, "fuzzy_score": 0.0, "composite_score": 0.0}
 
 
+def _question_id(question: dict) -> str:
+    return question.get("id") or question.get("problem_ID") or question.get("question_id")
+
+
 # ---------------------------------------------------------------------------
 # Core evaluation
 # ---------------------------------------------------------------------------
@@ -33,9 +38,18 @@ def _file_key(provider: str, model: str) -> str:
     return f"{provider}_{safe}"
 
 
-def evaluate_question(caller, model: str, question: dict, execute_mode: bool) -> dict:
+def evaluate_question(
+    caller,
+    model: str,
+    question: dict,
+    execute_mode: bool,
+    sample_index: int,
+    temperature: float,
+    oracle_config: dict | None = None,
+) -> dict:
     base = {
-        "question_id": question["id"],
+        "question_id": _question_id(question),
+        "sample_index": sample_index,
         "category": question["category"],
         "difficulty": question.get("difficulty"),
         "prompt": question["prompt"],
@@ -43,11 +57,14 @@ def evaluate_question(caller, model: str, question: dict, execute_mode: bool) ->
         "correct_output": question["correct_output"],
     }
     try:
-        raw_output, usage = caller(model, question["prompt"])
+        raw_output, usage = caller(model, question["prompt"], temperature=temperature)
         model_output = clean_response(raw_output)
 
         actual_output = None
         execution_error = None
+        oracle_result = None
+        correct = False
+        judge = "static"
 
         if execute_mode:
             from executor import run_m2
@@ -63,6 +80,25 @@ def evaluate_question(caller, model: str, question: dict, execute_mode: bool) ->
             category=question.get("category", ""),
             actual_output=actual_output,
         )
+        if execute_mode:
+            correct = bool(scores["execution_match"])
+            judge = "deterministic_exact" if correct else "deterministic_mismatch"
+            if not correct and actual_output is not None and oracle_config:
+                from oracle_grader import grade_output
+
+                oracle_result = grade_output(
+                    expected_output=question["correct_output"],
+                    actual_output=actual_output,
+                    provider=oracle_config["provider"],
+                    model=oracle_config["model"],
+                    criteria=oracle_config["criteria"],
+                    cache_dir=oracle_config.get("cache_dir"),
+                )
+                correct = bool(oracle_result["correct"])
+                judge = "oracle" if correct else "oracle_reject"
+        else:
+            correct = bool(scores.get("exact_match"))
+            judge = "static_exact" if correct else "static_mismatch"
 
         result = {
             **base,
@@ -70,7 +106,11 @@ def evaluate_question(caller, model: str, question: dict, execute_mode: bool) ->
             "raw_response": raw_output if raw_output != model_output else None,
             "usage": usage,
             "scores": scores,
+            "correct": correct,
+            "judge": judge,
         }
+        if oracle_result is not None:
+            result["oracle"] = oracle_result
         if execute_mode:
             result["actual_output"] = actual_output
             result["execution_error"] = execution_error
@@ -83,6 +123,8 @@ def evaluate_question(caller, model: str, question: dict, execute_mode: bool) ->
             "raw_response": None,
             "usage": {},
             "scores": _error_scores(execute_mode),
+            "correct": False,
+            "judge": "error",
             "error": str(exc),
         }
         if execute_mode:
@@ -98,6 +140,9 @@ def run_evaluation(
     output_dir: str,
     delay: float,
     execute_mode: bool,
+    num_samples: int,
+    temperature: float,
+    oracle_config: dict | None,
 ) -> dict[str, list[dict]]:
     with open(benchmark_path) as f:
         questions: list[dict] = json.load(f)
@@ -113,33 +158,41 @@ def run_evaluation(
 
         for model in models:
             label = f"{provider}/{model}"
-            print(f"\n=== {label} ({len(questions)} questions) ===")
+            total = len(questions) * num_samples
+            print(f"\n=== {label} ({len(questions)} questions, {num_samples} samples each) ===")
             results: list[dict] = []
 
-            for idx, question in enumerate(questions, 1):
-                print(f"  [{idx:>3}/{len(questions)}] {question['id']:<14}", end="", flush=True)
-                result = evaluate_question(caller, model, question, execute_mode)
-                results.append(result)
+            counter = 0
+            for question in questions:
+                qid = _question_id(question)
+                for sample_index in range(num_samples):
+                    counter += 1
+                    print(
+                        f"  [{counter:>3}/{total}] {qid:<14} sample={sample_index}",
+                        end="",
+                        flush=True,
+                    )
+                    result = evaluate_question(
+                        caller,
+                        model,
+                        question,
+                        execute_mode,
+                        sample_index=sample_index,
+                        temperature=temperature,
+                        oracle_config=oracle_config,
+                    )
+                    results.append(result)
 
-                if result.get("error"):
-                    print(f"  ERROR: {result['error']}")
-                else:
-                    s = result["scores"]
-                    if execute_mode:
-                        print(
-                            f"  composite={s['composite_score']:.3f}"
-                            f"  exec={'Y' if s['execution_match'] else 'n'}"
-                            f"  fuzzy={s['code_fuzzy_score']:.3f}"
-                        )
+                    if result.get("error"):
+                        print(f"  ERROR: {result['error']}")
                     else:
                         print(
-                            f"  composite={s['composite_score']:.3f}"
-                            f"  exact={'Y' if s['exact_match'] else 'n'}"
-                            f"  output={'Y' if s['output_match'] else 'n'}"
+                            f"  correct={'Y' if result['correct'] else 'n'}"
+                            f"  judge={result['judge']}"
                         )
 
-                if delay > 0 and idx < len(questions):
-                    time.sleep(delay)
+                    if delay > 0 and counter < total:
+                        time.sleep(delay)
 
             result_file = out / f"{_file_key(provider, model)}_results.json"
             result_file.write_text(json.dumps(results, indent=2))
@@ -154,10 +207,17 @@ def run_evaluation(
 # Summary generation
 # ---------------------------------------------------------------------------
 
-def generate_summary(all_results: dict[str, list[dict]], execute_mode: bool) -> dict:
+def generate_summary(
+    all_results: dict[str, list[dict]],
+    execute_mode: bool,
+    metric_names: list[str],
+    pass_k: list[int],
+) -> dict:
     summary: dict = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "execute_mode": execute_mode,
+        "metrics_requested": metric_names,
+        "pass_k": pass_k,
         "models": {},
         "by_category": {},
         "by_difficulty": {},
@@ -169,11 +229,13 @@ def generate_summary(all_results: dict[str, list[dict]], execute_mode: bool) -> 
         if n == 0:
             continue
 
-        composites = [r["scores"]["composite_score"] for r in valid]
+        metric_values = compute_metrics(valid, metric_names, pass_k)
+        question_count = len({r["question_id"] for r in valid})
         model_summary: dict = {
-            "num_questions": n,
+            "num_questions": question_count,
+            "num_samples": n,
             "num_errors": len(results) - n,
-            "avg_composite_score": round(sum(composites) / n, 4),
+            **metric_values,
         }
 
         if execute_mode:
@@ -196,12 +258,12 @@ def generate_summary(all_results: dict[str, list[dict]], execute_mode: bool) -> 
 
         summary["models"][label] = model_summary
 
-        cats: dict[str, list[float]] = {}
-        diffs: dict[str, list[float]] = {}
+        cats: dict[str, list[bool]] = {}
+        diffs: dict[str, list[bool]] = {}
         for r in valid:
-            cats.setdefault(r["category"], []).append(r["scores"]["composite_score"])
+            cats.setdefault(r["category"], []).append(bool(r["correct"]))
             diffs.setdefault(r.get("difficulty") or "unknown", []).append(
-                r["scores"]["composite_score"]
+                bool(r["correct"])
             )
 
         summary["by_category"][label] = {c: round(sum(v) / len(v), 4) for c, v in cats.items()}
@@ -216,48 +278,31 @@ def generate_summary(all_results: dict[str, list[dict]], execute_mode: bool) -> 
 
 def print_leaderboard(summary: dict) -> None:
     models = summary.get("models", {})
-    execute_mode = summary.get("execute_mode", False)
     if not models:
         print("No results to display.")
         return
 
-    ranked = sorted(models.items(), key=lambda x: x[1]["avg_composite_score"], reverse=True)
+    metric_cols = [
+        key
+        for key in next(iter(models.values()))
+        if key == "accuracy" or key.startswith("pass@")
+    ]
+    rank_key = metric_cols[0] if metric_cols else "accuracy"
+    ranked = sorted(models.items(), key=lambda x: x[1].get(rank_key, 0.0), reverse=True)
 
-    if execute_mode:
-        W = 84
-        print("\n" + "=" * W)
-        print("LEADERBOARD")
-        print("=" * W)
-        print(f"{'#':<4} {'Model':<38} {'Composite':>10} {'Exec':>7} {'Exec%':>8} {'CodeFuzzy':>10}")
-        print("-" * W)
-        for rank, (label, s) in enumerate(ranked, 1):
-            exec_frac = f"{s['num_execution_matches']}/{s['num_questions']}"
-            print(
-                f"{rank:<4} {label:<38} "
-                f"{s['avg_composite_score']:>10.4f} "
-                f"{exec_frac:>7} "
-                f"{s['execution_match_rate']*100:>7.1f}% "
-                f"{s['avg_code_fuzzy_score']:>10.4f}"
-            )
-        print("=" * W)
-    else:
-        W = 84
-        print("\n" + "=" * W)
-        print("LEADERBOARD")
-        print("=" * W)
-        print(
-            f"{'#':<4} {'Model':<38} {'Composite':>10} {'Exact%':>8} {'Output%':>9} {'Fuzzy':>7}"
+    width = 46 + (12 * len(metric_cols))
+    print("\n" + "=" * width)
+    print("LEADERBOARD")
+    print("=" * width)
+    header = f"{'#':<4} {'Model':<38}" + "".join(f" {name:>10}" for name in metric_cols)
+    print(header)
+    print("-" * len(header))
+    for rank, (label, s) in enumerate(ranked, 1):
+        row = f"{rank:<4} {label:<38}" + "".join(
+            f" {s.get(name, 0.0):>10.4f}" for name in metric_cols
         )
-        print("-" * W)
-        for rank, (label, s) in enumerate(ranked, 1):
-            print(
-                f"{rank:<4} {label:<38} "
-                f"{s['avg_composite_score']:>10.4f} "
-                f"{s['exact_match_rate']*100:>7.1f}% "
-                f"{s['output_match_rate']*100:>8.1f}% "
-                f"{s['avg_fuzzy_score']:>7.4f}"
-            )
-        print("=" * W)
+        print(row)
+    print("=" * width)
 
     # Per-category breakdown
     by_cat = summary.get("by_category", {})
@@ -337,10 +382,69 @@ def parse_args() -> argparse.Namespace:
         help="Seconds to sleep between API calls (default: 0.5).",
     )
     parser.add_argument(
+        "--num-samples",
+        type=int,
+        default=1,
+        metavar="N",
+        help="Number of samples to generate per question/model. Default: 1.",
+    )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.0,
+        metavar="T",
+        help="Generation temperature. Use nonzero values for meaningful pass@k. Default: 0.0.",
+    )
+    parser.add_argument(
+        "--metrics",
+        nargs="+",
+        default=["accuracy"],
+        choices=["accuracy", "pass_at_k"],
+        help="Aggregate metrics to compute. Default: accuracy.",
+    )
+    parser.add_argument(
+        "--pass-k",
+        nargs="+",
+        type=int,
+        default=[1],
+        metavar="K",
+        help="k values for pass@k when --metrics includes pass_at_k. Default: 1.",
+    )
+    parser.add_argument(
         "--execute",
         action="store_true",
         default=False,
         help="Run model output through M2 and score on runtime output instead of code strings.",
+    )
+    parser.add_argument(
+        "--oracle-grader",
+        action="store_true",
+        default=False,
+        help="Use a binary LLM oracle for execution-output mismatches.",
+    )
+    parser.add_argument(
+        "--grader-provider",
+        default="openai",
+        metavar="PROVIDER",
+        help="Provider for --oracle-grader. Default: openai.",
+    )
+    parser.add_argument(
+        "--grader-model",
+        default="gpt-5-2",
+        metavar="MODEL",
+        help="Model for --oracle-grader. Default: gpt-5-2.",
+    )
+    parser.add_argument(
+        "--grader-criteria",
+        default="default",
+        choices=["default", "strict"],
+        help="Named binary oracle criteria. Default: default.",
+    )
+    parser.add_argument(
+        "--grader-cache-dir",
+        default=None,
+        metavar="DIR",
+        help="Optional cache directory for oracle judgments.",
     )
     return parser.parse_args()
 
@@ -359,6 +463,16 @@ def main() -> None:
         else:
             print("Execution mode enabled (M2 found).")
 
+    if args.num_samples < 1:
+        sys.exit("--num-samples must be at least 1")
+    if any(k < 1 for k in args.pass_k):
+        sys.exit("--pass-k values must be at least 1")
+    if "pass_at_k" in args.metrics and args.num_samples == 1 and any(k > 1 for k in args.pass_k):
+        print(
+            "Warning: pass@k with k > 1 is not meaningful with --num-samples 1.",
+            file=sys.stderr,
+        )
+
     if "all" in args.providers:
         selected = ALL_PROVIDERS
     else:
@@ -374,6 +488,22 @@ def main() -> None:
     if not os.path.isfile(args.benchmark):
         sys.exit(f"Benchmark file not found: {args.benchmark}")
 
+    oracle_config = None
+    if args.oracle_grader:
+        if not execute_mode:
+            sys.exit("--oracle-grader requires --execute so actual compiled outputs exist")
+        if args.grader_provider not in ALL_PROVIDERS:
+            sys.exit(
+                f"Unknown grader provider '{args.grader_provider}'. "
+                f"Valid choices: {', '.join(ALL_PROVIDERS)}"
+            )
+        oracle_config = {
+            "provider": args.grader_provider,
+            "model": args.grader_model,
+            "criteria": args.grader_criteria,
+            "cache_dir": args.grader_cache_dir,
+        }
+
     all_results = run_evaluation(
         providers=selected,
         model_overrides=args.models,
@@ -381,9 +511,12 @@ def main() -> None:
         output_dir=args.output_dir,
         delay=args.delay,
         execute_mode=execute_mode,
+        num_samples=args.num_samples,
+        temperature=args.temperature,
+        oracle_config=oracle_config,
     )
 
-    summary = generate_summary(all_results, execute_mode)
+    summary = generate_summary(all_results, execute_mode, args.metrics, args.pass_k)
     summary_file = Path(args.output_dir) / "summary.json"
     summary_file.write_text(json.dumps(summary, indent=2))
     print(f"\nSummary written to {summary_file}")

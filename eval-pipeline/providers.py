@@ -20,7 +20,7 @@ DEFAULT_MODELS: dict[str, list[str]] = {
     "tinker": ["Qwen/Qwen3-8B", "Qwen/Qwen3-32B", "meta-llama/Llama-3.1-8B-Instruct", "meta-llama/Llama-3.3-70B-Instruct"],
 }
 
-Caller = Callable[[str, str], tuple[str, dict]]
+Caller = Callable[..., tuple[str, dict]]
 
 
 def clean_response(text: str) -> str:
@@ -43,15 +43,21 @@ def _usage(prompt_tokens: int, completion_tokens: int) -> dict:
 # Provider callers — each returns (raw_text, usage_dict)
 # ---------------------------------------------------------------------------
 
-def call_anthropic(model: str, prompt: str) -> tuple[str, dict]:
+def call_anthropic(
+    model: str,
+    prompt: str,
+    system_prompt: str = SYSTEM_PROMPT,
+    temperature: float = 0.0,
+    max_tokens: int = 2048,
+) -> tuple[str, dict]:
     import anthropic
 
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     msg = client.messages.create(
         model=model,
-        max_tokens=2048,
-        temperature=0.0,
-        system=SYSTEM_PROMPT,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        system=system_prompt,
         messages=[{"role": "user", "content": prompt}],
     )
     raw = msg.content[0].text
@@ -64,6 +70,9 @@ def call_openai_compat(
     prompt: str,
     base_url: Optional[str] = None,
     api_key_env: str = "OPENAI_API_KEY",
+    system_prompt: str = SYSTEM_PROMPT,
+    temperature: float = 0.0,
+    max_tokens: int = 2048,
 ) -> tuple[str, dict]:
     from openai import OpenAI
 
@@ -74,29 +83,35 @@ def call_openai_compat(
     resp = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt},
         ],
-        max_tokens=2048,
-        temperature=0.0,
+        max_tokens=max_tokens,
+        temperature=temperature,
     )
     raw = resp.choices[0].message.content or ""
     usage = _usage(resp.usage.prompt_tokens, resp.usage.completion_tokens)
     return raw, usage
 
 
-def call_mistral(model: str, prompt: str) -> tuple[str, dict]:
+def call_mistral(
+    model: str,
+    prompt: str,
+    system_prompt: str = SYSTEM_PROMPT,
+    temperature: float = 0.0,
+    max_tokens: int = 2048,
+) -> tuple[str, dict]:
     from huggingface_hub import InferenceClient
 
     client = InferenceClient(token=os.environ["HUGGINGFACE_API_KEY"])
     resp = client.chat_completion(
         model=model,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt},
         ],
-        max_tokens=2048,
-        temperature=0.0,
+        max_tokens=max_tokens,
+        temperature=temperature,
     )
     raw = resp.choices[0].message.content or ""
     usage: dict = {}
@@ -110,7 +125,13 @@ def call_mistral(model: str, prompt: str) -> tuple[str, dict]:
 # ---------------------------------------------------------------------------
 
 def _oa(base_url: Optional[str], env: str) -> Caller:
-    return lambda model, prompt: call_openai_compat(model, prompt, base_url=base_url, api_key_env=env)
+    return lambda model, prompt, **kwargs: call_openai_compat(
+        model,
+        prompt,
+        base_url=base_url,
+        api_key_env=env,
+        **kwargs,
+    )
 
 
 CALLERS: dict[str, Caller] = {
