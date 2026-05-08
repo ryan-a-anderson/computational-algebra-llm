@@ -50,7 +50,7 @@
     "description": "This problem tests opening macauley 2 documentation for the determinant.",
     "prompt": "# Macauley2 programming language question\n\nIn macauley 2, what command can I run to open the help menu to learn about the determinant documentation",
     "correct_answer": [
-      "viewHelp \"determinant"
+      viewHelp "determinant"
     ],
     "correct_output": "Opening file:///usr/share/doc/Macaulay2/Macaulay2Doc/html/_determinant.html",
     "source_reference": null
@@ -63,7 +63,7 @@
     "description": "This problem tests horizontal concatenation of strings in m2",
     "prompt": "# Macauley2 programming language question\n\nHow do I horizontally concatenate the following two strings horizontally in m2:\n\n- \"hello\"\n- \"world",
     "correct_answer": [
-      "hello\" | \"world"
+      "hello" | "world"
     ],
     "correct_output": "helloworld",
     "source_reference": null
@@ -76,7 +76,7 @@
     "description": "This problem tests vertical concatenation of strings in m2",
     "prompt": "# Macauley2 programming language question\n\nHow do I vertically concatenate the following two strings horizontally in m2:\n\n- \"hello\"\n- \"world",
     "correct_answer": [
-      "hello\" || \"world"
+      "hello" || "world"
     ],
     "correct_output": "hello\nworld",
     "source_reference": null
