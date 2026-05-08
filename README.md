@@ -94,7 +94,7 @@ All commands are run from the project root with the venv active. The main script
 | `--reference-cache PATH` | auto path in sweep | Compiled reference-output cache for execution scoring |
 | `--require-reference-cache` | off | Lower-level `eval.py` option to require cached references |
 | `--num-samples N` | `1` | Number of samples per question/model; sweep runner defaults to `30` |
-| `--temperature T` | `0.0` | Generation temperature; use nonzero values for pass@k |
+| `--temperature T...` | `0.0` | One or more generation temperatures; use nonzero values for pass@k sampling |
 | `--metrics METRIC...` | `accuracy` | Aggregate metrics to compute: `accuracy`, `pass_at_k` |
 | `--pass-k K...` | `1` | k values for `pass_at_k` |
 | `--workers N` | `1` | Parallel sample evaluation workers per model |
@@ -197,6 +197,24 @@ python eval-pipeline/run_benchmark_sweep.py \
 ```
 
 `run_benchmark_sweep.py` requires the reference cache by default. Use `--reference-cache PATH` for a custom cache location, or `--compile-references` for a one-off run that compiles references inline. Use `--delay` to pace task submission if the provider rate limits concurrent requests.
+
+To compare sampling temperatures in one run, pass multiple values:
+
+```bash
+python eval-pipeline/run_benchmark_sweep.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --models Qwen/Qwen3-8B Qwen/Qwen3-32B \
+  --num-samples 30 \
+  --temperature 0 .2 .4 .6 .8 1 \
+  --pass-k 1 5 10 20 \
+  --workers 2 \
+  --oracle-grader \
+  --grader-provider tinker \
+  --grader-model Qwen/Qwen3-32B \
+  --run-name tinker_temp_sweep_k1_5_10_20
+```
+
+Temperature is recorded in `run_config.json`, `samples.csv`, and `pass_at_k.csv`, and the notebook plots pass@k by both model and temperature.
 
 Each run writes to `results/runs/<timestamp>/` with:
 

@@ -53,9 +53,10 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--temperature",
+        nargs="+",
         type=float,
-        default=0.7,
-        help="Sampling temperature. Default: 0.7.",
+        default=[0.7],
+        help="One or more sampling temperatures. Default: 0.7.",
     )
     parser.add_argument(
         "--pass-k",
@@ -125,6 +126,9 @@ def main() -> None:
         sys.exit("--pass-k values must be at least 1")
     if any(k > args.num_samples for k in args.pass_k):
         sys.exit("--pass-k values must be <= --num-samples")
+    temperatures = args.temperature
+    if any(t < 0 for t in temperatures):
+        sys.exit("--temperature values must be nonnegative")
     ok, message = smoke_check_m2()
     if not ok:
         sys.exit(message)
@@ -158,7 +162,8 @@ def main() -> None:
         "provider": args.provider,
         "models": models,
         "num_samples": args.num_samples,
-        "temperature": args.temperature,
+        "temperature": temperatures[0] if len(temperatures) == 1 else None,
+        "temperatures": temperatures,
         "pass_k": args.pass_k,
         "delay": args.delay,
         "workers": args.workers,
@@ -171,20 +176,25 @@ def main() -> None:
     }
     (output_dir / "run_config.json").write_text(json.dumps(config, indent=2))
 
-    all_results = run_evaluation(
-        providers=[args.provider],
-        model_overrides=models,
-        benchmark_path=args.benchmark,
-        output_dir=str(output_dir),
-        delay=args.delay,
-        execute_mode=True,
-        num_samples=args.num_samples,
-        temperature=args.temperature,
-        oracle_config=oracle_config,
-        workers=args.workers,
-        reference_cache_path=None if args.compile_references else reference_cache,
-        require_reference_cache=not args.compile_references,
-    )
+    all_results = {}
+    for temperature in temperatures:
+        print(f"\n### Temperature {temperature:g} ###")
+        temp_results = run_evaluation(
+            providers=[args.provider],
+            model_overrides=models,
+            benchmark_path=args.benchmark,
+            output_dir=str(output_dir),
+            delay=args.delay,
+            execute_mode=True,
+            num_samples=args.num_samples,
+            temperature=temperature,
+            oracle_config=oracle_config,
+            workers=args.workers,
+            reference_cache_path=None if args.compile_references else reference_cache,
+            require_reference_cache=not args.compile_references,
+            label_suffix=f" (T={temperature:g})" if len(temperatures) > 1 else "",
+        )
+        all_results.update(temp_results)
 
     summary = generate_summary(
         all_results,

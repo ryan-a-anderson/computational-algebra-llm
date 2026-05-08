@@ -266,9 +266,9 @@ def load_reference_cache(
 # Core evaluation
 # ---------------------------------------------------------------------------
 
-def _file_key(provider: str, model: str) -> str:
-    safe = model.replace("/", "_").replace(" ", "_")
-    return f"{provider}_{safe}"
+def _file_key(provider: str, model: str, label_suffix: str = "") -> str:
+    raw = f"{provider}_{model}{label_suffix}"
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", raw).strip("_")
 
 
 def evaluate_question(
@@ -285,6 +285,7 @@ def evaluate_question(
     base = {
         "question_id": _question_id(question),
         "sample_index": sample_index,
+        "temperature": temperature,
         "category": question["category"],
         "difficulty": question.get("difficulty"),
         "prompt": question["prompt"],
@@ -444,6 +445,7 @@ def run_evaluation(
     workers: int = 1,
     reference_cache_path: str | None = None,
     require_reference_cache: bool = False,
+    label_suffix: str = "",
 ) -> dict[str, list[dict]]:
     with open(benchmark_path) as f:
         questions: list[dict] = json.load(f)
@@ -467,7 +469,7 @@ def run_evaluation(
         caller = CALLERS[provider]
 
         for model in models:
-            label = f"{provider}/{model}"
+            label = f"{provider}/{model}{label_suffix}"
             total = len(questions) * num_samples
             active_workers = max(1, min(workers, total))
             print(
@@ -536,7 +538,7 @@ def run_evaluation(
 
             results = [result for _, result in sorted(completed, key=lambda item: item[0])]
 
-            result_file = out / f"{_file_key(provider, model)}_results.json"
+            result_file = out / f"{_file_key(provider, model, label_suffix)}_results.json"
             result_file.write_text(json.dumps(results, indent=2))
             print(f"  -> {result_file}")
 
@@ -582,6 +584,7 @@ def generate_summary(
             "num_attempted_samples": len(results),
             "num_reference_failed_samples": len(reference_failed),
             "num_errors": sum(1 for r in valid if r.get("judge") == "error"),
+            "temperature": valid[0].get("temperature") if valid else None,
             **metric_values,
         }
 
@@ -610,10 +613,19 @@ def generate_summary(
                 failed_counts[result["question_id"]] = failed_counts.get(result["question_id"], 0) + 1
             summary.setdefault("reference_failed", {})[label] = failed_counts
         if "pass_at_k" in metric_names:
-            summary.setdefault("by_question", {})[label] = compute_pass_at_k_by_question(
+            question_pass = compute_pass_at_k_by_question(
                 valid,
                 pass_k,
             )
+            for question_id, values in question_pass.items():
+                question_temps = {
+                    r.get("temperature")
+                    for r in valid
+                    if r.get("question_id") == question_id
+                }
+                if len(question_temps) == 1:
+                    values["temperature"] = next(iter(question_temps))
+            summary.setdefault("by_question", {})[label] = question_pass
 
         cats: dict[str, list[bool]] = {}
         diffs: dict[str, list[bool]] = {}

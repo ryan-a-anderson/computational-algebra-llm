@@ -10,6 +10,7 @@ SAMPLE_COLUMNS = [
     "model",
     "question_id",
     "sample_index",
+    "temperature",
     "category",
     "difficulty",
     "prompt",
@@ -49,6 +50,7 @@ SAMPLE_COLUMNS = [
 PASS_AT_K_BASE_COLUMNS = [
     "model",
     "question_id",
+    "temperature",
     "num_samples",
     "num_correct",
     "num_attempted_samples",
@@ -76,6 +78,7 @@ def flatten_samples(all_results: dict[str, list[dict]]) -> list[dict]:
                     "model": model_label,
                     "question_id": result.get("question_id"),
                     "sample_index": result.get("sample_index"),
+                    "temperature": result.get("temperature"),
                     "category": result.get("category"),
                     "difficulty": result.get("difficulty"),
                     "prompt": result.get("prompt"),
@@ -120,10 +123,12 @@ def flatten_pass_at_k(summary: dict) -> list[dict]:
     pass_cols = [f"pass@{k}" for k in summary.get("pass_k", [])]
 
     for model_label, questions in summary.get("by_question", {}).items():
+        model_temperature = summary.get("models", {}).get(model_label, {}).get("temperature")
         for question_id, values in questions.items():
             row = {
                 "model": model_label,
                 "question_id": question_id,
+                "temperature": values.get("temperature", model_temperature),
                 "num_samples": values.get("num_samples"),
                 "num_correct": values.get("num_correct"),
                 "num_attempted_samples": values.get("num_samples"),
@@ -137,6 +142,7 @@ def flatten_pass_at_k(summary: dict) -> list[dict]:
         row = {
             "model": model_label,
             "question_id": "__aggregate__",
+            "temperature": values.get("temperature"),
             "num_samples": values.get("num_samples"),
             "num_correct": values.get("num_correct"),
             "num_attempted_samples": values.get("num_attempted_samples"),
@@ -152,6 +158,7 @@ def flatten_pass_at_k(summary: dict) -> list[dict]:
                 {
                     "model": model_label,
                     "question_id": question_id,
+                    "temperature": summary.get("models", {}).get(model_label, {}).get("temperature"),
                     "num_samples": 0,
                     "num_correct": 0,
                     "num_attempted_samples": count,
