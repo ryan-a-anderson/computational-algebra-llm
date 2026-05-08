@@ -36,6 +36,18 @@ def run_m2(code: str, timeout: int = 15) -> tuple[str, str]:
     return _clean_m2_output(raw), raw
 
 
+def smoke_check_m2(timeout: int = 10) -> tuple[bool, str]:
+    """Check that M2 is on PATH and can execute a tiny expression."""
+    try:
+        output, raw = run_m2("1+1", timeout=timeout)
+    except FileNotFoundError as exc:
+        return False, str(exc)
+
+    if output.strip() == "2":
+        return True, "M2 smoke check passed: 1+1 -> 2"
+    return False, f"M2 smoke check failed. cleaned_output={output!r}; raw_output={raw!r}"
+
+
 def _trim_blank_edges(lines: list[str]) -> str:
     """Join lines, preserving internal blank lines but stripping leading/trailing ones."""
     while lines and not lines[0]:

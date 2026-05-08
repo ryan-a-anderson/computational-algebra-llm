@@ -4,17 +4,20 @@
 import argparse
 import json
 import os
+import re
 import shutil
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
 
+from csv_exports import write_run_csvs
 from providers import ALL_PROVIDERS, CALLERS, DEFAULT_MODELS, clean_response
-from metrics import compute_metrics
-from scoring import compute_scores
+from metrics import compute_metrics, compute_pass_at_k_by_question
+from scoring import compute_scores, normalize_reference_code, outputs_match
 
 load_dotenv()
 
@@ -27,6 +30,61 @@ def _error_scores(execute_mode: bool) -> dict:
 
 def _question_id(question: dict) -> str:
     return question.get("id") or question.get("problem_ID") or question.get("question_id")
+
+
+def _has_m2_error(raw_output: str) -> bool:
+    lowered = raw_output.lower()
+    return " error:" in lowered or "stdio:" in lowered or "--backtrace:" in lowered
+
+
+def preflight_code_only(response: str) -> tuple[bool, str | None]:
+    """Reject obvious non-code responses before sending text to M2."""
+    text = response.strip()
+    if not text:
+        return False, "empty response"
+    lowered = text.lower()
+    if "```" in text:
+        return False, "markdown code fence detected"
+    if "<think" in lowered or "</think>" in lowered:
+        return False, "thinking tag detected"
+
+    prose_markers = [
+        r"^\s*(okay|sure|here is|here's|the code|let me|i can|we need|to solve)\b",
+        r"\b(the user|the question|this code|explanation|reasoning)\b",
+    ]
+    for pattern in prose_markers:
+        if re.search(pattern, lowered, flags=re.MULTILINE):
+            return False, "explanation/prose detected"
+    return True, None
+
+
+def compile_reference(question: dict) -> dict:
+    """Compile the benchmark reference answer once and return grading target metadata."""
+    reference_code = normalize_reference_code(question.get("correct_answer"))
+    record = {
+        "question_id": _question_id(question),
+        "reference_code": reference_code,
+        "reference_output": None,
+        "reference_raw_output": None,
+        "reference_execution_error": None,
+        "reference_failed": False,
+    }
+    try:
+        from executor import run_m2
+
+        reference_output, reference_raw_output = run_m2(reference_code)
+        record["reference_output"] = reference_output
+        record["reference_raw_output"] = reference_raw_output
+        if not reference_output and reference_raw_output.startswith(("TIMEOUT", "SUBPROCESS_ERROR")):
+            record["reference_execution_error"] = reference_raw_output
+            record["reference_failed"] = True
+        elif _has_m2_error(reference_raw_output):
+            record["reference_execution_error"] = reference_raw_output
+            record["reference_failed"] = True
+    except Exception as exc:
+        record["reference_execution_error"] = str(exc)
+        record["reference_failed"] = True
+    return record
 
 
 # ---------------------------------------------------------------------------
@@ -46,7 +104,9 @@ def evaluate_question(
     sample_index: int,
     temperature: float,
     oracle_config: dict | None = None,
+    reference_record: dict | None = None,
 ) -> dict:
+    reference_record = reference_record or {}
     base = {
         "question_id": _question_id(question),
         "sample_index": sample_index,
@@ -55,47 +115,84 @@ def evaluate_question(
         "prompt": question["prompt"],
         "correct_answer": question["correct_answer"],
         "correct_output": question["correct_output"],
+        "reference_code": reference_record.get("reference_code"),
+        "reference_output": reference_record.get("reference_output"),
+        "reference_raw_output": reference_record.get("reference_raw_output"),
+        "reference_execution_error": reference_record.get("reference_execution_error"),
+        "reference_failed": bool(reference_record.get("reference_failed")),
     }
     try:
         raw_output, usage = caller(model, question["prompt"], temperature=temperature)
-        model_output = clean_response(raw_output)
+        model_output = raw_output.strip()
 
         actual_output = None
+        raw_actual_output = None
         execution_error = None
         oracle_result = None
+        oracle_error = None
         correct = False
         judge = "static"
+        code_only_ok = True
+        preflight_error = None
+        if execute_mode and reference_record and not reference_record.get("reference_failed"):
+            target_output = reference_record.get("reference_output")
+        else:
+            target_output = question["correct_output"]
 
-        if execute_mode:
+        if execute_mode and reference_record.get("reference_failed"):
+            judge = "reference_failed"
+        else:
+            code_only_ok, preflight_error = preflight_code_only(raw_output)
+
+        if execute_mode and not reference_record.get("reference_failed") and code_only_ok:
             from executor import run_m2
-            actual_output, raw_exec = run_m2(model_output)
-            if not actual_output and raw_exec.startswith(("TIMEOUT", "SUBPROCESS_ERROR")):
-                execution_error = raw_exec
+            actual_output, raw_actual_output = run_m2(model_output)
+            if not actual_output and raw_actual_output.startswith(("TIMEOUT", "SUBPROCESS_ERROR")):
+                execution_error = raw_actual_output
                 actual_output = None
+            elif raw_actual_output and _has_m2_error(raw_actual_output):
+                execution_error = raw_actual_output
 
         scores = compute_scores(
             model_output,
             question["correct_answer"],
-            question["correct_output"],
+            target_output,
             category=question.get("category", ""),
-            actual_output=actual_output,
+            actual_output=actual_output if not reference_record.get("reference_failed") else None,
         )
         if execute_mode:
-            correct = bool(scores["execution_match"])
-            judge = "deterministic_exact" if correct else "deterministic_mismatch"
-            if not correct and actual_output is not None and oracle_config:
+            if reference_record.get("reference_failed"):
+                correct = False
+                judge = "reference_failed"
+            elif not code_only_ok:
+                correct = False
+                judge = "preflight_reject"
+            else:
+                correct = bool(outputs_match(actual_output, target_output))
+                judge = "deterministic_exact" if correct else "deterministic_mismatch"
+            if (
+                not correct
+                and code_only_ok
+                and not reference_record.get("reference_failed")
+                and actual_output is not None
+                and oracle_config
+            ):
                 from oracle_grader import grade_output
 
-                oracle_result = grade_output(
-                    expected_output=question["correct_output"],
-                    actual_output=actual_output,
-                    provider=oracle_config["provider"],
-                    model=oracle_config["model"],
-                    criteria=oracle_config["criteria"],
-                    cache_dir=oracle_config.get("cache_dir"),
-                )
-                correct = bool(oracle_result["correct"])
-                judge = "oracle" if correct else "oracle_reject"
+                try:
+                    oracle_result = grade_output(
+                        expected_output=target_output,
+                        actual_output=actual_output,
+                        provider=oracle_config["provider"],
+                        model=oracle_config["model"],
+                        criteria=oracle_config["criteria"],
+                        cache_dir=oracle_config.get("cache_dir"),
+                    )
+                    correct = bool(oracle_result["correct"])
+                    judge = "oracle" if correct else "oracle_reject"
+                except Exception as exc:
+                    oracle_error = str(exc)
+                    judge = "oracle_error"
         else:
             correct = bool(scores.get("exact_match"))
             judge = "static_exact" if correct else "static_mismatch"
@@ -103,16 +200,20 @@ def evaluate_question(
         result = {
             **base,
             "model_response": model_output,
-            "raw_response": raw_output if raw_output != model_output else None,
+            "raw_response": raw_output,
             "usage": usage,
             "scores": scores,
             "correct": correct,
             "judge": judge,
+            "code_only_violation": not code_only_ok,
+            "preflight_error": preflight_error,
+            "oracle_error": oracle_error,
         }
         if oracle_result is not None:
             result["oracle"] = oracle_result
         if execute_mode:
             result["actual_output"] = actual_output
+            result["raw_actual_output"] = raw_actual_output
             result["execution_error"] = execution_error
         return result
 
@@ -125,10 +226,13 @@ def evaluate_question(
             "scores": _error_scores(execute_mode),
             "correct": False,
             "judge": "error",
+            "code_only_violation": False,
+            "preflight_error": None,
             "error": str(exc),
         }
         if execute_mode:
             result["actual_output"] = None
+            result["raw_actual_output"] = None
             result["execution_error"] = None
         return result
 
@@ -143,9 +247,19 @@ def run_evaluation(
     num_samples: int,
     temperature: float,
     oracle_config: dict | None,
+    workers: int = 1,
 ) -> dict[str, list[dict]]:
     with open(benchmark_path) as f:
         questions: list[dict] = json.load(f)
+    reference_records: dict[str, dict] = {}
+    if execute_mode:
+        print(f"Compiling {len(questions)} reference answers with M2...")
+        for question in questions:
+            qid = _question_id(question)
+            record = compile_reference(question)
+            reference_records[qid] = record
+            if record["reference_failed"]:
+                print(f"  {qid:<14} reference_failed")
 
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -159,40 +273,54 @@ def run_evaluation(
         for model in models:
             label = f"{provider}/{model}"
             total = len(questions) * num_samples
-            print(f"\n=== {label} ({len(questions)} questions, {num_samples} samples each) ===")
-            results: list[dict] = []
+            active_workers = max(1, min(workers, total))
+            print(
+                f"\n=== {label} ({len(questions)} questions, {num_samples} samples each, "
+                f"workers={active_workers}) ==="
+            )
 
-            counter = 0
+            tasks: list[tuple[int, dict, int]] = []
+            order = 0
             for question in questions:
                 qid = _question_id(question)
+                reference_record = reference_records.get(qid, {})
                 for sample_index in range(num_samples):
-                    counter += 1
-                    print(
-                        f"  [{counter:>3}/{total}] {qid:<14} sample={sample_index}",
-                        end="",
-                        flush=True,
-                    )
-                    result = evaluate_question(
+                    order += 1
+                    tasks.append((order, question, sample_index, reference_record))
+
+            completed: list[tuple[int, dict]] = []
+            with ThreadPoolExecutor(max_workers=active_workers) as pool:
+                futures = {}
+                for idx, (order, question, sample_index, reference_record) in enumerate(tasks, 1):
+                    future = pool.submit(
+                        evaluate_question,
                         caller,
                         model,
                         question,
                         execute_mode,
-                        sample_index=sample_index,
-                        temperature=temperature,
-                        oracle_config=oracle_config,
+                        sample_index,
+                        temperature,
+                        oracle_config,
+                        reference_record,
                     )
-                    results.append(result)
+                    futures[future] = (order, _question_id(question), sample_index)
+                    if delay > 0 and idx < total:
+                        time.sleep(delay)
 
+                for done_count, future in enumerate(as_completed(futures), 1):
+                    order, qid, sample_index = futures[future]
+                    result = future.result()
+                    completed.append((order, result))
+                    prefix = f"  [{done_count:>3}/{total}] {qid:<14} sample={sample_index}"
                     if result.get("error"):
-                        print(f"  ERROR: {result['error']}")
+                        print(f"{prefix}  ERROR: {result['error']}")
                     else:
                         print(
-                            f"  correct={'Y' if result['correct'] else 'n'}"
+                            f"{prefix}  correct={'Y' if result['correct'] else 'n'}"
                             f"  judge={result['judge']}"
                         )
 
-                    if delay > 0 and counter < total:
-                        time.sleep(delay)
+            results = [result for _, result in sorted(completed, key=lambda item: item[0])]
 
             result_file = out / f"{_file_key(provider, model)}_results.json"
             result_file.write_text(json.dumps(results, indent=2))
@@ -224,22 +352,27 @@ def generate_summary(
     }
 
     for label, results in all_results.items():
-        valid = [r for r in results if r.get("model_response") is not None]
+        reference_failed = [r for r in results if r.get("reference_failed")]
+        valid = [r for r in results if not r.get("reference_failed")]
         n = len(valid)
         if n == 0:
             continue
 
         metric_values = compute_metrics(valid, metric_names, pass_k)
         question_count = len({r["question_id"] for r in valid})
+        attempted_question_count = len({r["question_id"] for r in results})
         model_summary: dict = {
             "num_questions": question_count,
+            "num_attempted_questions": attempted_question_count,
             "num_samples": n,
-            "num_errors": len(results) - n,
+            "num_attempted_samples": len(results),
+            "num_reference_failed_samples": len(reference_failed),
+            "num_errors": sum(1 for r in valid if r.get("judge") == "error"),
             **metric_values,
         }
 
         if execute_mode:
-            num_exec_matches = sum(1 for r in valid if r["scores"]["execution_match"])
+            num_exec_matches = sum(1 for r in valid if r["scores"].get("execution_match"))
             model_summary["num_execution_matches"] = num_exec_matches
             model_summary["execution_match_rate"] = round(num_exec_matches / n, 4)
             model_summary["avg_code_fuzzy_score"] = round(
@@ -257,6 +390,16 @@ def generate_summary(
             )
 
         summary["models"][label] = model_summary
+        if reference_failed:
+            failed_counts: dict[str, int] = {}
+            for result in reference_failed:
+                failed_counts[result["question_id"]] = failed_counts.get(result["question_id"], 0) + 1
+            summary.setdefault("reference_failed", {})[label] = failed_counts
+        if "pass_at_k" in metric_names:
+            summary.setdefault("by_question", {})[label] = compute_pass_at_k_by_question(
+                valid,
+                pass_k,
+            )
 
         cats: dict[str, list[bool]] = {}
         diffs: dict[str, list[bool]] = {}
@@ -379,7 +522,14 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=0.5,
         metavar="SECONDS",
-        help="Seconds to sleep between API calls (default: 0.5).",
+        help="Seconds to sleep between task submissions (default: 0.5).",
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        metavar="N",
+        help="Parallel sample evaluation workers per model. Default: 1.",
     )
     parser.add_argument(
         "--num-samples",
@@ -415,6 +565,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         default=False,
         help="Run model output through M2 and score on runtime output instead of code strings.",
+    )
+    parser.add_argument(
+        "--m2-smoke-check",
+        action="store_true",
+        default=False,
+        help="Before running, verify M2 can execute a tiny expression.",
     )
     parser.add_argument(
         "--oracle-grader",
@@ -462,9 +618,18 @@ def main() -> None:
             execute_mode = False
         else:
             print("Execution mode enabled (M2 found).")
+            if args.m2_smoke_check:
+                from executor import smoke_check_m2
+
+                ok, message = smoke_check_m2()
+                if not ok:
+                    sys.exit(message)
+                print(message)
 
     if args.num_samples < 1:
         sys.exit("--num-samples must be at least 1")
+    if args.workers < 1:
+        sys.exit("--workers must be at least 1")
     if any(k < 1 for k in args.pass_k):
         sys.exit("--pass-k values must be at least 1")
     if "pass_at_k" in args.metrics and args.num_samples == 1 and any(k > 1 for k in args.pass_k):
@@ -514,12 +679,16 @@ def main() -> None:
         num_samples=args.num_samples,
         temperature=args.temperature,
         oracle_config=oracle_config,
+        workers=args.workers,
     )
 
     summary = generate_summary(all_results, execute_mode, args.metrics, args.pass_k)
     summary_file = Path(args.output_dir) / "summary.json"
     summary_file.write_text(json.dumps(summary, indent=2))
     print(f"\nSummary written to {summary_file}")
+    csv_paths = write_run_csvs(args.output_dir, all_results, summary)
+    print(f"Samples CSV written to {csv_paths['samples_csv']}")
+    print(f"pass@k CSV written to {csv_paths['pass_at_k_csv']}")
 
     print_leaderboard(summary)
 

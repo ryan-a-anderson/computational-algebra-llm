@@ -5,10 +5,23 @@ import re
 from typing import Callable, Optional
 
 SYSTEM_PROMPT = (
-    "You are an expert in computational algebra and the Macaulay2 programming language.\n"
-    "When asked a question about Macaulay2, provide the correct Macaulay2 code to solve the problem.\n"
-    "Return ONLY the Macaulay2 code needed to solve the problem, with no explanation or commentary.\n"
-    "Each line of code should be on its own line. Do not wrap the code in markdown code blocks."
+    "You are an expert Macaulay2 programmer.\n\n"
+    "Return only executable Macaulay2 code.\n"
+    "Do not include explanations, markdown, comments, prose, examples, or reasoning.\n"
+    "Do not include text before or after the code.\n"
+    "If the question asks for displayed output, write code that computes or prints that output.\n"
+    "The response will be sent directly to the Macaulay2 interpreter, so every token must be valid Macaulay2 syntax.\n\n"
+    "Example 1\n"
+    "Question:\n"
+    "In Macaulay2, compute 2 plus 3.\n"
+    "Expected response:\n"
+    "2 + 3\n\n"
+    "Example 2\n"
+    "Question:\n"
+    "In Macaulay2, create a polynomial ring over the rationals with variables x and y, then compute x squared plus y squared.\n"
+    "Expected response:\n"
+    "R = QQ[x,y]\n"
+    "x^2 + y^2"
 )
 
 DEFAULT_MODELS: dict[str, list[str]] = {

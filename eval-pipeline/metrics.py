@@ -1,7 +1,6 @@
 """Aggregate metrics for benchmark results."""
 
 import itertools
-from collections import defaultdict
 from math import prod
 
 
@@ -26,11 +25,15 @@ def estimate_pass_at_k(num_samples: int | list[int], num_correct: list[int], k: 
     return [estimator(int(n), int(c), k) for n, c in zip(num_samples_it, num_correct)]
 
 
-def _samples_by_question(results: list[dict]) -> dict[str, list[dict]]:
-    grouped: dict[str, list[dict]] = defaultdict(list)
+def question_counts(results: list[dict]) -> dict[str, dict]:
+    """Count samples and correct samples per question once for metric reuse."""
+    counts: dict[str, dict] = {}
     for result in results:
-        grouped[result["question_id"]].append(result)
-    return dict(grouped)
+        question_id = result["question_id"]
+        row = counts.setdefault(question_id, {"num_samples": 0, "num_correct": 0})
+        row["num_samples"] += 1
+        row["num_correct"] += int(result.get("correct") is True)
+    return counts
 
 
 def compute_accuracy(results: list[dict]) -> dict:
@@ -48,22 +51,31 @@ def compute_accuracy(results: list[dict]) -> dict:
 
 def compute_pass_at_k(results: list[dict], k_values: list[int]) -> dict:
     """Compute mean pass@k over questions."""
-    grouped = _samples_by_question(results)
-    if not grouped:
+    counts = list(question_counts(results).values())
+    if not counts:
         return {f"pass@{k}": 0.0 for k in k_values}
 
-    counts = [
-        (len(samples), sum(1 for sample in samples if sample.get("correct") is True))
-        for samples in grouped.values()
-    ]
-    num_samples = [n for n, _ in counts]
-    num_correct = [c for _, c in counts]
+    num_samples = [row["num_samples"] for row in counts]
+    num_correct = [row["num_correct"] for row in counts]
 
     metrics: dict[str, float] = {}
     for k in k_values:
         estimates = estimate_pass_at_k(num_samples, num_correct, k)
         metrics[f"pass@{k}"] = round(sum(estimates) / len(estimates), 4)
     return metrics
+
+
+def compute_pass_at_k_by_question(results: list[dict], k_values: list[int]) -> dict[str, dict]:
+    """Compute per-question pass@k details."""
+    by_question: dict[str, dict] = {}
+    for question_id, values in question_counts(results).items():
+        n = values["num_samples"]
+        c = values["num_correct"]
+        row: dict = {"num_samples": n, "num_correct": c}
+        for k in k_values:
+            row[f"pass@{k}"] = round(estimate_pass_at_k([n], [c], k)[0], 4)
+        by_question[question_id] = row
+    return by_question
 
 
 def compute_metrics(results: list[dict], metric_names: list[str], pass_k: list[int]) -> dict:

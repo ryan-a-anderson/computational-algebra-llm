@@ -90,15 +90,17 @@ All commands are run from the project root with the venv active. The main script
 | `--models MODEL...` | provider defaults | Override model list (applies to every selected provider) |
 | `--output-dir DIR` | `results/` | Directory for per-model JSON files and `summary.json` |
 | `--execute` | off | Run model code through M2 and score on runtime output |
-| `--num-samples N` | `1` | Number of samples per question/model |
+| `--m2-smoke-check` | off | Verify M2 can execute `1+1` before running |
+| `--num-samples N` | `1` | Number of samples per question/model; sweep runner defaults to `30` |
 | `--temperature T` | `0.0` | Generation temperature; use nonzero values for pass@k |
 | `--metrics METRIC...` | `accuracy` | Aggregate metrics to compute: `accuracy`, `pass_at_k` |
 | `--pass-k K...` | `1` | k values for `pass_at_k` |
+| `--workers N` | `1` | Parallel sample evaluation workers per model |
 | `--oracle-grader` | off | Use a binary LLM oracle on execution-output mismatches |
 | `--grader-provider PROVIDER` | `openai` | Provider for the oracle grader |
 | `--grader-model MODEL` | `gpt-5-2` | Model for the oracle grader |
 | `--grader-criteria CRITERIA` | `default` | Oracle criteria: `default`, `strict` |
-| `--delay SECONDS` | `0.5` | Sleep between API calls to avoid rate limits |
+| `--delay SECONDS` | `0.5` | Sleep between task submissions to avoid rate limits |
 
 Available providers: `anthropic`, `openai`, `mistral`, `deepseek`, `kimi`, `tinker`
 
@@ -156,15 +158,42 @@ python eval-pipeline/eval.py \
   --providers tinker \
   --models Qwen/Qwen3-32B \
   --execute \
-  --num-samples 10 \
+  --num-samples 30 \
   --temperature 0.7 \
   --metrics pass_at_k accuracy \
   --pass-k 1 5 10 \
+  --workers 4 \
   --oracle-grader \
   --grader-provider openai \
   --grader-model gpt-5-2 \
   --grader-cache-dir results/oracle_cache
 ```
+
+#### Tinker model sweep
+
+For a full pass@k sweep over one or more Tinker models, use the convenience runner:
+
+```bash
+python eval-pipeline/run_benchmark_sweep.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --models Qwen/Qwen3-8B Qwen/Qwen3-32B meta-llama/Llama-3.3-70B-Instruct \
+  --num-samples 30 \
+  --temperature 0.7 \
+  --pass-k 1 5 10 \
+  --workers 4
+```
+
+Use `--delay` to pace task submission if the provider rate limits concurrent requests.
+
+Each run writes to `results/runs/<timestamp>/` with:
+
+- `run_config.json`: arguments and run metadata
+- `summary.json`: model-level and per-question metrics
+- `<provider>_<model>_results.json`: full per-sample records for each model
+- `samples.csv`: flat audit table with prompts, raw model outputs, preflight status, raw/cleaned compiled outputs, reference compiled outputs, correctness, and token usage
+- `pass_at_k.csv`: per-question and aggregate pass@k table
+
+Execution scoring compiles each reference answer once and compares cleaned model output against the cleaned reference output. Obvious non-code responses, markdown, and thinking traces are rejected before M2 execution and count as incorrect samples.
 
 Results are written to `<output-dir>/<provider>_<model>_results.json` and a `summary.json` with leaderboard data is printed at the end.
 
