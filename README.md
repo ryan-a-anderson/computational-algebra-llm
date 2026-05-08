@@ -91,6 +91,8 @@ All commands are run from the project root with the venv active. The main script
 | `--output-dir DIR` | `results/` | Directory for per-model JSON files and `summary.json` |
 | `--execute` | off | Run model code through M2 and score on runtime output |
 | `--m2-smoke-check` | off | Verify M2 can execute `1+1` before running |
+| `--reference-cache PATH` | auto path in sweep | Compiled reference-output cache for execution scoring |
+| `--require-reference-cache` | off | Lower-level `eval.py` option to require cached references |
 | `--num-samples N` | `1` | Number of samples per question/model; sweep runner defaults to `30` |
 | `--temperature T` | `0.0` | Generation temperature; use nonzero values for pass@k |
 | `--metrics METRIC...` | `accuracy` | Aggregate metrics to compute: `accuracy`, `pass_at_k` |
@@ -152,6 +154,16 @@ python eval-pipeline/eval.py \
 
 #### pass@k with binary oracle grading
 
+Build the reference-output cache once per benchmark revision:
+
+```bash
+python eval-pipeline/build_reference_cache.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --workers 4
+```
+
+The default cache path is `results/reference_cache/<benchmark-name>_<benchmark-hash>.json`. If the benchmark JSON changes, the hash changes and the sweep will ask you to build a fresh cache.
+
 ```bash
 python eval-pipeline/eval.py \
   --benchmark benchmarks/unified_benchmark.json \
@@ -163,6 +175,7 @@ python eval-pipeline/eval.py \
   --metrics pass_at_k accuracy \
   --pass-k 1 5 10 \
   --workers 4 \
+  --require-reference-cache \
   --oracle-grader \
   --grader-provider openai \
   --grader-model gpt-5-2 \
@@ -183,17 +196,17 @@ python eval-pipeline/run_benchmark_sweep.py \
   --workers 4
 ```
 
-Use `--delay` to pace task submission if the provider rate limits concurrent requests.
+`run_benchmark_sweep.py` requires the reference cache by default. Use `--reference-cache PATH` for a custom cache location, or `--compile-references` for a one-off run that compiles references inline. Use `--delay` to pace task submission if the provider rate limits concurrent requests.
 
 Each run writes to `results/runs/<timestamp>/` with:
 
 - `run_config.json`: arguments and run metadata
 - `summary.json`: model-level and per-question metrics
 - `<provider>_<model>_results.json`: full per-sample records for each model
-- `samples.csv`: flat audit table with prompts, raw model outputs, preflight status, raw/cleaned compiled outputs, reference compiled outputs, correctness, and token usage
+- `samples.csv`: flat audit table with prompts, raw model outputs, extracted code, extraction status, raw/cleaned compiled outputs, reference compiled outputs, correctness, and token usage
 - `pass_at_k.csv`: per-question and aggregate pass@k table
 
-Execution scoring compiles each reference answer once and compares cleaned model output against the cleaned reference output. Obvious non-code responses, markdown, and thinking traces are rejected before M2 execution and count as incorrect samples.
+Execution scoring compares cleaned model output against cached cleaned reference output. Before M2 execution, the pipeline deterministically removes wrappers such as fenced code blocks and `<think>...</think>` traces, then compiles the extracted code. Extraction does not repair syntax or remove Macaulay2 comments of the form `-- comment`; extraction failures count as incorrect samples.
 
 Results are written to `<output-dir>/<provider>_<model>_results.json` and a `summary.json` with leaderboard data is printed at the end.
 

@@ -2,13 +2,14 @@
 """Macaulay2 LLM evaluation pipeline."""
 
 import argparse
+import hashlib
 import json
 import os
 import re
 import shutil
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, as_completed, wait
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -37,25 +38,77 @@ def _has_m2_error(raw_output: str) -> bool:
     return " error:" in lowered or "stdio:" in lowered or "--backtrace:" in lowered
 
 
-def preflight_code_only(response: str) -> tuple[bool, str | None]:
-    """Reject obvious non-code responses before sending text to M2."""
+def extract_code(response: str) -> dict:
+    """Deterministically remove wrappers/reasoning without repairing code."""
     text = response.strip()
     if not text:
-        return False, "empty response"
-    lowered = text.lower()
-    if "```" in text:
-        return False, "markdown code fence detected"
-    if "<think" in lowered or "</think>" in lowered:
-        return False, "thinking tag detected"
+        return {
+            "extracted_code": "",
+            "extraction_method": "empty",
+            "extraction_error": "empty response",
+            "code_only_violation": False,
+        }
+
+    method_parts: list[str] = []
+    working = text
+
+    fence = re.search(r"```(?:m2|macaulay2|text)?\s*(.*?)```", working, flags=re.DOTALL | re.IGNORECASE)
+    if fence:
+        working = fence.group(1).strip()
+        method_parts.append("fenced_code")
+    else:
+        without_think = re.sub(r"<think>.*?</think>\s*", "", working, flags=re.DOTALL | re.IGNORECASE).strip()
+        if without_think != working:
+            working = without_think
+            method_parts.append("think_removed")
+        elif re.search(r"<think\b", working, flags=re.IGNORECASE):
+            return {
+                "extracted_code": "",
+                "extraction_method": "unclosed_think",
+                "extraction_error": "unclosed thinking tag",
+                "code_only_violation": True,
+            }
+
+    wrapper_patterns = [
+        r"^\s*(?:here is the code|here's the code|the code is|the code|expected response|here is|here's)\s*:?\s*",
+        r"^\s*(?:sure|okay),?\s*",
+    ]
+    before_wrappers = working
+    for pattern in wrapper_patterns:
+        working = re.sub(pattern, "", working, flags=re.IGNORECASE)
+    working = working.strip()
+    if working != before_wrappers.strip():
+        method_parts.append("wrapper_removed")
 
     prose_markers = [
-        r"^\s*(okay|sure|here is|here's|the code|let me|i can|we need|to solve)\b",
+        r"^\s*(let me|i can|we need|to solve)\b",
         r"\b(the user|the question|this code|explanation|reasoning)\b",
     ]
+    lowered = working.lower()
     for pattern in prose_markers:
         if re.search(pattern, lowered, flags=re.MULTILINE):
-            return False, "explanation/prose detected"
-    return True, None
+            return {
+                "extracted_code": working,
+                "extraction_method": "+".join(method_parts) if method_parts else "raw",
+                "extraction_error": "prose remains after extraction",
+                "code_only_violation": True,
+            }
+
+    if not working:
+        return {
+            "extracted_code": "",
+            "extraction_method": "+".join(method_parts) if method_parts else "empty",
+            "extraction_error": "empty extracted code",
+            "code_only_violation": True,
+        }
+
+    method = "+".join(method_parts) if method_parts else "raw"
+    return {
+        "extracted_code": working,
+        "extraction_method": method,
+        "extraction_error": None,
+        "code_only_violation": working != text,
+    }
 
 
 def compile_reference(question: dict) -> dict:
@@ -85,6 +138,128 @@ def compile_reference(question: dict) -> dict:
         record["reference_execution_error"] = str(exc)
         record["reference_failed"] = True
     return record
+
+
+def benchmark_digest(benchmark_path: str | Path) -> str:
+    return hashlib.sha256(Path(benchmark_path).read_bytes()).hexdigest()
+
+
+def default_reference_cache_path(
+    benchmark_path: str | Path,
+    cache_root: str | Path = "results/reference_cache",
+) -> Path:
+    benchmark = Path(benchmark_path)
+    return Path(cache_root) / f"{benchmark.stem}_{benchmark_digest(benchmark)[:12]}.json"
+
+
+def _cli_quote(value: str | Path) -> str:
+    text = str(value)
+    if re.search(r"\s", text):
+        return f'"{text}"'
+    return text
+
+
+def compile_reference_records(questions: list[dict], workers: int = 1) -> dict[str, dict]:
+    reference_records: dict[str, dict] = {}
+    reference_workers = max(1, min(workers, len(questions)))
+    print(f"Compiling {len(questions)} reference answers with M2 (workers={reference_workers})...")
+    with ThreadPoolExecutor(max_workers=reference_workers) as pool:
+        futures = {
+            pool.submit(compile_reference, question): _question_id(question)
+            for question in questions
+        }
+        for future in as_completed(futures):
+            qid = futures[future]
+            record = future.result()
+            reference_records[qid] = record
+    return reference_records
+
+
+def print_reference_failures(questions: list[dict], reference_records: dict[str, dict]) -> None:
+    for question in questions:
+        qid = _question_id(question)
+        record = reference_records[qid]
+        if record["reference_failed"]:
+            print(f"  {qid:<14} reference_failed")
+
+
+def _print_sample_progress(done_count: int, total: int, qid: str, sample_index: int, result: dict) -> None:
+    width = len(str(total))
+    prefix = f"  [{done_count:>{width}}/{total}] {qid:<14} sample={sample_index}"
+    if result.get("error"):
+        print(f"{prefix}  ERROR: {result['error']}", flush=True)
+    else:
+        print(
+            f"{prefix}  correct={'Y' if result['correct'] else 'n'}"
+            f"  judge={result['judge']}",
+            flush=True,
+        )
+
+
+def write_reference_cache(
+    benchmark_path: str | Path,
+    output_path: str | Path | None = None,
+    workers: int = 1,
+) -> Path:
+    benchmark = Path(benchmark_path)
+    with benchmark.open() as f:
+        questions: list[dict] = json.load(f)
+    cache_path = Path(output_path) if output_path else default_reference_cache_path(benchmark)
+    records = compile_reference_records(questions, workers=workers)
+    payload = {
+        "schema_version": 1,
+        "benchmark_path": str(benchmark),
+        "benchmark_sha256": benchmark_digest(benchmark),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "num_questions": len(questions),
+        "records": records,
+    }
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_path.write_text(json.dumps(payload, indent=2))
+    print_reference_failures(questions, records)
+    print(f"Reference cache written to {cache_path}")
+    return cache_path
+
+
+def load_reference_cache(
+    benchmark_path: str | Path,
+    cache_path: str | Path | None = None,
+) -> dict[str, dict]:
+    benchmark = Path(benchmark_path)
+    resolved_cache_path = Path(cache_path) if cache_path else default_reference_cache_path(benchmark)
+    if not resolved_cache_path.exists():
+        command = (
+            f"python eval-pipeline/build_reference_cache.py "
+            f"--benchmark {_cli_quote(benchmark)} --output {_cli_quote(resolved_cache_path)}"
+        )
+        raise FileNotFoundError(
+            f"Reference cache not found: {resolved_cache_path}\n"
+            f"Build it first with:\n  {command}"
+        )
+    payload = json.loads(resolved_cache_path.read_text())
+    expected_digest = benchmark_digest(benchmark)
+    if payload.get("benchmark_sha256") != expected_digest:
+        command = (
+            f"python eval-pipeline/build_reference_cache.py "
+            f"--benchmark {_cli_quote(benchmark)} "
+            f"--output {_cli_quote(default_reference_cache_path(benchmark))}"
+        )
+        raise ValueError(
+            f"Reference cache is stale for benchmark: {resolved_cache_path}\n"
+            f"Build a fresh cache with:\n  {command}"
+        )
+    records = payload.get("records")
+    if not isinstance(records, dict):
+        raise ValueError(f"Malformed reference cache: {resolved_cache_path}")
+    with benchmark.open() as f:
+        questions: list[dict] = json.load(f)
+    missing = [_question_id(question) for question in questions if _question_id(question) not in records]
+    if missing:
+        raise ValueError(
+            f"Reference cache is missing {len(missing)} question records: "
+            f"{', '.join(missing[:5])}"
+        )
+    return records
 
 
 # ---------------------------------------------------------------------------
@@ -123,7 +298,8 @@ def evaluate_question(
     }
     try:
         raw_output, usage = caller(model, question["prompt"], temperature=temperature)
-        model_output = raw_output.strip()
+        extraction = extract_code(raw_output)
+        model_output = extraction["extracted_code"]
 
         actual_output = None
         raw_actual_output = None
@@ -132,8 +308,8 @@ def evaluate_question(
         oracle_error = None
         correct = False
         judge = "static"
-        code_only_ok = True
-        preflight_error = None
+        extraction_error = extraction["extraction_error"]
+        code_only_violation = bool(extraction["code_only_violation"])
         if execute_mode and reference_record and not reference_record.get("reference_failed"):
             target_output = reference_record.get("reference_output")
         else:
@@ -141,10 +317,8 @@ def evaluate_question(
 
         if execute_mode and reference_record.get("reference_failed"):
             judge = "reference_failed"
-        else:
-            code_only_ok, preflight_error = preflight_code_only(raw_output)
 
-        if execute_mode and not reference_record.get("reference_failed") and code_only_ok:
+        if execute_mode and not reference_record.get("reference_failed") and not extraction_error:
             from executor import run_m2
             actual_output, raw_actual_output = run_m2(model_output)
             if not actual_output and raw_actual_output.startswith(("TIMEOUT", "SUBPROCESS_ERROR")):
@@ -161,18 +335,21 @@ def evaluate_question(
             actual_output=actual_output if not reference_record.get("reference_failed") else None,
         )
         if execute_mode:
+            scores.setdefault("execution_match", False)
+            scores.setdefault("code_fuzzy_score", scores.get("fuzzy_score", 0.0))
+        if execute_mode:
             if reference_record.get("reference_failed"):
                 correct = False
                 judge = "reference_failed"
-            elif not code_only_ok:
+            elif extraction_error:
                 correct = False
-                judge = "preflight_reject"
+                judge = "extraction_failed"
             else:
                 correct = bool(outputs_match(actual_output, target_output))
                 judge = "deterministic_exact" if correct else "deterministic_mismatch"
             if (
                 not correct
-                and code_only_ok
+                and not extraction_error
                 and not reference_record.get("reference_failed")
                 and actual_output is not None
                 and oracle_config
@@ -191,6 +368,17 @@ def evaluate_question(
                     correct = bool(oracle_result["correct"])
                     judge = "oracle" if correct else "oracle_reject"
                 except Exception as exc:
+                    raw_oracle_response = getattr(exc, "raw_response", None)
+                    if raw_oracle_response is not None:
+                        oracle_result = {
+                            "correct": None,
+                            "reason": "",
+                            "raw_response": raw_oracle_response,
+                            "provider": oracle_config["provider"],
+                            "model": oracle_config["model"],
+                            "criteria": oracle_config["criteria"],
+                            "usage": {},
+                        }
                     oracle_error = str(exc)
                     judge = "oracle_error"
         else:
@@ -205,8 +393,11 @@ def evaluate_question(
             "scores": scores,
             "correct": correct,
             "judge": judge,
-            "code_only_violation": not code_only_ok,
-            "preflight_error": preflight_error,
+            "extracted_code": model_output,
+            "extraction_method": extraction["extraction_method"],
+            "extraction_error": extraction_error,
+            "code_only_violation": code_only_violation,
+            "preflight_error": extraction_error,
             "oracle_error": oracle_error,
         }
         if oracle_result is not None:
@@ -226,6 +417,9 @@ def evaluate_question(
             "scores": _error_scores(execute_mode),
             "correct": False,
             "judge": "error",
+            "extracted_code": None,
+            "extraction_method": None,
+            "extraction_error": None,
             "code_only_violation": False,
             "preflight_error": None,
             "error": str(exc),
@@ -248,18 +442,20 @@ def run_evaluation(
     temperature: float,
     oracle_config: dict | None,
     workers: int = 1,
+    reference_cache_path: str | None = None,
+    require_reference_cache: bool = False,
 ) -> dict[str, list[dict]]:
     with open(benchmark_path) as f:
         questions: list[dict] = json.load(f)
     reference_records: dict[str, dict] = {}
     if execute_mode:
-        print(f"Compiling {len(questions)} reference answers with M2...")
-        for question in questions:
-            qid = _question_id(question)
-            record = compile_reference(question)
-            reference_records[qid] = record
-            if record["reference_failed"]:
-                print(f"  {qid:<14} reference_failed")
+        if require_reference_cache or reference_cache_path:
+            cache_path = reference_cache_path or str(default_reference_cache_path(benchmark_path))
+            reference_records = load_reference_cache(benchmark_path, cache_path)
+            print(f"Loaded reference cache: {cache_path}")
+        else:
+            reference_records = compile_reference_records(questions, workers=workers)
+        print_reference_failures(questions, reference_records)
 
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -291,7 +487,16 @@ def run_evaluation(
             completed: list[tuple[int, dict]] = []
             with ThreadPoolExecutor(max_workers=active_workers) as pool:
                 futures = {}
-                for idx, (order, question, sample_index, reference_record) in enumerate(tasks, 1):
+                task_iter = iter(tasks)
+                submitted = 0
+                done_count = 0
+
+                def submit_next() -> bool:
+                    nonlocal submitted
+                    try:
+                        order, question, sample_index, reference_record = next(task_iter)
+                    except StopIteration:
+                        return False
                     future = pool.submit(
                         evaluate_question,
                         caller,
@@ -304,21 +509,30 @@ def run_evaluation(
                         reference_record,
                     )
                     futures[future] = (order, _question_id(question), sample_index)
-                    if delay > 0 and idx < total:
+                    submitted += 1
+                    print(
+                        f"  submitted {submitted}/{total} "
+                        f"(in-flight={len(futures)})",
+                        end="\r",
+                        flush=True,
+                    )
+                    if delay > 0 and submitted < total:
                         time.sleep(delay)
+                    return True
 
-                for done_count, future in enumerate(as_completed(futures), 1):
-                    order, qid, sample_index = futures[future]
-                    result = future.result()
-                    completed.append((order, result))
-                    prefix = f"  [{done_count:>3}/{total}] {qid:<14} sample={sample_index}"
-                    if result.get("error"):
-                        print(f"{prefix}  ERROR: {result['error']}")
-                    else:
-                        print(
-                            f"{prefix}  correct={'Y' if result['correct'] else 'n'}"
-                            f"  judge={result['judge']}"
-                        )
+                for _ in range(active_workers):
+                    if not submit_next():
+                        break
+
+                while futures:
+                    done, _ = wait(futures, return_when=FIRST_COMPLETED)
+                    for future in done:
+                        order, qid, sample_index = futures.pop(future)
+                        result = future.result()
+                        completed.append((order, result))
+                        done_count += 1
+                        _print_sample_progress(done_count, total, qid, sample_index, result)
+                        submit_next()
 
             results = [result for _, result in sorted(completed, key=lambda item: item[0])]
 
@@ -376,7 +590,7 @@ def generate_summary(
             model_summary["num_execution_matches"] = num_exec_matches
             model_summary["execution_match_rate"] = round(num_exec_matches / n, 4)
             model_summary["avg_code_fuzzy_score"] = round(
-                sum(r["scores"]["code_fuzzy_score"] for r in valid) / n, 4
+                sum(r["scores"].get("code_fuzzy_score", r["scores"].get("fuzzy_score", 0.0)) for r in valid) / n, 4
             )
         else:
             model_summary["exact_match_rate"] = round(
@@ -573,6 +787,21 @@ def parse_args() -> argparse.Namespace:
         help="Before running, verify M2 can execute a tiny expression.",
     )
     parser.add_argument(
+        "--reference-cache",
+        default=None,
+        metavar="PATH",
+        help=(
+            "Compiled reference cache path for --execute. Defaults to "
+            "results/reference_cache/<benchmark>_<hash>.json when --require-reference-cache is set."
+        ),
+    )
+    parser.add_argument(
+        "--require-reference-cache",
+        action="store_true",
+        default=False,
+        help="In --execute mode, load compiled references from cache instead of compiling them inline.",
+    )
+    parser.add_argument(
         "--oracle-grader",
         action="store_true",
         default=False,
@@ -680,6 +909,8 @@ def main() -> None:
         temperature=args.temperature,
         oracle_config=oracle_config,
         workers=args.workers,
+        reference_cache_path=args.reference_cache,
+        require_reference_cache=args.require_reference_cache,
     )
 
     summary = generate_summary(all_results, execute_mode, args.metrics, args.pass_k)

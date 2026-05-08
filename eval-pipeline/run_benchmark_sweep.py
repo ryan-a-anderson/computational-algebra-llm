@@ -10,7 +10,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from csv_exports import write_run_csvs
-from eval import generate_summary, print_leaderboard, run_evaluation
+from eval import default_reference_cache_path, generate_summary, print_leaderboard, run_evaluation
 from executor import smoke_check_m2
 from providers import DEFAULT_MODELS
 
@@ -77,6 +77,19 @@ def parse_args() -> argparse.Namespace:
         help="Parallel sample evaluation workers per model. Default: 4.",
     )
     parser.add_argument(
+        "--reference-cache",
+        default=None,
+        help=(
+            "Compiled reference cache path. Defaults to "
+            "results/reference_cache/<benchmark>_<hash>.json."
+        ),
+    )
+    parser.add_argument(
+        "--compile-references",
+        action="store_true",
+        help="Compile references during this run instead of loading a cache. Default: require cache.",
+    )
+    parser.add_argument(
         "--oracle-grader",
         action="store_true",
         help="Use binary oracle grading on deterministic mismatches.",
@@ -116,6 +129,15 @@ def main() -> None:
     if not ok:
         sys.exit(message)
     print(message)
+    reference_cache = args.reference_cache or str(default_reference_cache_path(args.benchmark))
+    if not args.compile_references and not Path(reference_cache).exists():
+        sys.exit(
+            f"Reference cache not found: {reference_cache}\n"
+            "Build it first with:\n"
+            f"  python eval-pipeline/build_reference_cache.py "
+            f"--benchmark {args.benchmark} --output {reference_cache} --workers {args.workers}\n"
+            "Or rerun the sweep with --compile-references to compile references inline."
+        )
 
     models = args.models or DEFAULT_MODELS[args.provider]
     run_name = args.run_name or datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -140,6 +162,8 @@ def main() -> None:
         "pass_k": args.pass_k,
         "delay": args.delay,
         "workers": args.workers,
+        "reference_cache": reference_cache,
+        "compile_references": bool(args.compile_references),
         "oracle_grader": bool(args.oracle_grader),
         "grader_provider": args.grader_provider if args.oracle_grader else None,
         "grader_model": args.grader_model if args.oracle_grader else None,
@@ -158,6 +182,8 @@ def main() -> None:
         temperature=args.temperature,
         oracle_config=oracle_config,
         workers=args.workers,
+        reference_cache_path=None if args.compile_references else reference_cache,
+        require_reference_cache=not args.compile_references,
     )
 
     summary = generate_summary(

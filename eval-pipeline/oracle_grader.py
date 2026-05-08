@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from uuid import uuid4
 
@@ -32,6 +33,12 @@ CRITERIA: dict[str, str] = {
 }
 
 
+class OracleParseError(ValueError):
+    def __init__(self, message: str, raw_response: str):
+        super().__init__(message)
+        self.raw_response = raw_response
+
+
 def _cache_key(
     provider: str,
     model: str,
@@ -53,7 +60,7 @@ def _cache_key(
 
 
 def _extract_json(text: str) -> dict:
-    text = text.strip()
+    text = re.sub(r"<think>.*?</think>\s*", "", text, flags=re.DOTALL | re.IGNORECASE).strip()
     try:
         return json.loads(text)
     except json.JSONDecodeError:
@@ -99,10 +106,14 @@ def grade_output(
     )
 
     raw_response, usage = CALLERS[provider](model, prompt, system_prompt=ORACLE_SYSTEM_PROMPT)
-    parsed = _extract_json(raw_response)
+    try:
+        parsed = _extract_json(raw_response)
+    except Exception as exc:
+        raise OracleParseError(str(exc), raw_response) from exc
     result = {
         "correct": bool(parsed["correct"]),
         "reason": str(parsed.get("reason", "")),
+        "raw_response": raw_response,
         "provider": provider,
         "model": model,
         "criteria": criteria,
