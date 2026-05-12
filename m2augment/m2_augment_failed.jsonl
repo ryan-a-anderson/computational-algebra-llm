@@ -1,0 +1,4 @@
+{"id": "m2_001", "error": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CayUDyWSkWZq9qi9BixK6'}"}
+{"id": "m2_002", "error": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CayUF7RyQwUy4DxQGVk1h'}"}
+{"id": "m2_032", "error": "JSON parse error: Unterminated string starting at: line 67 column 7 (char 4326)"}
+{"id": "m2_056", "error": "JSON parse error: Unterminated string starting at: line 86 column 17 (char 5231)"}
