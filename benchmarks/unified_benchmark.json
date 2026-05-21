@@ -405,34 +405,16 @@
     "description": "This problem tests if an LLM can handle multiple commands at once in M2",
     "prompt": "With Macaulay2, Define a polynomial ring over the rationals, compute in the ring, then make matrices over the ring, make modules over the ring, then projective varities and last, make the coherent sheaves and compute their cohomology.",
     "correct_answer": [
-      "i1 : R = QQ[x,y,z]/(x^3-y^3-z^3)",
-      "o1 = R",
-      "o1 : QuotientRing",
-      "i2 : (x+y+z)^3",
-      "o2 = 3x^2y + 3xy^2 + 2y^3 + 3x^2z + 6xyz + 3y^2z + 3xz^2 + 3yz^2 + 2z^3",
-      "o2 : R",
-      "i3 : b = vars R",
-      "o3 = | x y z |",
-      "o3 : Matrix R^1 <--- R^3",
-      "i4 : c = matrix{{x^2, y^2, z^2}}",
-      "o4 = | x2 y2 z2 |",
-      "o4 : Matrix R^1 <--- R^3",
-      "i5 : M = coker b",
-      "o5 = cokernal | x y z |",
-      "o5 : R-module, quotient of R^1",
-      "i6 : N = ker C",
-      "o6 = image {2} | x 0 -y2 -z2 |",
-      "{2} | -y -z2 x2 0 |",
-      "| -z y2 0 x2 |",
-      "o6 : R-module, submodule of R^3",
-      "i7 : X = Proj R",
-      "o7 = X",
-      "o7 : ProjectiveVariety",
-      "i8 : HH^1 cotangentSheaf X",
-      "o8 = QQ^1",
-      "o8 : QQ-module, free"
+      "R = QQ[x,y,z]/(x^3-y^3-z^3)",
+      "(x+y+z)^3",
+      "b = vars R",
+      "c = matrix{{x^2, y^2, z^2}}",
+      "M = coker b",
+      "N = ker C",
+      "X = Proj R",
+      "HH^1 cotangentSheaf X"
     ],
-    "correct_output": "QQ-module, free",
+    "correct_output": "QQ^1",
     "source_reference": null
   },
   {
@@ -443,14 +425,12 @@
     "description": "This problem tests if a simle if-then-else conditional can be made with M2",
     "prompt": "Write a conditional with Maculay2 that prints xeg 4 times followed by a xer and xos 4 times.",
     "correct_answer": [
-      "i1 : (-4 .. 4) /",
+      "(-4 .. 4) /",
       "(i -> if i < 0 then 'xeg'",
       "else if i == 0 then 'xer'",
-      "else 'pos')",
-      "o1 = (xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)",
-      "o1 : Sequence"
+      "else 'pos')"
     ],
-    "correct_output": "Sequence",
+    "correct_output": "(xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)",
     "source_reference": null
   },
   {
@@ -461,13 +441,11 @@
     "description": "This problem tests if M2 can write more complex conditionals with less information",
     "prompt": "Write a conditional with Macaulay 2 that prints xeg if i < 0 and xer if i = 0 where if and else if are valid and else cannot be used in your program.",
     "correct_answer": [
-      "i2 : (-4 .. 4) /",
+      "(-4 .. 4) /",
       "(i -> if i < 0 then 'neg'",
-      "else if i == 0 then 'xer')",
-      "o2 = (xeg, xeg, xeg, xeg, xer, , , , )",
-      "o2 : Sequence"
+      "else if i == 0 then 'xer')"
     ],
-    "correct_output": "",
+    "correct_output": "(xeg, xeg, xeg, xeg, xer, , , , )",
     "source_reference": null
   },
   {
@@ -478,16 +456,12 @@
     "description": "This problem tests if Macaulay2 Hash Tables can be written",
     "prompt": "In Macaulay2, implement an arbitrary data structure that stores three course names and course numbers. Title this data-structure as course and use the course names, 'Math', 'Physics' and 'Statistics' with numbers '100', '101' and '102' respectively.",
     "correct_answer": [
-      "i1 : book = new HashTable from {",
+      "book = new HashTable from {",
       "'Math' => '100',",
       "'Physics' => '101',",
       "'Statistics' => '102'}",
-      "o1 = HashTable{'Math' => 100}",
-      "'Physics' => 101",
-      "'Statistics' => 102",
-      "o1 : HashTable"
     ],
-    "correct_output": "HashTable",
+    "correct_output": "HashTable{'Math' => 100}\n'Physics' => 101\n'Statistics' => 102",
     "source_reference": null
   },
   {
@@ -498,10 +472,9 @@
     "description": "This problem tests if an LLM can use the operator # to obtain a value from a prior implemented Hash Table.",
     "prompt": "In Macaulay2, assume that a Hash Table titled course exists with one such entry named Statistics that stores the value 102, write how to extract the value from this data structure.",
     "correct_answer": [
-      "i1 : course#'Statistics'",
-      "o2 = 102"
+      "course#'Statistics'"
     ],
-    "correct_output": "",
+    "correct_output": "102",
     "source_reference": null
   },
   {
