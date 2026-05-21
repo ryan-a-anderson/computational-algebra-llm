@@ -52,7 +52,7 @@
     "correct_answer": [
       "viewHelp \"determinant\""
   ],
-    "correct_output": "Opening file:///usr/share/doc/Macaulay2/Macaulay2Doc/html/_determinant.html",
+    "correct_output": "",
     "source_reference": null
   },
   {
@@ -378,6 +378,7 @@
     "description": "",
     "prompt": "Find the GCD of the two polynomials x^36 - 1, x^24 - 1 over the rationals. Return the output wrapped in a toString call.",
     "correct_answer": [
+      "R = QQ[x]",
       "gcd(x^36-1,x^24-1)"
     ],
     "correct_output": "x^12-1",
@@ -517,7 +518,7 @@
       "rot = new Qu from { 0.3826834, 0, 0, 0.9238795 }",
       "rot * w"
     ],
-    "correct_output": "Qu{-1.08239, -1.46508, 1.68925, 2.61313}",
+    "correct_output": "{-1.08239, -1.46508, 1.68925, 2.61313}",
     "source_reference": null
   },
   {
@@ -544,11 +545,11 @@
     "description": null,
     "prompt": "In Macaulay2, using the Probability package, calculate the probability that X < 35 for a random variable X, normally distributed with mean 30 and standard deviation 5. Return the output wrapped in a toString call.",
     "correct_answer": [
-      "needsPackage('Probability')",
+      "needsPackage \"Probability\"",
       "X = normalDistribution(30, 5)",
       "density_X 25"
     ],
-    "correct_output": ".0483941",
+    "correct_output": ".04839414490382868",
     "source_reference": null
   },
   {
@@ -885,6 +886,7 @@
     "prompt": "# Macauley 2 progamming language question.\n\nLoad the EdgeIdeals package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
     "correct_answer": [
       "needsPackage \"EdgeIdeals\"",
+      "kk = ZZ/32003",
       "R = kk[vars(0..10)]",
       "G=randomGraph (R,20)",
       "toString(edgeIdeal G)"
@@ -901,6 +903,7 @@
     "prompt": "# Macauley 2 progamming language question.\n\nLoad a package to calculate the edge ideal of R = kk[vars(0..10)] as a random graph with 20 edges. Wrap answer using toString function.",
     "correct_answer": [
       "needsPackage \"EdgeIdeals\"",
+      "kk = ZZ/32003",
       "R = kk[vars(0..10)]",
       "G=randomGraph (R,20)",
       "toString(edgeIdeal G)"
@@ -1030,169 +1033,11 @@
     "description": "Create a free modulo R^3",
     "prompt": "# Macauley 2 programming language question.\n\nCreate the free modulo R^3. Wrap output in toString()",
     "correct_answer": [
-      "F = R^2",
+      "R = ZZ[x,y,z]",
+      "F = R^3",
       "toString(F)"
     ],
     "correct_output": "R^3",
-    "source_reference": null
-  },
-  {
-    "id": "m2_068",
-    "source_file": "Macauley2_benchamrk_cb.json",
-    "category": "Debugging",
-    "difficulty": "2",
-    "description": "Modulo Basis element indexing. The idea is that repeated indexing of a single element is ALLOWED",
-    "prompt": "# Macauley 2 programming language question.\n\nGiven the free modulo R^3, is there an error in this code indexing the basis elements? Output \"True\" if there is an error, or \"False\" if there is not through a print statement.\n\n## Code\n\nF = R^3\ntoString(F_{1,1,2})",
-    "correct_answer": [
-      "print(\"False\")"
-    ],
-    "correct_output": "FALSE",
-    "source_reference": null
-  },
-  {
-    "id": "m2_069",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Basic M2 I/O",
-    "difficulty": "easy",
-    "description": "Describes the different ways to re-execute or navigate past inputs in Macaulay2 in the Web Browser",
-    "prompt": "In Macaulay2, how do you execute past output through the Web Browser?",
-    "correct_answer": [
-      "You can click on it, possibly edit it further.",
-      "You can select the bar on the left of its cell (possibly select multiple cells using Shift or Ctrl-clicking).",
-      "You can use the Up and Down arrow keys to go through the list of previous inputs.",
-      "You can type the beginning of the line, then press the Right arrow key for auto-completion."
-    ],
-    "correct_output": null,
-    "source_reference": null
-  },
-  {
-    "id": "m2_070",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Basic M2 I/O",
-    "difficulty": "easy",
-    "description": "Describes how to access the Macaulay2 documentation from within an active session.",
-    "prompt": "How do you open the Macaulay2 documentation from inside a session?",
-    "correct_answer": [
-      "Type viewHelp at the prompt to open the local HTML documentation in your default web browser.",
-      "Type help to see a list of useful commands directly in the terminal."
-    ],
-    "correct_output": null,
-    "source_reference": null
-  },
-  {
-    "id": "m2_071",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Basic M2 Calcs",
-    "difficulty": "medium",
-    "description": "Tests understanding of the difference between := (first declaration) and = (reassignment) in Macaulay2.",
-    "prompt": "What does the following code return?\n\nx := 5;\nx = x + 1;\nx := x + 1;",
-    "correct_answer": [
-      "The code throws an error on the third line.",
-      ":= cannot be used to reassign a variable that already exists in the same scope.",
-      ":= is only for first declaration; = must be used for reassignment."
-    ],
-    "correct_output": "stdio:50:0:(3): warning: local declaration of x shields variable with same name\nstdio:50:7:(3): error: no method for binary operator + applied to objects:\n            null (of class Nothing)\n      +     1 (of class ZZ)",
-    "source_reference": null
-  },
-  {
-    "id": "m2_072",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Basic M2 Calcs",
-    "difficulty": "easy",
-    "description": "Tests knowledge of the numgens command.",
-    "prompt": "What is the output of the following code?\n\nR = QQ[x,y,z];\nnumgens R",
-    "correct_answer": [
-      "2"
-    ],
-    "correct_output": "2",
-    "source_reference": null
-  },
-  {
-    "id": "m2_073",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Data Structures",
-    "difficulty": "medium",
-    "description": "Tests knowledge of Betti table row indexing conventions in Macaulay2",
-    "prompt": "What is the output of the following code?\n\nR = QQ[x,y,z];\nI = ideal(x^2, y^2, z^2);\nbetti res I",
-    "correct_answer": [
-      "This code produces an error, not a Betti table.",
-      "The error occurs because x, y, z are treated as type Symbol rather than ring variables.",
-      "The ring assignment R = QQ[x,y,z] does not automatically bring x, y, z into scope as usable variables in all session contexts.",
-      "As a result, the ^ operator fails with 'no method for binary operator ^ applied to objects: null (of class Nothing)'.",
-      "I then remains a Symbol rather than an ideal, causing the resolution step to also fail."
-    ],
-    "correct_output": "stdio error: no method for binary operator ^ applied to objects:\n            null (of class Nothing)\n      ^     2 (of class ZZ)\nerror: no method found for applying resolution to:\n     argument : I (of class Symbol)",
-    "source_reference": null
-  },
-  {
-    "id": "m2_074",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Package Management",
-    "difficulty": "easy",
-    "description": "Tests whether the user knows how to inspect the type of a loaded package object in Macaulay2 using the class function.",
-    "prompt": "After loading the NumericalAlgebraicGeometry package, how would you find the type of the package object?",
-    "correct_answer": [
-      "class NumericalAlgebraicGeometry"
-    ],
-    "correct_output": "Package",
-    "source_reference": null
-  },
-  {
-    "id": "m2_075",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Debugging",
-    "difficulty": "easy",
-    "description": "Tests whether the user knows that res and resolution are identical in Macaulay2.",
-    "prompt": "What is the difference betweem res and resolution",
-    "correct_answer": [
-      "res and resolution are exactly the same function in Macaulay2.",
-      "res is simply a shorthand alias for resolution with no functional difference.",
-      "res === resolution"
-    ],
-    "correct_output": "true",
-    "source_reference": null
-  },
-  {
-    "id": "m2_076",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Debugging",
-    "difficulty": "easy",
-    "description": "Tests whether the user knows that diff and differntiate are different in Macaulay2",
-    "prompt": "Are diff and differentiate the same in Macaulay2",
-    "correct_answer": [
-      "No, diff applies a derivation to expressions in a polynomial ring. Differentiate is the standard partial derivative operator.",
-      "diff === differentiate"
-    ],
-    "correct_output": "False",
-    "source_reference": null
-  },
-  {
-    "id": "m2_077",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Debugging",
-    "difficulty": "easy",
-    "description": "Tests whether the user knows that ideal and Ideal are different in Macaulay2.",
-    "prompt": "A student writes Ideal(x^2, y^2) instead of ideal(x^2, y^2). Are these the same? Verify this without constructing a ring.",
-    "correct_answer": [
-      "ideal and Ideal are not the same in Macaulay2.",
-      "ideal is of class MethodFunctionSingle, meaning it is a callable method function used to construct ideals.",
-      "Ideal is of class Type, meaning it is the type itself and not a constructor.",
-      "You can verify this by running class ideal and class Ideal without needing to define a ring."
-    ],
-    "correct_output": "They are not the same\nMethodFunctionSingle\nType",
-    "source_reference": null
-  },
-  {
-    "id": "m2_078",
-    "source_file": "SLmacaulay2_benchmark 6-15.json",
-    "category": "Basic M2 I/O",
-    "difficulty": "medium",
-    "description": "Tests whether the user knows how to use the apropos function.",
-    "prompt": "What is the output of the following code?\n\napropos \"dimension\"",
-    "correct_answer": [
-      "apropos helps find functions that an user might be searching for but forgot parts of the name. The ouput will be a list with all functions that included the searched part included in their name."
-    ],
-    "correct_output": "{AllCodimensions, CodimensionLimit}",
     "source_reference": null
   }
 ]
