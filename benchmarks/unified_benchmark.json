@@ -410,11 +410,11 @@
       "b = vars R",
       "c = matrix{{x^2, y^2, z^2}}",
       "M = coker b",
-      "N = ker C",
+      "N = ker c",
       "X = Proj R",
       "HH^1 cotangentSheaf X"
     ],
-    "correct_output": "QQ^1",
+    "correct_output": "QQ",
     "source_reference": null
   },
   {
@@ -426,9 +426,9 @@
     "prompt": "Write a conditional with Maculay2 that prints xeg 4 times followed by a xer and xos 4 times.",
     "correct_answer": [
       "(-4 .. 4) /",
-      "(i -> if i < 0 then 'xeg'",
-      "else if i == 0 then 'xer'",
-      "else 'pos')"
+      "(i -> if i < 0 then xeg",
+      "else if i == 0 then xer",
+      "else xos)"
     ],
     "correct_output": "(xeg, xeg, xeg, xeg, xer, xos, xos, xos, xos)",
     "source_reference": null
@@ -442,8 +442,8 @@
     "prompt": "Write a conditional with Macaulay 2 that prints xeg if i < 0 and xer if i = 0 where if and else if are valid and else cannot be used in your program.",
     "correct_answer": [
       "(-4 .. 4) /",
-      "(i -> if i < 0 then 'neg'",
-      "else if i == 0 then 'xer')"
+      "(i -> if i < 0 then xeg",
+      "else if i == 0 then xer)"
     ],
     "correct_output": "(xeg, xeg, xeg, xeg, xer, , , , )",
     "source_reference": null
@@ -457,11 +457,11 @@
     "prompt": "In Macaulay2, implement an arbitrary data structure that stores three course names and course numbers. Title this data-structure as course and use the course names, 'Math', 'Physics' and 'Statistics' with numbers '100', '101' and '102' respectively.",
     "correct_answer": [
       "book = new HashTable from {",
-      "'Math' => '100',",
-      "'Physics' => '101',",
-      "'Statistics' => '102'}",
+      "Math => 100,",
+      "Physics => 101,",
+      "Statistics => 102}"
     ],
-    "correct_output": "HashTable{'Math' => 100}\n'Physics' => 101\n'Statistics' => 102",
+    "correct_output": "HashTable{Math => 100      }\nPhysics => 101\nStatistics => 102",
     "source_reference": null
   },
   {
@@ -472,7 +472,8 @@
     "description": "This problem tests if an LLM can use the operator # to obtain a value from a prior implemented Hash Table.",
     "prompt": "In Macaulay2, assume that a Hash Table titled course exists with one such entry named Statistics that stores the value 102, write how to extract the value from this data structure.",
     "correct_answer": [
-      "course#'Statistics'"
+      "course = new HashTable from {Statistics => 102}",
+      "course#Statistics"
     ],
     "correct_output": "102",
     "source_reference": null
