@@ -47,12 +47,12 @@
     "source_file": "m2_benchmark_questions.json",
     "category": "Basic M2 I/O",
     "difficulty": null,
-    "description": "This problem tests opening macauley 2 documentation for the determinant.",
-    "prompt": "# Macauley2 programming language question\n\nIn macauley 2, what command can I run to open the help menu to learn about the determinant documentation",
+    "description": "This problem tests knowing the Macaulay2 help command for determinant without opening a GUI help viewer.",
+    "prompt": "# Macaulay2 programming language question\n\nWhat Macaulay2 command would you type to open the help documentation for determinant? Return the command as a string, do not execute it.",
     "correct_answer": [
-      "viewHelp \"determinant\""
-  ],
-    "correct_output": "",
+      "\"viewHelp determinant\""
+    ],
+    "correct_output": "viewHelp determinant",
     "source_reference": null
   },
   {
