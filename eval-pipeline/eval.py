@@ -16,11 +16,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from csv_exports import write_run_csvs
-from providers import ALL_PROVIDERS, CALLERS, DEFAULT_MODELS, clean_response
+from providers import ALL_PROVIDERS, BATCH_CALLERS, CALLERS, DEFAULT_MODELS, clean_response
 from metrics import compute_metrics, compute_pass_at_k_by_question
 from scoring import compute_scores, normalize_reference_code, outputs_match
 
 load_dotenv()
+
+_BATCH_SUPPORT_CACHE: dict[str, bool] = {}
 
 
 def _error_scores(execute_mode: bool) -> dict:
@@ -280,6 +282,8 @@ def evaluate_question(
     temperature: float,
     oracle_config: dict | None = None,
     reference_record: dict | None = None,
+    raw_completion: tuple[str, dict] | None = None,
+    max_tokens: int = 2048,
 ) -> dict:
     reference_record = reference_record or {}
     base = {
@@ -298,7 +302,12 @@ def evaluate_question(
         "reference_failed": bool(reference_record.get("reference_failed")),
     }
     try:
-        raw_output, usage = caller(model, question["prompt"], temperature=temperature)
+        raw_output, usage = raw_completion or caller(
+            model,
+            question["prompt"],
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
         extraction = extract_code(raw_output)
         model_output = extraction["extracted_code"]
 
@@ -432,6 +441,101 @@ def evaluate_question(
         return result
 
 
+def reference_failed_result(
+    question: dict,
+    sample_index: int,
+    temperature: float,
+    reference_record: dict,
+) -> dict:
+    """Return a synthetic sample row for an unusable benchmark reference."""
+    return {
+        "question_id": _question_id(question),
+        "sample_index": sample_index,
+        "temperature": temperature,
+        "category": question["category"],
+        "difficulty": question.get("difficulty"),
+        "prompt": question["prompt"],
+        "correct_answer": question["correct_answer"],
+        "correct_output": question["correct_output"],
+        "reference_code": reference_record.get("reference_code"),
+        "reference_output": reference_record.get("reference_output"),
+        "reference_raw_output": reference_record.get("reference_raw_output"),
+        "reference_execution_error": reference_record.get("reference_execution_error"),
+        "reference_failed": True,
+        "model_response": None,
+        "raw_response": None,
+        "usage": {},
+        "scores": _error_scores(True),
+        "correct": False,
+        "judge": "reference_failed",
+        "extracted_code": None,
+        "extraction_method": None,
+        "extraction_error": None,
+        "code_only_violation": False,
+        "preflight_error": None,
+        "oracle_error": None,
+        "actual_output": None,
+        "raw_actual_output": None,
+        "execution_error": None,
+    }
+
+
+def evaluate_question_batch(
+    provider: str,
+    caller,
+    model: str,
+    question: dict,
+    execute_mode: bool,
+    sample_indices: list[int],
+    temperature: float,
+    oracle_config: dict | None,
+    reference_record: dict,
+    max_tokens: int,
+) -> list[dict]:
+    """Evaluate one prompt for one or more requested samples."""
+    completions: list[tuple[str, dict]] | None = None
+    if (
+        len(sample_indices) > 1
+        and provider in BATCH_CALLERS
+        and _BATCH_SUPPORT_CACHE.get(provider, True)
+    ):
+        try:
+            completions = BATCH_CALLERS[provider](
+                model,
+                question["prompt"],
+                len(sample_indices),
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+            if len(completions) != len(sample_indices):
+                completions = None
+                _BATCH_SUPPORT_CACHE[provider] = False
+            else:
+                _BATCH_SUPPORT_CACHE[provider] = True
+        except Exception:
+            completions = None
+            _BATCH_SUPPORT_CACHE[provider] = False
+
+    results = []
+    for offset, sample_index in enumerate(sample_indices):
+        raw_completion = completions[offset] if completions is not None else None
+        results.append(
+            evaluate_question(
+                caller,
+                model,
+                question,
+                execute_mode,
+                sample_index,
+                temperature,
+                oracle_config,
+                reference_record,
+                raw_completion=raw_completion,
+                max_tokens=max_tokens,
+            )
+        )
+    return results
+
+
 def run_evaluation(
     providers: list[str],
     model_overrides: list[str] | None,
@@ -446,6 +550,9 @@ def run_evaluation(
     reference_cache_path: str | None = None,
     require_reference_cache: bool = False,
     label_suffix: str = "",
+    samples_per_request: int = 1,
+    max_tokens: int = 2048,
+    skip_existing_models: bool = False,
 ) -> dict[str, list[dict]]:
     with open(benchmark_path) as f:
         questions: list[dict] = json.load(f)
@@ -470,6 +577,11 @@ def run_evaluation(
 
         for model in models:
             label = f"{provider}/{model}{label_suffix}"
+            result_file = out / f"{_file_key(provider, model, label_suffix)}_results.json"
+            if skip_existing_models and result_file.exists():
+                print(f"\n=== {label} already complete; loading {result_file} ===")
+                all_results[label] = json.loads(result_file.read_text())
+                continue
             total = len(questions) * num_samples
             active_workers = max(1, min(workers, total))
             print(
@@ -477,43 +589,62 @@ def run_evaluation(
                 f"workers={active_workers}) ==="
             )
 
-            tasks: list[tuple[int, dict, int]] = []
+            tasks: list[tuple[int, dict, list[int], dict]] = []
+            completed: list[tuple[tuple[int, int], dict]] = []
             order = 0
             for question in questions:
                 qid = _question_id(question)
                 reference_record = reference_records.get(qid, {})
-                for sample_index in range(num_samples):
+                if reference_record.get("reference_failed"):
+                    for sample_index in range(num_samples):
+                        order += 1
+                        completed.append(
+                            (
+                                (order, 0),
+                                reference_failed_result(
+                                    question,
+                                    sample_index,
+                                    temperature,
+                                    reference_record,
+                                ),
+                            )
+                        )
+                    continue
+                for start in range(0, num_samples, samples_per_request):
                     order += 1
-                    tasks.append((order, question, sample_index, reference_record))
+                    batch_indices = list(range(start, min(start + samples_per_request, num_samples)))
+                    tasks.append((order, question, batch_indices, reference_record))
 
-            completed: list[tuple[int, dict]] = []
+            total_requests = len(tasks)
             with ThreadPoolExecutor(max_workers=active_workers) as pool:
                 futures = {}
                 task_iter = iter(tasks)
                 submitted = 0
-                done_count = 0
+                done_count = len(completed)
 
                 def submit_next() -> bool:
                     nonlocal submitted
                     try:
-                        order, question, sample_index, reference_record = next(task_iter)
+                        order, question, sample_indices, reference_record = next(task_iter)
                     except StopIteration:
                         return False
                     future = pool.submit(
-                        evaluate_question,
+                        evaluate_question_batch,
+                        provider,
                         caller,
                         model,
                         question,
                         execute_mode,
-                        sample_index,
+                        sample_indices,
                         temperature,
                         oracle_config,
                         reference_record,
+                        max_tokens,
                     )
-                    futures[future] = (order, _question_id(question), sample_index)
+                    futures[future] = (order, _question_id(question), sample_indices)
                     submitted += 1
                     print(
-                        f"  submitted {submitted}/{total} "
+                        f"  submitted requests {submitted}/{total_requests} "
                         f"(in-flight={len(futures)})",
                         end="\r",
                         flush=True,
@@ -529,16 +660,16 @@ def run_evaluation(
                 while futures:
                     done, _ = wait(futures, return_when=FIRST_COMPLETED)
                     for future in done:
-                        order, qid, sample_index = futures.pop(future)
-                        result = future.result()
-                        completed.append((order, result))
-                        done_count += 1
-                        _print_sample_progress(done_count, total, qid, sample_index, result)
+                        order, qid, sample_indices = futures.pop(future)
+                        batch_results = future.result()
+                        for offset, result in enumerate(batch_results):
+                            completed.append(((order, offset), result))
+                            done_count += 1
+                            _print_sample_progress(done_count, total, qid, sample_indices[offset], result)
                         submit_next()
 
             results = [result for _, result in sorted(completed, key=lambda item: item[0])]
 
-            result_file = out / f"{_file_key(provider, model, label_suffix)}_results.json"
             result_file.write_text(json.dumps(results, indent=2))
             print(f"  -> {result_file}")
 
@@ -758,6 +889,20 @@ def parse_args() -> argparse.Namespace:
         help="Parallel sample evaluation workers per model. Default: 1.",
     )
     parser.add_argument(
+        "--samples-per-request",
+        type=int,
+        default=1,
+        metavar="N",
+        help="Requested same-prompt completions per provider call when supported. Default: 1.",
+    )
+    parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=2048,
+        metavar="N",
+        help="Maximum generated tokens per sample. Default: 2048.",
+    )
+    parser.add_argument(
         "--num-samples",
         type=int,
         default=1,
@@ -871,6 +1016,10 @@ def main() -> None:
         sys.exit("--num-samples must be at least 1")
     if args.workers < 1:
         sys.exit("--workers must be at least 1")
+    if args.samples_per_request < 1:
+        sys.exit("--samples-per-request must be at least 1")
+    if args.max_tokens < 1:
+        sys.exit("--max-tokens must be at least 1")
     if any(k < 1 for k in args.pass_k):
         sys.exit("--pass-k values must be at least 1")
     if "pass_at_k" in args.metrics and args.num_samples == 1 and any(k > 1 for k in args.pass_k):
@@ -923,6 +1072,8 @@ def main() -> None:
         workers=args.workers,
         reference_cache_path=args.reference_cache,
         require_reference_cache=args.require_reference_cache,
+        samples_per_request=args.samples_per_request,
+        max_tokens=args.max_tokens,
     )
 
     summary = generate_summary(all_results, execute_mode, args.metrics, args.pass_k)

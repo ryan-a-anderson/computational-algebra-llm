@@ -98,6 +98,8 @@ All commands are run from the project root with the venv active. The main script
 | `--metrics METRIC...` | `accuracy` | Aggregate metrics to compute: `accuracy`, `pass_at_k` |
 | `--pass-k K...` | `1` | k values for `pass_at_k` |
 | `--workers N` | `1` | Parallel sample evaluation workers per model |
+| `--samples-per-request N` | `1` | Request multiple same-prompt completions in one provider call when supported |
+| `--max-tokens N` | `2048` | Maximum generated tokens per sample |
 | `--oracle-grader` | off | Use a binary LLM oracle on execution-output mismatches |
 | `--grader-provider PROVIDER` | `openai` | Provider for the oracle grader |
 | `--grader-model MODEL` | `gpt-5-2` | Model for the oracle grader |
@@ -196,7 +198,62 @@ python eval-pipeline/run_benchmark_sweep.py \
   --workers 4
 ```
 
-`run_benchmark_sweep.py` requires the reference cache by default. Use `--reference-cache PATH` for a custom cache location, or `--compile-references` for a one-off run that compiles references inline. Use `--delay` to pace task submission if the provider rate limits concurrent requests.
+`run_benchmark_sweep.py` requires the reference cache by default. Use `--reference-cache PATH` for a custom cache location, or `--compile-references` for a one-off run that compiles references inline. It also makes tiny API preflight calls for each benchmark model and the oracle model before launching the expensive run; use `--preflight-only` to test model IDs without running the benchmark, or `--skip-api-preflight` to disable this check. Use `--delay` to pace task submission if the provider rate limits concurrent requests.
+
+Sweep runs can be accumulated one model at a time by reusing the same `--run-name`. Existing completed model result files are loaded instead of rerun unless `--force-rerun` is passed, and merged `summary.json`, `samples.csv`, and `pass_at_k.csv` files are regenerated after each invocation. If a run is interrupted, rebuild those aggregate artifacts from completed model result files with:
+
+```bash
+python eval-pipeline/finalize_run.py results/runs/<run-name>
+```
+
+When a reference cache marks a question as failed, sweep runs preserve that question in the accounting output but skip expensive model sampling for it. Use `--samples-per-request N` to request multiple independent completions for the same prompt in one provider request when the backend supports it; unsupported providers automatically fall back to one request per sample.
+
+For the verified Tinker family-pairs sweep, preflight the benchmark and oracle models first:
+
+```bash
+python eval-pipeline/run_benchmark_sweep.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --models \
+    Qwen/Qwen3-32B \
+    Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    meta-llama/Llama-3.1-8B-Instruct \
+    meta-llama/Llama-3.3-70B-Instruct \
+    deepseek-ai/DeepSeek-V3.1 \
+    deepseek-ai/DeepSeek-V3.1-Base \
+    moonshotai/Kimi-K2.5 \
+    moonshotai/Kimi-K2-Thinking \
+  --temperature 0.7 \
+  --oracle-grader \
+  --grader-provider tinker \
+  --grader-model Qwen/Qwen3-32B \
+  --preflight-only
+```
+
+If preflight passes, launch the full run:
+
+```bash
+python eval-pipeline/run_benchmark_sweep.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --models \
+    Qwen/Qwen3-32B \
+    Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    meta-llama/Llama-3.1-8B-Instruct \
+    meta-llama/Llama-3.3-70B-Instruct \
+    deepseek-ai/DeepSeek-V3.1 \
+    deepseek-ai/DeepSeek-V3.1-Base \
+    moonshotai/Kimi-K2.5 \
+    moonshotai/Kimi-K2-Thinking \
+  --num-samples 30 \
+  --temperature 0.7 \
+  --pass-k 1 5 10 15 20 \
+  --workers 2 \
+  --samples-per-request 5 \
+  --delay 0 \
+  --oracle-grader \
+  --grader-provider tinker \
+  --grader-model Qwen/Qwen3-32B \
+  --run-name tinker_family_pairs_t07_k1_5_10_20
+```
 
 To compare sampling temperatures in one run, pass multiple values:
 
@@ -206,7 +263,7 @@ python eval-pipeline/run_benchmark_sweep.py \
   --models Qwen/Qwen3-8B Qwen/Qwen3-32B \
   --num-samples 30 \
   --temperature 0 .2 .4 .6 .8 1 \
-  --pass-k 1 5 10 20 \
+  --pass-k 1 5 10 15 20 \
   --workers 2 \
   --oracle-grader \
   --grader-provider tinker \

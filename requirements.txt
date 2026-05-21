@@ -4,3 +4,5 @@ huggingface_hub>=0.24.0
 python-dotenv>=1.0.0
 pandas>=2.0.0
 matplotlib>=3.8.0
+plotly
+nbformat

@@ -34,6 +34,7 @@ DEFAULT_MODELS: dict[str, list[str]] = {
 }
 
 Caller = Callable[..., tuple[str, dict]]
+BatchCaller = Callable[..., list[tuple[str, dict]]]
 
 
 def clean_response(text: str) -> str:
@@ -107,6 +108,40 @@ def call_openai_compat(
     return raw, usage
 
 
+def call_openai_compat_many(
+    model: str,
+    prompt: str,
+    count: int,
+    base_url: Optional[str] = None,
+    api_key_env: str = "OPENAI_API_KEY",
+    system_prompt: str = SYSTEM_PROMPT,
+    temperature: float = 0.0,
+    max_tokens: int = 2048,
+) -> list[tuple[str, dict]]:
+    """Request multiple independently sampled completions for one prompt."""
+    if count < 1:
+        return []
+
+    from openai import OpenAI
+
+    kwargs: dict = {"api_key": os.environ[api_key_env]}
+    if base_url:
+        kwargs["base_url"] = base_url
+    client = OpenAI(**kwargs)
+    resp = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=max_tokens,
+        temperature=temperature,
+        n=count,
+    )
+    usage = _usage(resp.usage.prompt_tokens, resp.usage.completion_tokens)
+    return [(choice.message.content or "", usage) for choice in resp.choices]
+
+
 def call_mistral(
     model: str,
     prompt: str,
@@ -147,6 +182,17 @@ def _oa(base_url: Optional[str], env: str) -> Caller:
     )
 
 
+def _oa_many(base_url: Optional[str], env: str) -> BatchCaller:
+    return lambda model, prompt, count, **kwargs: call_openai_compat_many(
+        model,
+        prompt,
+        count,
+        base_url=base_url,
+        api_key_env=env,
+        **kwargs,
+    )
+
+
 CALLERS: dict[str, Caller] = {
     "anthropic": call_anthropic,
     "openai":    _oa(None, "OPENAI_API_KEY"),
@@ -157,6 +203,21 @@ CALLERS: dict[str, Caller] = {
         "https://tinker.thinkingmachines.dev/services/tinker-prod/oai/api/v1",
         "TINKER_API_KEY",
     ),
+}
+
+BATCH_CALLERS: dict[str, BatchCaller] = {
+    "openai": _oa_many(None, "OPENAI_API_KEY"),
+    "deepseek": _oa_many("https://api.deepseek.com", "DEEPSEEK_API_KEY"),
+    "kimi": _oa_many("https://api.moonshot.cn/v1", "KIMI_API_KEY"),
+    "tinker": _oa_many(
+        "https://tinker.thinkingmachines.dev/services/tinker-prod/oai/api/v1",
+        "TINKER_API_KEY",
+    ),
+}
+
+PROVIDER_CAPABILITIES: dict[str, dict[str, bool]] = {
+    provider: {"multi_completion": provider in BATCH_CALLERS}
+    for provider in CALLERS
 }
 
 ALL_PROVIDERS: list[str] = list(CALLERS.keys())
