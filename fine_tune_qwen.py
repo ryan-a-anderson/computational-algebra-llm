@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
-Fine-tune Qwen3 4B on Macaulay2 input/output examples using the Tinker platform.
+Fine-tune Qwen3 4B on Macaulay2 code-generation examples using the Tinker platform.
+
+The model is trained to take a natural-language algebra question and return
+correct Macaulay2 code — not to predict M2 output.
 
 Usage:
     python fine_tune_qwen.py [--steps N] [--lr LR] [--rank R]
 
-Automatically merges:
-  - macaulay2-examples/m2_training_data.json        (yulia-m2 examples)
-  - macaulay2-examples/computations_book_training_data.json  (ComputationsBook)
-
-Run the two data-generation scripts first if the JSON files are missing:
-  python macaulay2-examples/run_and_capture.py
-  python macaulay2-examples/fetch_computations_book.py
+Generate training data first:
+    python macaulay2-examples/generate_training_data.py
+    python macaulay2-examples/validate_training_data.py --skip-benchmark
 """
 
 import argparse
@@ -26,11 +25,13 @@ import tinker
 from tinker_cookbook.renderers import TrainOnWhat, get_renderer
 from tinker_cookbook.supervised.data import conversation_to_datum
 
+# Prefer the validated dataset; fall back to the unvalidated version
+_BASE = Path(__file__).parent / "macaulay2-examples"
 DATA_PATHS = [
-    Path(__file__).parent / "macaulay2-examples" / "m2_training_data.json",
-    Path(__file__).parent / "macaulay2-examples" / "computations_book_training_data.json",
+    _BASE / "m2_code_gen_training_validated.json",
+    _BASE / "m2_code_gen_training.json",
 ]
-CHECKPOINT_NAME = "m2-qwen3-4b-sft-v2"
+CHECKPOINT_NAME = "m2-qwen3-4b-codegen-v1"
 
 TINKER_API_KEY = os.environ.get("TINKER_API_KEY", "tml-gnnuOReXJScfM3VqO62Rt9yVagpGPQQneb2ZQ9iYhw310e4QB4HUMf0ReHMrxlQTQAAAA")
 
@@ -86,11 +87,11 @@ def get_renderer_for_model(model_name: str, tokenizer):
     """Pick the right renderer for the model family."""
     name_lower = model_name.lower()
     if "qwen3.5" in name_lower or "qwen3-5" in name_lower:
-        renderer_key = "qwen3_5"
+        renderer_key = "qwen3_5_disable_thinking"
     elif "qwen3" in name_lower:
-        renderer_key = "qwen3_5"
+        renderer_key = "qwen3_5_disable_thinking"
     else:
-        renderer_key = "qwen3_5"
+        renderer_key = "qwen3_5_disable_thinking"
     print(f"Using renderer: {renderer_key}")
     return get_renderer(renderer_key, tokenizer)
 
@@ -159,10 +160,22 @@ async def main_async(args):
 
     print(f"\nFinal loss: {losses[-1]:.4f}")
     print(f"Saving checkpoint as '{CHECKPOINT_NAME}'...")
-    sampling_client = await training_client.save_weights_and_get_sampling_client_async(
-        name=CHECKPOINT_NAME
+
+    # Save persistent training weights (shows up in user checkpoint list)
+    save_future = await training_client.save_state_async(name=CHECKPOINT_NAME)
+    save_result = await save_future.result_async()
+    print(f"Training weights saved at: {save_result.path}")
+
+    # Also save sampler weights for immediate inference
+    sampler_future = await training_client.save_weights_for_sampler_async(
+        name=f"{CHECKPOINT_NAME}-sampler"
     )
-    print(f"Checkpoint saved: {CHECKPOINT_NAME}")
+    sampler_result = await sampler_future.result_async()
+    print(f"Sampler weights saved at:  {sampler_result.path}")
+
+    sampling_client = await service_client.create_sampling_client_async(
+        model_path=sampler_result.path
+    )
 
     # Quick smoke test
     print("\nRunning smoke test...")
