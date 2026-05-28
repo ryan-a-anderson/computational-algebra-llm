@@ -2,7 +2,7 @@
 r"""
 MathRepo Macaulay2 Scraper
 ==========================
-Fetches all 26 M2 project pages (+ subpages) from mathrepo.mis.mpg.de
+Fetches all 51 M2 project pages (+ subpages) from mathrepo.mis.mpg.de
 using the Claude API web_fetch tool, then parses markdown into structured JSON.
 
 Usage:
@@ -33,6 +33,7 @@ import argparse
 import json
 import re
 import time
+import urllib.parse
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
@@ -46,89 +47,160 @@ _HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 }
 
-# All 26 Macaulay2 projects (from M2.html)
+# All 51 Macaulay2 projects (from M2.html); subpages are discovered automatically.
 M2_PROJECTS = [
+    ("Algebraic Sparse Factor Analysis",
+     f"{BASE}/sparse-factor-analysis/index.html"),
+
     ("An algorithm for the identifiability of rank-3 tensors",
-     f"{BASE}/identifiabilityRank3tensors/index.html",
-     ["implementation.html", "example.html"]),
+     f"{BASE}/identifiabilityRank3tensors/index.html"),
+
+    ("Arrangements and Likelihood",
+     f"{BASE}/ArrangementsLikelihood/index.html"),
+
+    ("CC degree of the Grassmannian",
+     f"{BASE}/CCdegreeGrassmannian/index.html"),
 
     ("Combinatorics of Correlated Equilibria",
-     f"{BASE}/correlated-equilibrium/index.html", []),
+     f"{BASE}/correlated-equilibrium/index.html"),
 
-    ("Cox Homotopies",
-     f"{BASE}/CoxHomotopies/index.html", []),
+    ("Computational Complexity of Polynomial Subalgebras",
+     f"{BASE}/ComplexityOfSubalgebras/index.html"),
 
-    ("D-Algebraic Functions",
-     f"{BASE}/DAlgebraicFunctions/index.html",
-     ["DAlgFunM2.html"]),
-
-    ("Differential Equations for Gaussian Statistical Models",
-     f"{BASE}/GaussianMLDeg1/index.html", []),
-
-    ("Four-Dimensional Lie Algebras Revisited",
-     f"{BASE}/Lie4/index.html", []),
-
-    ("The Gaussian Moduli",
-     f"{BASE}/GaussianModuli/index.html", []),
-
-    ("Hirota Varieties and Rational Nodal Curves",
-     f"{BASE}/HirotaVarietyRationalNodalCurve/index.html", []),
-
-    ("The Hessian Discriminant",
-     f"{BASE}/HessianDiscriminant/index.html", []),
-
-    ("Identifiability in Continuous Lyapunov Models",
-     f"{BASE}/LyapunovIdentifiability/index.html", []),
-
-    ("Invitation to Nonlinear Algebra",
-     f"{BASE}/InvitationToNonlinearAlgebra/index.html", []),
-
-    ("Landau Discriminants",
-     f"{BASE}/Landau/index.html", []),
-
-    ("Lines on p-adic and real cubic surfaces",
-     f"{BASE}/27pAdicLines/index.html", []),
-
-    ("Macaulay2 bootcamp",
-     f"{BASE}/M2_bootcamp/index.html",
-     ["exercises.html", "transcripts.html"]),
-
-    ("Marginal Independence Models",
-     f"{BASE}/MarginalIndependence/index.html", []),
-
-    ("Making waves with Macaulay 2",
-     f"{BASE}/makingWaves/index.html", []),
-
-    ("Multiplicity structure of the arc space of a fat point",
-     f"{BASE}/MultiplicityStructureOfArcSpaces/index.html", []),
-
-    ("No eleventh conditional Ingleton inequality",
-     f"{BASE}/ConditionalIngleton/index.html", []),
-
-    ("Primary Decomposition with Differential Operators",
-     f"{BASE}/PrimaryDecompositionWithDifferentialOperators/index.html", []),
-
-    ("Primary Ideals and Their Differential Equations",
-     f"{BASE}/PrimaryIdealsandTheirDifferentialEquations/index.html",
-     ["Macaulay2Code.html"]),
-
-    ("Self-dual matroids from canonical curves",
-     f"{BASE}/selfdual/index.html", []),
-
-    ("Staged tree models with toric structure",
-     f"{BASE}/StagedTreesWithToricStructures/index.html", []),
-
-    ("Third-Order Moment Varieties of Linear Non-Gaussian Graphical Models",
-     f"{BASE}/ThirdOrderMomentVarieties/index.html", []),
-
-    ("Toric Degenerations of Cubic Surfaces",
-     f"{BASE}/ToricDegenerationsCubics/index.html", []),
-
-    ("Vector Spaces of Generalized Euler Integrals",
-     f"{BASE}/EulerIntegrals/index.html", []),
+    ("Computing Implicitizations of Multi-Graded Polynomial Maps",
+     f"{BASE}/MultigradedImplicitization/index.html"),
 
     ("Connection Matrices in Macaulay2",
-     f"{BASE}/ConnectionMatrices/index.html", []),
+     f"{BASE}/ConnectionMatrices/index.html"),
+
+    ("D-Algebraic Functions",
+     f"{BASE}/DAlgebraicFunctions/index.html"),
+
+    ("Decomposing Tensor Spaces via Path Signatures",
+     f"{BASE}/TensorSpacesViaSignatures/index.html"),
+
+    ("Differential Equations for Gaussian Statistical Models with Rational Maximum Likelihood Estimator",
+     f"{BASE}/GaussianMLDeg1/index.html"),
+
+    ("Dihedral sign patterns in \\mathcal{M}_{0,n}",
+     f"{BASE}/DihedralSignsM0n/index.html"),
+
+    ("Discrete Signature Varieties",
+     f"{BASE}/DiscreteSignatureVarieties/index.html"),
+
+    ("Elliptic Curves in Game Theory",
+     f"{BASE}/elliptic_curves_game_theory/index.html"),
+
+    ("Four-Dimensional Lie Algebras Revisited",
+     f"{BASE}/Lie4/index.html"),
+
+    ("The Gaussian Moduli",
+     f"{BASE}/GaussianModuli/index.html"),
+
+    ("Gaussian Process Priors for Systems of Linear Partial Differential Equations with Constant Coefficients",
+     f"{BASE}/EPGP/index.html"),
+
+    ("Graph Curve Matroids",
+     f"{BASE}/GraphCurveMatroids/index.html"),
+
+    ("The Hessian Discriminant",
+     f"{BASE}/HessianDiscriminant/index.html"),
+
+    ("Hilbert Functions of Chopped Ideals",
+     f"{BASE}/ChoppedIdeals/index.html"),
+
+    ("Hirota Varieties and Rational Nodal Curves",
+     f"{BASE}/HirotaVarietyRationalNodalCurve/index.html"),
+
+    ("Identifiability in Continuous Lyapunov Models",
+     f"{BASE}/LyapunovIdentifiability/index.html"),
+
+    ("Identifiability of Homoscedastic Linear Structural Equation Models using Algebraic Matroids",
+     f"{BASE}/cyclic-sem-identifiability/index.html"),
+
+    ("Invitation to Nonlinear Algebra",
+     f"{BASE}/InvitationToNonlinearAlgebra/index.html"),
+
+    ("Landau Discriminants",
+     f"{BASE}/Landau/index.html"),
+
+    ("Likelihood Geometry of Reflexive Polytopes",
+     f"{BASE}/LikelihoodReflexive/index.html"),
+
+    ("Lines on p-adic and real cubic surfaces",
+     f"{BASE}/27pAdicLines/index.html"),
+
+    ("Logarithmic Discriminants of Hyperplane Arrangements",
+     f"{BASE}/LogDiscHyperplanes/index.html"),
+
+    ("Macaulay2 bootcamp",
+     f"{BASE}/M2_bootcamp/index.html"),
+
+    ("Making waves with Macaulay 2",
+     f"{BASE}/makingWaves/index.html"),
+
+    ("Marginal Independence Models",
+     f"{BASE}/MarginalIndependence/index.html"),
+
+    ("Matroid Stratification of ML Degrees of Independence Models",
+     f"{BASE}/MLDegreeStratification/index.html"),
+
+    ("Maximal Mumford Curves from Planar Graphs",
+     f"{BASE}/mmcurves/index.html"),
+
+    ("Moment Varieties for Mixtures of Products",
+     f"{BASE}/MomentVarietiesForMixturesOfProducts/index.html"),
+
+    ("Multiplicity structure of the arc space of a fat point",
+     f"{BASE}/MultiplicityStructureOfArcSpaces/index.html"),
+
+    ("No eleventh conditional Ingleton inequality",
+     f"{BASE}/ConditionalIngleton/index.html"),
+
+    ("The Pfaffian Structure of CFN Phylogenetic Networks",
+     f"{BASE}/PfaffianPhylogeneticNetworks/index.html"),
+
+    ("Positive Polytopes with Few Facets in the Grassmannian",
+     f"{BASE}/FewFacetsInGrassmannian/index.html"),
+
+    ("Primary Decomposition with Differential Operators",
+     f"{BASE}/PrimaryDecompositionWithDifferentialOperators/index.html"),
+
+    ("Primary Ideals and Their Differential Equations",
+     f"{BASE}/PrimaryIdealsandTheirDifferentialEquations/index.html"),
+
+    ("Proudfoot-Speyer degenerations of scattering equations",
+     f"{BASE}/ProudfootSpeyerDegeneration/index.html"),
+
+    ("Quatroids and Rational Plane Cubics",
+     f"{BASE}/QuatroidsAndRationalPlaneCubics/index.html"),
+
+    ("Self-dual matroids from canonical curves",
+     f"{BASE}/selfdual/index.html"),
+
+    ("Spinor-Helicity Varieties",
+     f"{BASE}/SpinorHelicity/index.html"),
+
+    ("Staged tree models with toric structure",
+     f"{BASE}/StagedTreesWithToricStructures/index.html"),
+
+    ("Third-Order Moment Varieties of Linear Non-Gaussian Graphical Models",
+     f"{BASE}/ThirdOrderMomentVarieties/index.html"),
+
+    ("Toric Degenerations of Cubic Surfaces",
+     f"{BASE}/ToricDegenerationsCubics/index.html"),
+
+    ("Totally positive skew-symmetric matrices",
+     f"{BASE}/PositiveSkewMatrices/index.html"),
+
+    ("Two Lives of the Grassmannian",
+     f"{BASE}/TwoLives/index.html"),
+
+    ("A vector bundle approach to Nash equilibria",
+     f"{BASE}/vector-bundle-nash-equilibria/index.html"),
+
+    ("Vector Spaces of Generalized Euler Integrals",
+     f"{BASE}/EulerIntegrals/index.html"),
 ]
 
 
@@ -184,6 +256,40 @@ def fetch_url(url: str) -> Optional[str]:
     except Exception as exc:
         print(f"  [fetch error] {exc}")
         return None
+
+
+def discover_subpages(index_url: str, cap: int = 8) -> list[str]:
+    """Return relative HTML filenames linked from the index page within the same directory."""
+    try:
+        resp = requests.get(index_url, headers=_HEADERS, timeout=30)
+        resp.raise_for_status()
+        resp.encoding = 'utf-8'
+        soup = BeautifulSoup(resp.text, "html.parser")
+    except Exception as exc:
+        print(f"  [discover error] {exc}")
+        return []
+
+    base_dir = index_url.rsplit("/", 1)[0] + "/"
+    seen: set[str] = set()
+    subpages: list[str] = []
+
+    for tag in soup.find_all("a", href=True):
+        href = tag["href"].strip()
+        if not href or href.startswith(("#", "mailto:")):
+            continue
+        resolved = urllib.parse.urljoin(index_url, href).split("#")[0]
+        if not resolved.startswith(base_dir):
+            continue
+        filename = resolved[len(base_dir):]
+        if not filename.endswith(".html") or filename == "index.html" or "/" in filename:
+            continue
+        if filename not in seen:
+            seen.add(filename)
+            subpages.append(filename)
+        if len(subpages) >= cap:
+            break
+
+    return subpages
 
 
 # ---------------------------------------------------------------------------
@@ -350,10 +456,13 @@ def scrape(output_path: str = "mathrepo_m2_scraped.json", delay: float = 1.0,
 
     print(f"Scraping {len(candidates)} Macaulay2 project(s)...\n")
 
-    for i, (name, index_url, subpage_names) in enumerate(candidates, 1):
+    for i, (name, index_url) in enumerate(candidates, 1):
         print(f"[{i:>2}/{len(candidates)}] {name[:60]}")
 
-        # Fetch index page
+        # Discover subpages, then fetch index content
+        subpage_names = discover_subpages(index_url)
+        if subpage_names:
+            print(f"  subpages: {subpage_names}")
         time.sleep(delay)
         md = fetch_url(index_url)
         if not md:
