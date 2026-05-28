@@ -208,6 +208,49 @@ python eval-pipeline/finalize_run.py results/runs/<run-name>
 
 When a reference cache marks a question as failed, sweep runs preserve that question in the accounting output but skip expensive model sampling for it. Use `--samples-per-request N` to request multiple independent completions for the same prompt in one provider request when the backend supports it; unsupported providers automatically fall back to one request per sample.
 
+#### Fine-tuned Tinker checkpoint eval
+
+Fine-tuned Tinker models can be evaluated with the same sweep runner by passing the full sampler checkpoint path as the model name. The path should look like:
+
+```text
+tinker://<experiment-id>:train:<run-index>/sampler_weights/<checkpoint-name>
+```
+
+First, preflight the checkpoint and oracle grader:
+
+```bash
+python eval-pipeline/run_benchmark_sweep.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --models \
+    tinker://<experiment-id>:train:<run-index>/sampler_weights/<checkpoint-name> \
+  --temperature 0.5 \
+  --oracle-grader \
+  --grader-provider tinker \
+  --grader-model Qwen/Qwen3-32B \
+  --preflight-only
+```
+
+Then run the full pass@k sweep:
+
+```bash
+python eval-pipeline/run_benchmark_sweep.py \
+  --benchmark benchmarks/unified_benchmark.json \
+  --models \
+    tinker://<experiment-id>:train:<run-index>/sampler_weights/<checkpoint-name> \
+  --num-samples 50 \
+  --temperature 0.5 \
+  --pass-k 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 \
+  --workers 6 \
+  --samples-per-request 5 \
+  --delay 0 \
+  --oracle-grader \
+  --grader-provider tinker \
+  --grader-model Qwen/Qwen3-32B \
+  --run-name tinker_finetuned_<short-name>_t05_k1_20
+```
+
+Use the same `--run-name` to accumulate multiple fine-tuned checkpoints into one comparable run, or give each checkpoint its own run folder and combine them in the analysis notebook with `RUN_NAMES`.
+
 For the verified Tinker family-pairs sweep, preflight the benchmark and oracle models first:
 
 ```bash

@@ -37,7 +37,27 @@ def _question_id(question: dict) -> str:
 
 def _has_m2_error(raw_output: str) -> bool:
     lowered = raw_output.lower()
-    return " error:" in lowered or "stdio:" in lowered or "--backtrace:" in lowered
+    return " error:" in lowered or re.search(r"^stdio:", lowered, flags=re.MULTILINE) is not None or "--backtrace:" in lowered
+
+
+def _strip_m2_transcript(text: str) -> tuple[str, bool]:
+    """Keep input lines from a copied M2 transcript and drop output/type lines."""
+    changed = False
+    kept: list[str] = []
+    for line in text.splitlines():
+        prompt = re.match(r"^\s*i\d+\s*:\s?(.*)$", line)
+        if prompt:
+            kept.append(prompt.group(1))
+            changed = True
+            continue
+        if re.match(r"^\s*o\d+\s*[=:]", line):
+            changed = True
+            continue
+        if re.match(r"^\s*\S+\s*:\s*(?:Ring|Type|List|Sequence|Matrix|HashTable|Ideal|Module|String)\b", line):
+            changed = True
+            continue
+        kept.append(line)
+    return "\n".join(kept).strip(), changed
 
 
 def extract_code(response: str) -> dict:
@@ -70,6 +90,23 @@ def extract_code(response: str) -> dict:
                 "extraction_error": "unclosed thinking tag",
                 "code_only_violation": True,
             }
+
+    label_patterns = [
+        r"^\s*(?:macaulay2\s+code|m2\s+code|code|command|answer|expected response)\s*:?\s*",
+        r"^\s*(?:the\s+command\s+is|the\s+answer\s+is)\s*:?\s*",
+        r"^\s*(?:you can run|run|use|type)\s*:?\s*",
+    ]
+    before_labels = working
+    for pattern in label_patterns:
+        working = re.sub(pattern, "", working, flags=re.IGNORECASE)
+    working = working.strip()
+    if working != before_labels.strip():
+        method_parts.append("label_removed")
+
+    transcript_stripped, transcript_changed = _strip_m2_transcript(working)
+    if transcript_changed:
+        working = transcript_stripped
+        method_parts.append("m2_transcript_stripped")
 
     wrapper_patterns = [
         r"^\s*(?:here is the code|here's the code|the code is|the code|expected response|here is|here's)\s*:?\s*",
