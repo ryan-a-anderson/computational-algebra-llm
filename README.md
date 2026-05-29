@@ -19,6 +19,8 @@ computational-algebra-llm/
 
 ## Setup
 
+For a fuller WSL/Linux benchmark setup guide, see [`docs/benchmark_setup.md`](docs/benchmark_setup.md). For fine-tuned Tinker checkpoint evaluation, see [`docs/tinker_finetuned_eval.md`](docs/tinker_finetuned_eval.md).
+
 ### 1. Create and activate a virtual environment
 
 ```bash

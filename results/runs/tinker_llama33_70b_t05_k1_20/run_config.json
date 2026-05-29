@@ -1,0 +1,46 @@
+{
+  "benchmark": "benchmarks/unified_benchmark.json",
+  "provider": "tinker",
+  "models": [
+    "meta-llama/Llama-3.3-70B-Instruct"
+  ],
+  "num_samples": 50,
+  "temperature": 0.5,
+  "temperatures": [
+    0.5
+  ],
+  "pass_k": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "delay": 0.0,
+  "workers": 6,
+  "samples_per_request": 5,
+  "max_tokens": 2048,
+  "top_p": null,
+  "seed_policy": "provider_default_unseeded",
+  "reference_cache": "results/reference_cache/unified_benchmark_2698b0637493.json",
+  "compile_references": false,
+  "oracle_grader": true,
+  "grader_provider": "tinker",
+  "grader_model": "Qwen/Qwen3-32B",
+  "grader_criteria": "default"
+}
